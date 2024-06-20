@@ -7,10 +7,11 @@ _IntVblank:: ; $01EF
 	push bc
 	push de
 	push hl
+; get built-in input status
 	call GetInput
+; get paddle status
 	ld a, $02
 	ldh [paddleCounter], a
-; get paddle angle
 	ld a, SCF_START|SCF_SOURCE
 	ldh [rSC], a
 ; OAM DMA
@@ -23,10 +24,13 @@ _IntVblank:: ; $01EF
 	ldh [rSCX], a
 	ldh a, [scyTmp]
 	ldh [rSCY], a
+; continue audio engine
 	call UpdateAudio
+; update frame counter
 	ldh a, [frameCount]
 	inc a
 	ldh [frameCount], a
+; indicate that a vblank occurred
 	ld a, $01
 	ldh [vblankTrigger], a
 	pop hl
@@ -78,7 +82,7 @@ TurnOnLCD:: ; $0244
 ; turn on LCD
 ; out(A) = [lcdcTmp] |= LCDCF_ON
 	ldh a, [lcdcTmp]
-	and ~LCDCF_ON ; ???
+	and LOW(~LCDCF_ON) ; ???
 	or LCDCF_ON
 	ldh [lcdcTmp], a
 	ldh [rLCDC], a
@@ -88,7 +92,7 @@ TurnOffLCD:: ; $024F
 ; set LCD to turn off, then wait until it does
 ; out(A) = 0
 	ldh a, [lcdcTmp]
-	and ~LCDCF_ON
+	and LOW(~LCDCF_ON)
 	ldh [lcdcTmp], a
 ; can't turn off LCD outside vblank
 	jr WaitVblank

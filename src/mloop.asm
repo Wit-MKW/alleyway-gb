@@ -17,6 +17,7 @@ DmgMain:: ; $0511
 	jp .loop
 
 MainLoop:: ; $052B
+; reset on START+SELECT
 	ldh a, [buttonsDown]
 	and PADF_START
 	jr nz, .do
@@ -40,12 +41,14 @@ MainLoop:: ; $052B
 	jp hl
 
 MainFuncList:: ; $054C
-	dw ResetHiScore, TitleScreenNoMusic, TitleScreen, DemoMode
+	dw ResetHiScore, TitleScreenWithMusic, TitleScreen, DemoMode
 	dw StartGame, AwaitBall, Func07A4, LostBall
 	dw NextStage, Func0839, GiveSpecialBonus, GameOver
 	dw Func0907, WaitVblank.end, WaitVblank.end, WaitVblank.end
 
 ResetHiScore:: ; $056C
+; set high score to 0200
+; out(A) = 1
 	ld a, 200
 	ldh [hiScore], a
 	xor a
@@ -54,7 +57,9 @@ ResetHiScore:: ; $056C
 	ldh [gameMode], a
 	ret
 
-TitleScreenNoMusic:: ; $0578
+TitleScreenWithMusic:: ; $0578
+; set title music to play before returning to title screen
+; out(A) = 2
 	ld a, $04
 	ld [titleScreenMusicCounter], a
 	ld a, $02
@@ -62,18 +67,26 @@ TitleScreenNoMusic:: ; $0578
 	ret
 
 TitleScreen:: ; $0582
+; display title screen
+; out(A) = 3 if demo starts, 4 otherwise
 	call TurnOffLCD
 	call SaveIE
+; disable STAT interrupt
 	ldh a, [ieBackup]
 	and ~IEF_STAT
 	ldh [ieBackup], a
-	call FillMap0
+; clear graphics
+	call FillNameTable0
 	call ClearOAM
+; display game logo
 	ld de, TitleScreenStripArray
 	call DrawStripArray.start
+; display high score
 	call DispHiScore
+; set standard palette
 	ld a, %11100100
 	ldh [rBGP], a
+; disable window
 	ldh a, [lcdcTmp]
 	and ~LCDCF_WINON
 	ldh [lcdcTmp], a
@@ -87,6 +100,7 @@ TitleScreen:: ; $0582
 .skip_zero::
 	ld [titleScreenMusicCounter], a
 	cp $00
+; play title music every 5th time demo mode times out
 	push af
 	push af
 	call z, StartAudio
@@ -113,6 +127,7 @@ TitleScreen:: ; $0582
 	and $80
 	jr nz, .loop
 .start_game::
+; reset game variables before starting
 	xor a
 	ld [stageId], a
 	ld [stageNum], a
@@ -124,7 +139,7 @@ TitleScreen:: ; $0582
 	ld [numLives], a
 	call CountBonus
 	call StartAudio
-	call DispNicePlay
+	call DispGameScreen
 	ld a, $04
 	ldh [gameMode], a
 	ret
@@ -134,9 +149,12 @@ TitleScreen:: ; $0582
 	ret
 
 DemoMode:: ; $0613
+; show a demo of the game
+; out(A) = 1 if demo is quit manually, 2 if it times out
 	call CancelAudio
-	call DispNicePlay
-.loop1::
+	call DispGameScreen
+.pick_stage::
+; choose a stage at random
 	call RandomNumber
 	and $1F
 	ld [stageId], a
@@ -147,7 +165,8 @@ DemoMode:: ; $0613
 	add hl, bc
 	ld a, [hl]
 	bit 7, a
-	jr nz, .loop1
+; try again if it's a special stage
+	jr nz, .pick_stage
 	ld a, $FF
 	ld [stageNum], a
 	inc a
@@ -165,7 +184,7 @@ DemoMode:: ; $0613
 	call MakeRacquetSprite
 	ld a, 16
 	call DelayFrames
-.loop2::
+.game_loop::
 	call UpdateScroll
 	call Func0CA6
 	call MakeRacquetSprite
@@ -175,11 +194,13 @@ DemoMode:: ; $0613
 	sub b
 	ld b, a
 	ldh a, [ballPosX]
-	sub $0B
+; perhaps this was meant to be "sub b", but that would have been wildly incorrect.
+	sub $b
 	ldh [racquetX], a
 	call MoveRacquet.check
 	call RandomNumber
 	call WaitVblank
+; quit when START (or paddle button) is pressed
 	ldh a, [buttonsPressed]
 	and PADF_START
 	jr z, .quit_demo
@@ -188,11 +209,12 @@ DemoMode:: ; $0613
 	jr z, .quit_demo
 	ldh a, [frameCount]
 	cp $00
-	jr nz, .loop2
+	jr nz, .game_loop
 	ld a, [demoCountdown]
 	dec a
 	ld [demoCountdown], a
-	jr nz, .loop2
+	jr nz, .game_loop
+; freeze for half a second before returning
 	ld a, 32
 	call DelayFrames
 	ld a, $02
@@ -204,14 +226,20 @@ DemoMode:: ; $0613
 	ret
 
 StartGame:: ; $06A2
+; start a new stage
+; out(A) = 5
+
+; erase any text that a special stage might have written
 	call EraseTimeLabel
 	call EraseSpecialBonusText
+; reset per-stage variables
 	xor a
 	ldh [specialStage], a
 	ldh [scrollFlag], a
 	ldh [smallRacquetFlag], a
 	ld a, 24
 	ldh [racquetWidth], a
+; get the current stage's properties
 	ld a, [stageId]
 	ld b, a
 	ld e, $03
@@ -228,35 +256,42 @@ StartGame:: ; $06A2
 	pop af
 	bit 6, a
 	call nz, SetupScroll
-	ld a, 40
+; place racquet on-screen
+	ld a, 32 + OAM_X_OFS
 	ldh [racquetX], a
-	ld a, 144
+	ld a, 128 + OAM_Y_OFS
 	ldh [racquetY], a
+; setup stage layout
 	ld a, [stageId]
 	call SetupStage
 	call CountBricks
 	call Func0B9D
-	xor a ; ???
+	xor a
+; BUG: operands switched.
 	ldh a, [stageRowDrawing]
+; fill out window information
 	call MakeLeftBorder
 	call DispScore
 	call DispNumLives
 	call DispBounceSpeed
+; show Mario jumping into the racquet on stage 01
 	ld a, [stageNum]
 	cp $01
-	call z, Func43DC
+	call z, MarioStart
 	ldh a, [specialStage]
 	cp $00
 	push af
 	call z, MakeStageNumSprite
 	pop af
 	call nz, MakeBonusSprite
+; finish filling out window information
 	call DispScore
 	call DispBounceSpeed
 	call DispNumLives
 	call DispWindowStageNum
 	ld a, 16
 	call DelayFrames
+; finalise screen setup
 	call RedrawStage
 	call ClearOAM
 	call DispScore
@@ -264,7 +299,7 @@ StartGame:: ; $06A2
 	call MakeLeftBorder
 	ldh a, [specialStage]
 	cp $00
-	call nz, Func19CC
+	call nz, SpecialStart
 	xor a
 	ldh [stageFallCounter], a
 	ld a, $05
@@ -272,6 +307,8 @@ StartGame:: ; $06A2
 	ret
 
 IncSpecialNum:: ; $0738
+; increment the special stage count
+; out(A) = ++[specialNum]
 	ld a, $01
 	ldh [specialStage], a
 	ld a, [specialNum]
@@ -280,6 +317,8 @@ IncSpecialNum:: ; $0738
 	ret
 
 IncStageNum:: ; $0744
+; increment the non-special stage count
+; out(A) = ++[stageNum]
 	ld a, [stageNum]
 	inc a
 	ld [stageNum], a
@@ -427,7 +466,7 @@ Func0839:: ; $0839
 	ldh a, [ieBackup]
 	and ~IEF_STAT
 	ldh [ieBackup], a
-	call DispNicePlay
+	call DispGameScreen
 	ldh a, [ieBackup]
 	and ~IEF_STAT
 	ldh [ieBackup], a
@@ -515,7 +554,7 @@ GameOver:: ; $08D1
 	call DelayFrames
 	call TurnOffLCD
 	call SaveIE
-	call FillMap0
+	call FillNameTable0
 	call ClearOAM
 	ldh a, [lcdcTmp]
 	and ~LCDCF_WINON

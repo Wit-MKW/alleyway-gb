@@ -145,8 +145,8 @@ Entry:: ; $0150
 
 ; prepare VRAM
 	call PrepareTileSet
-	call FillMap0
-	call FillMap1
+	call FillNameTable0
+	call FillNameTable1
 
 ; copy DoOamDma to HRAM to be called during _IntVblank
 	ld c, LOW(_DoOamDma)

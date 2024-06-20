@@ -193,20 +193,20 @@ DrawGfxArray:: ; $0302
 	pop af
 	ret
 
-FillMap0:: ; $0358
-; fill $9800-$9BFF with " "
+FillNameTable0:: ; $0358
+; fill first nametable with " "
 ; out(A) = 0
 ; out(BC) = 0
-; out(HL) = $9C00
-	ld hl, $9800
-	jr FillMap1.start
+; out(HL) = _SCRN0 + SCRN_VX_B*SCRN_VY_B
+	ld hl, _SCRN0
+	jr FillNameTable1.start
 
-FillMap1:: ; $035D
-; fill $9C00-$9FFF with " "
+FillNameTable1:: ; $035D
+; fill second nametable with " "
 ; out(A) = 0
 ; out(BC) = 0
-; out(HL) = $A000
-	ld hl, $9C00
+; out(HL) = _SCRN1 + SCRN_VX_B*SCRN_VY_B
+	ld hl, _SCRN1
 .start::
 	ld bc, SCRN_VX_B * SCRN_VY_B
 .loop::
@@ -222,7 +222,7 @@ ClearOAM:: ; $036C
 ; fill the OAM buffer with zero-bytes, hiding all objects
 ; out(A) = 0
 ; out(B) = 0
-; out(HL) = $C8A0
+; out(HL) = oamBuf+$A0
 	ld b, $A0
 	ld a, $00
 	ld hl, oamBuf
@@ -236,20 +236,20 @@ ClearLastSixObjs:: ; $0378
 ; fill the last six objects in the OAM buffer with zero-bytes, hiding them
 ; out(A) = 0
 ; out(B) = 0
-; out(HL) = $C8A0
+; out(HL) = oamBuf+$A0
 	ld b, $18
 	ld a, $00
 	ld hl, oamBuf + $88
 	jr ClearOAM.loop
 
 PrepareTileSet:: ; $0381
-; copy $1800 bytes (all tile graphics) from $4B75 to $8000
+; copy tile data to VRAM
 ; out(A) = 0
 ; out(BC) = 0
-; out(DE) = $8800
-; out(HL) = $5375
+; out(DE) = _VRAM+$800
+; out(HL) = tiles0_2bpp+$800
 	ld hl, tiles2_2bpp
-	ld de, $9000
+	ld de, _VRAM+$1000
 	ld bc, $0800
 .loop1::
 	ld a, [hl+]
@@ -261,7 +261,7 @@ PrepareTileSet:: ; $0381
 	jr nz, .loop1
 
 	ld hl, tiles1_2bpp
-	ld de, $8800
+	ld de, _VRAM+$0800
 	ld bc, $0800
 .loop2::
 	ld a, [hl+]
@@ -273,7 +273,7 @@ PrepareTileSet:: ; $0381
 	jr nz, .loop2
 
 	ld hl, tiles0_2bpp
-	ld de, $8000
+	ld de, _VRAM
 	ld bc, $0800
 .loop3::
 	ld a, [hl+]

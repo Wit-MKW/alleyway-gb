@@ -81,7 +81,7 @@ _IntSerial:: ; $0272
 PrepareSerial:: ; $0297
 ; prepare $01 byte to be sent to paddle
 ; out(A) = 1
-; out(HL) = -1
+; out(HL) = rIE
 	ld a, $01 ; SCF_SOURCE
 	ldh [rSB], a
 	ld hl, rIE

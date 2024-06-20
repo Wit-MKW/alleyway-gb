@@ -36,7 +36,7 @@ NicePlay:: ; $42B3
 	ds $A4, $00
 	db $01, $00, $00, $00, $FF
 
-Func43DC:: ; $43DC
+MarioStart:: ; $43DC
 	call MakeRacquetSprite
 	call PlayMusic.two
 	ldh a, [racquetX]
@@ -47,14 +47,14 @@ Func43DC:: ; $43DC
 	ld [marioY], a
 	ld a, $03
 	ld [marioFrameAlt], a
-.loop1::
+.run_loop::
 	call MarioRunStep
 	call DispCurrentMarioFrame
 	ld a, [marioX]
 	dec a
 	ld [marioX], a
-	cp 68
-	jr nz, .loop1
+	cp 60 + OAM_X_OFS
+	jr nz, .run_loop
 	ld a, $03
 	ld [marioFrame], a
 	call DispCurrentMarioFrame
@@ -65,13 +65,13 @@ Func43DC:: ; $43DC
 	xor a
 	ld [marioJumpCounter], a
 	ld [marioSpeedX], a
-.loop2::
+.jump_loop::
 	call DispCurrentMarioFrame
 	call MarioJump
 	ld a, [marioJumpCounter]
-	cp $18
-	jr c, .loop2
-.loop3::
+	cp 24
+	jr c, .jump_loop
+.fall_loop::
 	call DispCurrentMarioFrame
 	ld a, [marioY]
 	inc a
@@ -79,8 +79,8 @@ Func43DC:: ; $43DC
 	inc a
 	inc a
 	ld [marioY], a
-	cp $88
-	jr c, .loop3
+	cp 120 + OAM_Y_OFS
+	jr c, .fall_loop
 	call ClearLastSixObjs
 	ld a, 16
 	call DelayFrames
@@ -304,11 +304,11 @@ WinkFrames:: ; $45E6
 	db $0A
 .end:: ; $4603
 
-DispNicePlay:: ; $4603
+DispGameScreen:: ; $4603
 	call TurnOffLCD
 	call SaveIE
-	call FillMap0
-	call FillMap1
+	call FillNameTable0
+	call FillNameTable1
 	call ClearOAM
 	call StopAudio
 	ld a, 127

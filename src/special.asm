@@ -46,7 +46,7 @@ TimeUpMode:: ; $19C7
 	ldh [gameMode], a
 	ret
 
-Func19CC:: ; $19CC
+SpecialStart:: ; $19CC
 	call GetSpecialRules
 	ld a, [hl]
 	ld [specialTime], a
