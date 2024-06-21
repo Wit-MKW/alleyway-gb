@@ -301,7 +301,7 @@ audio2StereoCounter:: db ; $DFD3
 audio2StereoModulo:: db ; $DFD4
 audio2StereoTerm:: db ; $DFD5
 audio2StereoUnused:: db ; $DFD6
-audioPlaying11:: db ; $DFD7
+audioPlayingRacquetShrink:: db ; $DFD7
 audioCancelFlag:: db ; $DFD8
 ds align[3] ; $DFD9-$DFDF
 

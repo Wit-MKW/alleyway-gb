@@ -109,7 +109,7 @@ TitleScreen:: ; $0582
 	push af
 	call z, StartAudio
 	pop af
-	call z, PlayMusic.one
+	call z, PlayMusic.title
 	pop af
 	call nz, CancelAudio
 	ld a, $03
@@ -379,10 +379,10 @@ AwaitBall:: ; $0773
 	call DeployBall
 	call DispBounceSpeed
 	call DispNumLives
-	call PlaySound.seven
+	call PlaySound.deploy_ball
 	ldh a, [specialStage]
 	cp $00
-	call nz, PlayMusic.six
+	call nz, PlayMusic.special
 	ld a, gameMode_GAME_PLAYING
 	ldh [gameMode], a
 	ret
@@ -409,7 +409,7 @@ GamePlaying:: ; $07A4
 	cp $00
 	ret nz
 	call MakePauseSprite
-	call PlayMusic.four
+	call PlayMusic.pause
 	ld a, gameMode_PAUSE
 	ldh [gameMode], a
 	ret
@@ -466,7 +466,7 @@ NextStage:: ; $0805
 PlayStageEndMusic:: ; $0823
 ; play music after finishing a standard stage
 ; out(A) = 0
-	call PlayMusic.five
+	call PlayMusic.stage_end
 	ld a, 144
 	jp DelayFrames
 
@@ -499,7 +499,7 @@ DispNicePlay:: ; $0839
 	call DispNumLives
 	call DispBounceSpeed
 	call DispWindowStageNum
-	call PlayMusic.twelve
+	call PlayMusic.nice_play
 	call FadeIn
 rept HIGH(672)
 	ld a, $00
@@ -587,7 +587,7 @@ GameOver:: ; $08D1
 	ldh a, [ieBackup]
 	and ~IEF_STAT
 	ldh [ieBackup], a
-	call PlayMusic.three
+	call PlayMusic.game_over
 	call DispGameOver
 	call RestoreIE
 	call TurnOnLCD
@@ -613,7 +613,7 @@ PauseGame:: ; $0907
 	call DispScore
 	call DispBounceSpeed
 	call MakeLeftBorder
-	call PlayMusic.four
+	call PlayMusic.pause
 	ld a, gameMode_GAME_PLAYING
 	ldh [gameMode], a
 	ret

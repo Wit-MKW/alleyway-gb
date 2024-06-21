@@ -38,7 +38,7 @@ NicePlay:: ; $42B3
 
 MarioStart:: ; $43DC
 	call MakeRacquetSprite
-	call PlayMusic.two
+	call PlayMusic.mario_start
 	ldh a, [racquetX]
 	add a, 80
 	ld [marioX], a
@@ -58,7 +58,7 @@ MarioStart:: ; $43DC
 	ld a, $03
 	ld [marioFrame], a
 	call DispCurrentMarioFrame
-	call PlaySound.nine
+	call PlaySound.mario_start
 	call OpenRacquetDoor
 	ld a, $04
 	ld [marioFrame], a
@@ -91,7 +91,7 @@ MarioStart:: ; $43DC
 MarioEnd:: ; $444D
 	call RacquetEnd
 	call MakeRacquetSprite
-	call PlaySound.ten
+	call PlaySound.mario_end
 	call OpenRacquetDoor
 	ld a, 120 + OAM_Y_OFS
 	ld [marioY], a

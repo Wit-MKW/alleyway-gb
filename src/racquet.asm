@@ -144,7 +144,7 @@ BounceOffRacquet:: ; $1113
 	ld a, c
 	ldh [ballSpeedX+1], a
 	call CheckStageFall
-	jp PlaySound.four
+	jp PlaySound.bounce_racquet
 
 CheckStageFall:: ; $116D
 	ldh a, [stageFallTimer]

@@ -76,7 +76,7 @@ GiveBonus:: ; $0C71
 	jr nc, .skip_inc
 	inc a
 	ld [numLives], a
-	call PlaySound.one
+	call PlaySound.one_up
 .skip_inc::
 	call DispNumLives
 	; fallthrough

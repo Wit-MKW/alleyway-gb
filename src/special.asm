@@ -13,7 +13,7 @@ SpecialTimeTick:: ; $198C
 	call z, TimeUpMode
 	pop af
 	cp 20
-	call z, PlayMusic.seven
+	call z, PlayMusic.special_fast
 	; fallthrough
 
 DispSpecialTime:: ; $19A2
@@ -52,7 +52,7 @@ SpecialStart:: ; $19CC
 	ld [specialTime], a
 	call DispTimeLabel
 	call DispSpecialTime
-	call PlayMusic.eight
+	call PlayMusic.special_intro
 	ld a, 32
 	call DelayFrames
 	ret
@@ -78,11 +78,11 @@ GiveSpecialBonus:: ; $19F7
 	ldh a, [bricksLeft+1]
 	or b
 	jr z, .no_bricks
-	call PlayMusic.nine
+	call PlayMusic.special_end
 	ld a, 128
 	jp DelayFrames
 .no_bricks::
-	call PlayMusic.ten
+	call PlayMusic.special_bonus
 	ld a, 255
 	call DelayFrames
 	ld a, 64
@@ -129,7 +129,7 @@ endr
 	call UpdateHiScore
 	call GiveBonus
 	call DispScore
-	call PlaySound.eight
+	call PlaySound.special_bonus
 	call WaitVblank
 	pop bc
 	jr .loop
@@ -151,7 +151,7 @@ endr
 	call UpdateHiScore
 	call GiveBonus
 	call DispScore
-	call PlaySound.eight
+	call PlaySound.special_bonus
 	call WaitVblank
 	pop bc
 	ld a, b

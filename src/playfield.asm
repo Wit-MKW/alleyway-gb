@@ -532,7 +532,7 @@ StageFallStep:: ; $0BC7
 	ret z
 	dec a
 	ldh [stageFallMax], a
-	call PlayMusic.eleven
+	call PlayMusic.stage_fall
 	call SetStageScy
 	call CountLostBricks
 	ldh a, [stageFallMax]

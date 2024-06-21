@@ -48,7 +48,7 @@ DoBallPhysics:: ; $0CB0
 	ldh [gameMode], a
 	ret
 .hit_ceiling::
-	call PlaySound.twelve
+	call PlaySound.bounce_wall
 	ldh a, [specialStage]
 	cp $00
 	jr nz, .keep_racquet
@@ -62,7 +62,7 @@ DoBallPhysics:: ; $0CB0
 	ldh a, [racquetX]
 	add a, $04
 	ldh [racquetX], a
-	call PlaySound.eleven
+	call PlaySound.racquet_shrink
 .keep_racquet::
 	call BounceY
 .not_fell_through::
@@ -73,7 +73,7 @@ DoBallPhysics:: ; $0CB0
 	jp c, .no_bounce
 .bounce::
 	call BounceX
-	call PlaySound.twelve
+	call PlaySound.bounce_wall
 .no_bounce::
 	ldh a, [ballPosY]
 	sub 120 + OAM_Y_OFS
