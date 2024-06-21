@@ -120,7 +120,6 @@ RedrawStage:: ; $0997
 DrawStage:: ; $09BB
 ; draw the entire stage
 ; out(A) = 0
-; HANG if the stage has an odd number of rows
 	ld a, STAGE_ROWS_MAX-2
 	ldh [rowToDraw], a
 .loop::

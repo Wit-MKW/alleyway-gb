@@ -7,7 +7,7 @@ DmgMain:: ; $0511
 	call TurnOnAudio
 	call PrepareSerial
 	xor a
-	ldh [gameMode], a
+	ldh [gameMode], a ; gameMode_RESET_HISCORE
 	ldh [specialStage], a
 	ldh [scrollFlag], a
 .loop::
@@ -47,7 +47,7 @@ MainLoop:: ; $052B
 MainFuncList:: ; $054C
 	dw ResetHiScore, TitleScreenWithMusic, TitleScreen, DemoMode
 	dw StartGame, AwaitBall, GamePlaying, LostBall
-	dw NextStage, DispNicePlay, GiveSpecialBonus, GameOver
+	dw NextStage, DispNicePlay, FinishSpecialStage, GameOver
 	dw PauseGame, WaitVblank.end, WaitVblank.end, WaitVblank.end
 
 ResetHiScore:: ; $056C
@@ -451,7 +451,7 @@ NextStage:: ; $0805
 	push af
 	call z, PlayStageEndMusic
 	pop af
-	call nz, GiveSpecialBonus
+	call nz, FinishSpecialStage
 	call IncStageId
 	ld b, gameMode_START_GAME
 	ld a, [stageId]
@@ -516,7 +516,7 @@ rept HIGH(257)
 endr
 	ld a, LOW(257)
 	call DelayFrames
-	call DrawTryAgainText
+	call DispTryAgainText
 	ld a, 192
 	call DelayFrames
 	call EraseTryAgainText

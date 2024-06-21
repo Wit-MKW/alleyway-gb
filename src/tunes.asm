@@ -3,6 +3,8 @@ setcharmap DMG
 
 SECTION FRAGMENT "Main code", ROM0
 TurnOnAudio:: ; $6375
+; initialise audio hardware
+; out(A) = AUDTERM_4_LEFT|AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT|AUDTERM_4_RIGHT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT
 	ld a, AUDENA_ON
 	ldh [rAUDENA], a
 	ld a, $77
@@ -12,16 +14,25 @@ TurnOnAudio:: ; $6375
 	ret
 
 StartAudio:: ; $6382
+; allow new audio to play
+; out(A) = 1
 	xor a
 	ld [audioCancelFlag], a
 	ret
 
 CancelAudio:: ; $6387
+; keep currently-playing audio playing, but cancel any scheduled to play
+; out(A) = 1
 	ld a, $01
 	ld [audioCancelFlag], a
 	ret
 
 LoadBrickSound:: ; $638D
+; play the sound of hitting the brick with ID [tileToDraw]
+; out(A) = sound ID
+; out(BC) = ([tileToDraw]-1)*BrickTypes_SIZEOF
+; out(E) = 0
+; out(HL) = pointer to brick's sound
 	ldh a, [tileToDraw]
 	dec a
 	ld b, a
@@ -42,6 +53,9 @@ LoadBrickSound:: ; $638D
 	jr PlaySound.brick3
 
 PlaySound:: ; $63AE
+; (local labels are functions)
+; play the selected sound effect
+; out(A) = effect ID
 .one_up::
 	ld a, EFFECT_ONE_UP
 	jr .done
@@ -82,6 +96,8 @@ PlaySound:: ; $63AE
 	ret
 
 PlayNoise:: ; $63E0
+; play the noise of the ball falling out of play
+; out(A) = 1
 	ld a, $01
 	jr .but_why
 .but_why::
@@ -89,6 +105,9 @@ PlayNoise:: ; $63E0
 	ret
 
 PlayMusic:: ; $63E8
+; (local labels are functions)
+; play the selected music
+; out(A) = music ID
 .title::
 	ld a, MUSIC_TITLE
 	jr .done

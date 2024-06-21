@@ -33,7 +33,7 @@ DrawStripArray:: ; $02B7
 ; draw the strip array at in(DE)
 ; out(A) = 0
 ; out(B) = 0
-; out(DE) = (end of strip array)
+; out(DE) = end of strip array
 ; clobbers HL
 ; * strip array format:
 ; * - 2 bytes: big-endian output address
@@ -51,8 +51,8 @@ DrawStripArray:: ; $02B7
 DrawStrip:: ; $02C7
 ; draw the strip tile-data at in(DE) with size specified by in(A) to in(HL)
 ; out(B) = 0
-; out(DE) = (end of tile-data)
-; out(HL) = (end of output)
+; out(DE) = end of tile-data
+; out(HL) = end of output
 ; clobbers A
 ; * see DrawStripArray.start for size specification
 	push af
@@ -108,7 +108,7 @@ DrawStrip:: ; $02C7
 
 DrawGfxArray:: ; $0302
 ; draw the gfx array at an immediate address after the call
-; out(HL) = (end of gfx array)
+; out(HL) = end of gfx array
 ; clobbers DE
 ; * gfx array format:
 ; * - 2 bytes: big-endian output address
@@ -194,7 +194,7 @@ DrawGfxArray:: ; $0302
 	ret
 
 FillNameTable0:: ; $0358
-; fill first nametable with " "
+; fill first nametable with blank tiles
 ; out(A) = 0
 ; out(BC) = 0
 ; out(HL) = _SCRN0 + SCRN_VX_B*SCRN_VY_B
@@ -202,7 +202,7 @@ FillNameTable0:: ; $0358
 	jr FillNameTable1.start
 
 FillNameTable1:: ; $035D
-; fill second nametable with " "
+; fill second nametable with blank tiles
 ; out(A) = 0
 ; out(BC) = 0
 ; out(HL) = _SCRN1 + SCRN_VX_B*SCRN_VY_B
@@ -222,8 +222,8 @@ ClearOAM:: ; $036C
 ; fill the OAM buffer with zero-bytes, hiding all objects
 ; out(A) = 0
 ; out(B) = 0
-; out(HL) = oamBuf+$A0
-	ld b, $A0
+; out(HL) = oamBuf + OAM_COUNT*sizeof_OAM_ATTRS
+	ld b, OAM_COUNT*sizeof_OAM_ATTRS
 	ld a, $00
 	ld hl, oamBuf
 .loop::
@@ -236,8 +236,8 @@ ClearLastSixObjs:: ; $0378
 ; fill the last six objects in the OAM buffer with zero-bytes, hiding them
 ; out(A) = 0
 ; out(B) = 0
-; out(HL) = oamBuf+$A0
-	ld b, $18
+; out(HL) = oamBuf + 40*sizeof_OAM_ATTRS
+	ld b, 6*sizeof_OAM_ATTRS
 	ld a, $00
 	ld hl, oamBuf + 34*sizeof_OAM_ATTRS
 	jr ClearOAM.loop

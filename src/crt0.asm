@@ -7,56 +7,56 @@ RST0::
 
 SECTION "RST1", ROM0[$0008]
 RST1::
-; HANG always
+; HANG
 	rst RST7
 
 SECTION "RST2", ROM0[$0010]
 RST2::
-; HANG always
+; HANG
 	rst RST7
 
 SECTION "RST3", ROM0[$0018]
 RST3::
-; HANG always
+; HANG
 	rst RST7
 
 SECTION "RST4", ROM0[$0020]
 RST4::
-; HANG always
+; HANG
 	rst RST7
 
 SECTION "RST5", ROM0[$0028]
 RST5::
-; HANG always
+; HANG
 	rst RST7
 
 SECTION "RST6", ROM0[$0030]
 RST6::
-; HANG always
+; HANG
 	rst RST7
 
 SECTION "RST7", ROM0[$0038]
 RST7::
-; HANG always
+; HANG
 	rst RST7
 
-SECTION "IntVblank", ROM0[$0040]
+SECTION "IntVblank", ROM0[INT_HANDLER_VBLANK]
 IntVblank::
 	jp _IntVblank
 
-SECTION "IntStat", ROM0[$0048]
+SECTION "IntStat", ROM0[INT_HANDLER_STAT]
 IntStat::
 	jp _IntStat
 
-SECTION "IntTimer", ROM0[$0050]
+SECTION "IntTimer", ROM0[INT_HANDLER_TIMER]
 IntTimer::
 	jp _IntTimer
 
-SECTION "IntSerial", ROM0[$0058]
+SECTION "IntSerial", ROM0[INT_HANDLER_SERIAL]
 IntSerial::
 	jp _IntSerial
 
-SECTION "IntJoypad", ROM0[$0060]
+SECTION "IntJoypad", ROM0[INT_HANDLER_JOYPAD]
 IntJoypad::
 	reti
 
@@ -206,7 +206,7 @@ Entry:: ; $0150
 	xor a
 	ldh [scxTmp], a
 	ldh [scyTmp], a
-	ldh [gameMode], a
+	ldh [gameMode], a ; gameMode_RESET_HISCORE
 	ldh [specialStage], a
 	ldh [scrollFlag], a
 ; turn on LCD

@@ -49,7 +49,7 @@ def gameMode_GAME_PLAYING rb
 def gameMode_LOST_BALL rb
 def gameMode_NEXT_STAGE rb
 def gameMode_NICE_PLAY rb
-def gameMode_SPECIAL_BONUS rb
+def gameMode_FINISH_SPECIAL rb
 def gameMode_GAME_OVER rb
 def gameMode_PAUSE rb
 

@@ -28,14 +28,14 @@ MoveRacquet:: ; $10A4
 	jr z, .right
 	ldh a, [racquetX]
 	sub b
-	cp 15
+	cp 7 + OAM_X_OFS
 	jr nc, .left
-	ld a, 15
+	ld a, 7 + OAM_X_OFS
 	jr .left
 .right::
 	ldh a, [racquetWidth]
 	ld c, a
-	ld a, 127
+	ld a, 119 + OAM_X_OFS
 	sub c
 	ld c, a
 	ldh a, [racquetX]
@@ -49,17 +49,17 @@ MoveRacquet:: ; $10A4
 .paddle::
 	ldh a, [racquetWidth]
 	ld b, a
-	ld a, 127
+	ld a, 119 + OAM_X_OFS
 	sub b
 	ld b, a
 	ldh a, [paddleAngle]
 	sub $30
 	jr c, .min
 .check::
-	cp 15
+	cp 7 + OAM_X_OFS
 	jr nc, .max
 .min::
-	ld a, 15
+	ld a, 7 + OAM_X_OFS
 	jr .done
 .max::
 	cp b

@@ -3,6 +3,13 @@ setcharmap DMG
 
 SECTION FRAGMENT "Main code", ROM0
 SpecialTimeTick:: ; $198C
+; tick the special timer if appropriate, play faster music if it hits 20, then display it
+; if timer updated:
+;   out(A) = OAMF_PAL0|OAMF_BANK0
+;   out(B) = floor([specialTime] / 10) mod 10
+;   out(C) = [specialTime] mod 10
+;   out(HL) = oamBuf + 34*sizeof_OAM_ATTRS
+; otherwise: out(A) = [frameCount] mod 32
 	ldh a, [frameCount]
 	and $1F
 	ret nz
@@ -17,6 +24,11 @@ SpecialTimeTick:: ; $198C
 	; fallthrough
 
 DispSpecialTime:: ; $19A2
+; display the special timer
+; out(A) = OAMF_PAL0|OAMF_BANK0
+; out(B) = floor([specialTime] / 10) mod 10
+; out(C) = [specialTime] mod 10
+; out(HL) = oamBuf + 34*sizeof_OAM_ATTRS
 	ld hl, oamBuf + 32*sizeof_OAM_ATTRS
 	ld a, [specialTime]
 	call ToDecimalA
@@ -42,11 +54,19 @@ DispSpecialTime:: ; $19A2
 	ret
 
 TimeUpMode:: ; $19C7
+; time's up!
+; out(A) = gameMode_LOST_BALL
 	ld a, gameMode_LOST_BALL
 	ldh [gameMode], a
 	ret
 
 SpecialStart:: ; $19CC
+; begin a special stage
+; out(A) = 0
+; out(B) = floor([specialTime] / 10) mod 10
+; out(C) = [specialTime] mod 10
+; out(E) = 0
+; out(HL) = oamBuf + 34*sizeof_OAM_ATTRS
 	call GetSpecialRules
 	ld a, [hl]
 	ld [specialTime], a
@@ -58,6 +78,11 @@ SpecialStart:: ; $19CC
 	ret
 
 GetSpecialRules:: ; $19E2
+; get the rules for the current special stage
+; out(A) = min([specialNum] - 1, 3)
+; out(BC) = out(A) * SpecialRules_SIZEOF
+; out(E) = 0
+; out(HL) = pointer to rules
 	ld a, [specialNum]
 	dec a
 	cp $03
@@ -71,7 +96,15 @@ GetSpecialRules:: ; $19E2
 	add hl, bc
 	ret
 
-GiveSpecialBonus:: ; $19F7
+FinishSpecialStage:: ; $19F7
+; finish a special stage
+; out(A) = 0
+; if all bricks were destroyed:
+;   out(BC) = 0
+;   out(D) = HIGH(mainStripArray)
+;   out(E) = 0
+;   out(HL) = final score
+; otherwise: out(B) = [bricksLeft]
 	call StopAudio
 	ldh a, [bricksLeft]
 	ld b, a
@@ -160,6 +193,11 @@ endr
 	ret
 
 DispSpecialBonusText:: ; $1A97
+; display the text "SPECIAL BONUS"
+; out(A) = 1
+; out(B) = 0
+; out(DE) = mainStripArray + (SpecialBonusText.end - SpecialBonusText)
+; out(HL) = SpecialBonusText.end
 	call WaitToDraw
 	ld hl, SpecialBonusText
 	ld de, mainStripArray
@@ -181,6 +219,11 @@ SpecialBonusText:: ; $1AAF
 .end:: ; $1AC6
 
 EraseSpecialBonusText:: ; $1AC6
+; erase what was displayed by DispSpecialBonusText
+; out(A) = 1
+; out(B) = 0
+; out(DE) = mainStripArray + (BlankSpecialBonusText.end - BlankSpecialBonusText)
+; out(HL) = BlankSpecialBonusText.end
 	call WaitToDraw
 	ld hl, BlankSpecialBonusText
 	ld de, mainStripArray
@@ -201,7 +244,12 @@ BlankSpecialBonusText:: ; $1ADE
 	db $00
 .end:: ; $1AF5
 
-DrawTryAgainText:: ; $1AF5
+DispTryAgainText:: ; $1AF5
+; display the text "TRY AGAIN!" under the "NICE PLAY!" graphic
+; out(A) = 1
+; out(B) = 0
+; out(DE) = mainStripArray + (TryAgainText.end - TryAgainText)
+; out(HL) = TryAgainText.end
 	call WaitToDraw
 	ld hl, TryAgainText
 	ld de, mainStripArray
@@ -222,6 +270,11 @@ TryAgainText:: ; $1B0D
 .end:: ; $1B1B
 
 EraseTryAgainText:: ; $1B1B
+; erase what was displayed by DispTryAgainText
+; out(A) = 1
+; out(B) = 0
+; out(DE) = mainStripArray + (BlankTryAgainText.end - BlankTryAgainText)
+; out(HL) = BlankTryAgainText.end
 	call WaitToDraw
 	ld hl, BlankTryAgainText
 	ld de, mainStripArray

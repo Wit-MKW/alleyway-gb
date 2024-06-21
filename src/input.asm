@@ -6,13 +6,13 @@ GetInput:: ; $03C1
 ; write current input data to HRAM
 ; out(B) = 0
 ; clobbers A and C (same value)
-; * [buttonsDown] bit clear: button pressed
+; * [buttonsDown] bit clear: button depressed
 ; * [buttonsPressed] bit clear: button pressed anew
 ; * [buttonsUp] bit clear: button not pressed
-; * bit 7: dpad down
-; * bit 6: dpad up
-; * bit 5: dpad left
-; * bit 4: dpad right
+; * bit 7: DOWN
+; * bit 6: UP
+; * bit 5: LEFT
+; * bit 4: RIGHT
 ; * bit 3: START
 ; * bit 2: SELECT
 ; * bit 1: B
@@ -51,7 +51,6 @@ endr
 	ld a, c
 	ldh [buttonsUp], a
 	ret
-
 .pressed_before::
 	rrca
 	jr c, .released

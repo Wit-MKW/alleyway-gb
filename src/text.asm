@@ -37,6 +37,12 @@ NicePlay:: ; $42B3
 	db $01, $00, $00, $00, $FF
 
 MarioStart:: ; $43DC
+; show Mario jumping into the racquet
+; out(A) = OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
+; out(BC) = 0
+; out(D) = HIGH(end of data for Mario frame 4)
+; out(E) = 0
+; out(HL) = oamBuf + 3*sizeof_OAM_ATTRS
 	call MakeRacquetSprite
 	call PlayMusic.mario_start
 	ldh a, [racquetX]
@@ -89,6 +95,12 @@ MarioStart:: ; $43DC
 	ret
 
 MarioEnd:: ; $444D
+; show Mario jumping out of the racquet
+; out(A) = 0
+; out(B) = 0
+; out(C) = [marioY]
+; out(DE) = end of Mario frame data
+; out(HL) = oamBuf + 40*sizeof_OAM_ATTRS
 	call RacquetEnd
 	call MakeRacquetSprite
 	call PlaySound.mario_end
@@ -100,7 +112,7 @@ MarioEnd:: ; $444D
 	ld [marioX], a
 	ld b, $00
 	ld c, $05
-	cp 76
+	cp 68 + OAM_X_OFS
 	jr nc, .right
 	ld b, $01
 	ld c, $06
@@ -133,6 +145,9 @@ MarioEnd:: ; $444D
 	ret
 
 MarioRunStep:: ; $44A4
+; advance Mario's running animation
+; if frame changed: out(A) = [marioFrameAlt] = 5
+; otherwise: out(A) = --[marioFrameAlt]
 	ld a, [marioFrameAlt]
 	dec a
 	ld [marioFrameAlt], a
@@ -149,6 +164,13 @@ MarioRunStep:: ; $44A4
 	ret
 
 DispCurrentMarioFrame:: ; $44BE
+; display the Mario frame with ID [marioFrame]
+; out(A) = 0
+; out(B) = [marioX]
+; out(C) = [marioY]
+; out(DE) = end of frame data
+; out(HL) = oamBuf + 38*sizeof_OAM_ATTRS
+; * base coordinates: OAMA_Y = out(C), OAMA_X = out(B)
 	ld a, [marioX]
 	ld b, a
 	ld a, [marioY]
@@ -158,6 +180,11 @@ DispCurrentMarioFrame:: ; $44BE
 	jp WaitVblank
 
 MarioJump:: ; $44CF
+; advance Mario's jumping motion by one frame
+; out(A) = Mario's OAMA_X coordinate
+; out(B) = distance Mario moved horizontally
+; out(C) = [marioJumpCounter]++
+; out(HL) = pointer to distance Mario moved vertically
 	ld a, [marioJumpCounter]
 	ld c, a
 	inc a
@@ -184,6 +211,11 @@ MarioSpeedY:: ; $44F5
 	db  0,  1,  0,  1,  1,  1,  2,  2,  2,  3,  3,  3
 
 OpenRacquetDoor:: ; $450D
+; show the door into the racquet opening
+; out(A) = 3
+; out(BC) = 0
+; out(E) = 0
+; out(HL) = pointer to last tile ID
 	call MakeRacquetSprite
 	xor a
 .loop::
@@ -198,6 +230,11 @@ OpenRacquetDoor:: ; $450D
 	ret
 
 CloseRacquetDoor:: ; $4521
+; show the door into the racquet closing
+; out(A) = -1
+; out(BC) = 0
+; out(E) = 0
+; out(HL) = pointer to last tile ID
 	ld a, $02
 .loop::
 	push af
@@ -211,6 +248,15 @@ CloseRacquetDoor:: ; $4521
 	ret
 
 SetRacquetTiles:: ; $4533
+; change the tiles that form the racquet
+; out(A) = last tile ID
+; out(B) = 0
+; out(C) = in(A)
+; out(E) = 0
+; out(HL) = pointer to last tile ID
+; * in(A) = 0:  2 pixels open
+; * in(A) = 1:  8 pixels open
+; * in(A) = 2: 16 pixels open
 	ld b, $00
 	ld c, a
 	ld hl, RacquetFrames
@@ -237,11 +283,17 @@ RacquetTiles:: ; $4554
 	db $02, $03, $02
 
 DispSmoke:: ; $455D
+; display smoke at the bottom of the screen in line with the ball
+; out(A) = 0
+; out(B) = 0
+; out(C) = 128 + OAM_Y_OFS
+; out(DE) = end of data for last frame
+; out(HL) = oamBuf + 40*sizeof_OAM_ATTRS
 	call PlayNoise
 	ldh a, [ballPosX]
 	sub $08
 	ld [marioX], a
-	ld a, 144
+	ld a, 128 + OAM_Y_OFS
 	ld [marioY], a
 	xor a
 	ld [marioFrameAlt], a
@@ -274,12 +326,18 @@ SmokeFrames:: ; $4599
 .end:: ; $45BD
 
 MarioWink:: ; $45BD
+; show Mario winking on the "NICE PLAY!" screen
+; out(A) = 0
+; out(B) = 0
+; out(C) = 56 + OAM_Y_OFS
+; out(DE) = end of data for last frame
+; out(HL) = oamBuf + 40*sizeof_OAM_ATTRS
 	xor a
 	ld [marioFrameAlt], a
 .loop::
 	push bc
-	ld b, $38
-	ld c, $48
+	ld b, 48 + OAM_X_OFS
+	ld c, 56 + OAM_Y_OFS
 	ld a, [marioFrameAlt]
 	ld d, $00
 	ld e, a
@@ -305,6 +363,12 @@ WinkFrames:: ; $45E6
 .end:: ; $4603
 
 DispGameScreen:: ; $4603
+; setup the game screen
+; out(A) = [lcdcTmp] |= LCDCF_ON
+; out(BC) = 0
+; out(D) = 0
+; out(E) = 8*SCRN_Y_B + OAM_Y_OFS
+; out(HL) = oamBuf + (14+SCRN_Y_B)*sizeof_OAM_ATTRS
 	call TurnOffLCD
 	call SaveIE
 	call FillNameTable0
@@ -319,6 +383,7 @@ DispGameScreen:: ; $4603
 	or LCDCF_WIN9C00|LCDCF_WINON
 	ldh [lcdcTmp], a
 	xor a
+; BUG: operands switched.
 	ldh a, [stageRowDrawing]
 	ld a, $08
 	ldh [rLYC], a
@@ -333,7 +398,7 @@ DispGameScreen:: ; $4603
 	ld de, GameScreen
 	call DrawStripArray.start
 	ldh a, [gameMode]
-	cp $03
+	cp gameMode_DEMO
 	jr z, .not_finished
 	ld a, [stageNum]
 	cp $00
@@ -351,6 +416,10 @@ DispGameScreen:: ; $4603
 	jp TurnOnLCD
 
 MakeStageNumSprite:: ; $4669
+; make sprites for the stage number in the playfield
+; out(A) = ([stageNum] mod 10) + "0"
+; out(B) = floor([stageNum] / 10) mod 10
+; out(C) = floor([stageNum] / 100)
 	ld a, 96 + OAM_Y_OFS
 	ld [oamBuf + OAMA_Y + 32*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_Y + 33*sizeof_OAM_ATTRS], a
@@ -409,6 +478,8 @@ MakeStageNumSprite:: ; $4669
 	ret
 
 MakeBonusSprite:: ; $46F7
+; make sprites for the word "BONUS"
+; out(A) = "S"
 	ld a, 96 + OAM_Y_OFS
 	ld [oamBuf + OAMA_Y + 32*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_Y + 33*sizeof_OAM_ATTRS], a
@@ -446,6 +517,8 @@ MakeBonusSprite:: ; $46F7
 	ret
 
 MakePauseSprite:: ; $474C
+; make sprites for the text "PAUSE"
+; out(A) = "E"
 	ld a, 96 + OAM_Y_OFS
 	ld [oamBuf + OAMA_Y + 32*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_Y + 33*sizeof_OAM_ATTRS], a
@@ -482,6 +555,9 @@ MakePauseSprite:: ; $474C
 	ret
 
 DispWindowStageNum:: ; $47A1
+; display the stage number in the window
+; out(A) = 1
+; out(HL) = mainStripArray + 6
 	call WaitToDraw
 	ld hl, mainStripArray
 	ld a, $9D
@@ -506,6 +582,9 @@ DispWindowStageNum:: ; $47A1
 	jp WaitVblank
 
 DispNumLives:: ; $47C7
+; display the player's number of lives
+; out(A) = 1
+; out(HL) = mainStripArray + 5
 	call WaitToDraw
 	ld hl, mainStripArray
 	ld a, $9E
@@ -524,6 +603,9 @@ DispNumLives:: ; $47C7
 	jp WaitVblank
 
 DispTimeLabel:: ; $47E4
+; display the label "TIME"
+; out(A) = 1
+; out(HL) = mainStripArray + 8
 	call WaitToDraw
 	ld hl, mainStripArray
 	ld a, $9D
@@ -548,6 +630,9 @@ DispTimeLabel:: ; $47E4
 	jp WaitVblank
 
 EraseTimeLabel:: ; $4807
+; erase what was displayed by DispTimeLabel
+; out(A) = 1
+; out(HL) = mainStripArray + 8
 	call WaitToDraw
 	ld hl, mainStripArray
 	ld a, $9D
@@ -564,6 +649,10 @@ EraseTimeLabel:: ; $4807
 	jr DispTimeLabel.end
 
 DispScore:: ; $481E
+; display the score & high score on the game screen
+; out(A) = OAMF_PAL0|OAMF_BANK0
+; out(B) = tile ID for ten-thousand-point icon (high score)
+; out(HL) = oamBuf + 15*sizeof_OAM_ATTRS
 	ld hl, oamBuf + 5*sizeof_OAM_ATTRS
 	ldh a, [score]
 	ld b, a
@@ -688,6 +777,10 @@ DispScore:: ; $481E
 	ret
 
 DispHiScore:: ; $48E4
+; display the high score on the title screen
+; out(A) = OAMF_PAL0|OAMF_BANK0
+; out(B) = tile ID for ten-thousand-point icon
+; out(HL) = oamBuf + 15*sizeof_OAM_ATTRS
 	ldh a, [hiScore]
 	ld b, a
 	ldh a, [hiScore+1]
@@ -752,6 +845,10 @@ DispHiScore:: ; $48E4
 	ret
 
 DispSpecialBonus:: ; $4949
+; display BC to the left to SpecialBonusText's "PTS." unit
+; out(A) = OAMF_PAL0|OAMF_BANK0
+; out(B) = floor(in(BC) / 10) mod 10
+; out(HL) = oamBuf + 38*sizeof_OAM_ATTRS
 	ld hl, oamBuf + 34*sizeof_OAM_ATTRS
 	ld a, b
 	ld b, c
@@ -795,6 +892,8 @@ DispSpecialBonus:: ; $4949
 	ret
 
 DispGameOver:: ; $498A
+; make sprites for the text "GAME OVER"
+; out(A) = "R"
 	ld a, 64 + OAM_Y_OFS
 	ld [oamBuf + OAMA_Y], a
 	ld [oamBuf + OAMA_Y + sizeof_OAM_ATTRS], a
@@ -848,6 +947,11 @@ DispGameOver:: ; $498A
 	ret
 
 MakeLeftBorder:: ; $4A0F
+; make sprites for the left-hand border of the playfield
+; out(A) = 8*SCRN_Y_B + OAM_Y_OFS
+; out(D) = 0
+; out(E) = out(A)
+; out(HL) = oamBuf + (14+SCRN_Y_B)*sizeof_OAM_ATTRS
 	ld hl, oamBuf + 15*sizeof_OAM_ATTRS
 	ld e, 8 + OAM_Y_OFS
 	ld d, SCRN_Y_B - 1
@@ -868,8 +972,11 @@ MakeLeftBorder:: ; $4A0F
 	ret
 
 DispBounceSpeed:: ; $4A29
-	ret
 ; dummied out
+	ret
+; display [bounceSpeed] in the bottom-left of the playfield
+; out(A) = OAMF_PAL0|OAMF_BANK0
+; out(HL) = oamBuf + 5*sizeof_OAM_ATTRS
 	ld hl, oamBuf + 4*sizeof_OAM_ATTRS
 	ld a, 136 + OAM_Y_OFS
 	ld [hl+], a
@@ -894,6 +1001,11 @@ GameScreen:: ; $4A3C
 	db $00
 
 DispMarioFrame:: ; $4A66
+; display the Mario frame with ID in(A)
+; out(A) = 0
+; out(DE) = end of frame data
+; out(HL) = oamBuf + 38*sizeof_OAM_ATTRS
+; * base coordinates: OAMA_Y = C, OAMA_X = B
 	sla a
 	ld e, a
 	ld d, $00
@@ -930,7 +1042,7 @@ for i, 13
 	be MarioFrame{d:i}
 endr
 
-; jump in & out of racquet
+; jump into racquet
 MarioFrame0:: ; $4AA5
 	db 0, 0, $06, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $07, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
@@ -956,11 +1068,15 @@ MarioFrame4:: ; $4AE5
 	db 0, 8, $17, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $18, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $19, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
+
+; jump out of racquet to the right
 MarioFrame5:: ; $4AF5
 	db 0, 0, $1A, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $17, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $18, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $19, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
+
+; jump out of racquet to the left
 MarioFrame6:: ; $4B05
 	db 0, 0, $17, OAMF_PRI|OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $1A, OAMF_PRI|OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
