@@ -143,7 +143,8 @@ ToDecimalAB:: ; $048F
 	ret
 
 RandomNumber:: ; $0505
-; BUG: RNG is pathetic, especially when since upper two bits are always ignored.
+; out(A) = [random] += (64 + 1)
+; BUG: RNG is pathetic, especially since the upper two bits are always ignored.
 	ld b, $05
 	ldh a, [random]
 .loop::

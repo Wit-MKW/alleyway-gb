@@ -10,12 +10,12 @@ UpdateScore:: ; $0C32
 ; clobbers A
 	dec a
 	ld b, a
-	ld e, $06
+	ld e, BrickTypes_SIZEOF
 	call MultiplyBxE
 	ld hl, BrickTypes
 	add hl, bc
-	ld b, $00
-	ld c, $03
+	ld b, HIGH(BrickTypes_POINTS)
+	ld c, LOW(BrickTypes_POINTS)
 	add hl, bc
 	ld a, [hl]
 	swap a

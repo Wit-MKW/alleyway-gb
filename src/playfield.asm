@@ -3,8 +3,14 @@ setcharmap DMG
 
 SECTION FRAGMENT "Main code", ROM0
 SetupStage:: ; $092A
+; load the stage with ID in(A) into WRAM
+; out(A) = max(out(B) - STAGE_ROWS_ONSCREEN, 0)
+; out(B) = stage height
+; out(C) = 0
+; out(DE) = (end of input stage data)
+; out(HL) = (end of output stage data)
 	ld b, a
-	ld e, $03
+	ld e, StagePointers_SIZEOF
 	call MultiplyBxE
 	ld hl, StagePointers
 	add hl, bc
@@ -19,7 +25,7 @@ SetupStage:: ; $092A
 	ld hl, stage
 	ld b, $00
 .bigloop::
-	ld c, $0E
+	ld c, STAGE_COLUMNS
 .loop::
 	push bc
 	push de
@@ -31,12 +37,12 @@ SetupStage:: ; $092A
 	push hl
 	dec a
 	ld b, a
-	ld e, $06
+	ld e, BrickTypes_SIZEOF
 	call MultiplyBxE
 	ld hl, BrickTypes
 	add hl, bc
-	ld b, $00
-	ld c, $03
+	ld b, HIGH(BrickTypes_POINTS)
+	ld c, LOW(BrickTypes_POINTS)
 	add hl, bc
 	ld a, [hl]
 	and $0F
@@ -58,7 +64,7 @@ SetupStage:: ; $092A
 	jr nz, .bigloop
 	ld a, b
 	ldh [stageHeight], a
-	sub 20
+	sub STAGE_ROWS_ONSCREEN
 	jr nc, .stage_fall
 	xor a
 .stage_fall::
@@ -66,9 +72,14 @@ SetupStage:: ; $092A
 	ret
 
 ClearStage:: ; $0983
+; erase stage data from HRAM
+; out(A) = 0
+; out(BC) = 0
+; out(DE) = hitsLeft + STAGE_ROWS_MAX*STAGE_COLUMNS
+; out(HL) = stage + STAGE_ROWS_MAX*STAGE_COLUMNS
 	ld hl, stage
 	ld de, hitsLeft
-	ld bc, $0348
+	ld bc, STAGE_ROWS_MAX*STAGE_COLUMNS
 .loop::
 	ld a, $00
 	ld [hl+], a
@@ -81,11 +92,13 @@ ClearStage:: ; $0983
 	ret
 
 RedrawStage:: ; $0997
+; draw the region of the stage that is currently on-screen
+; clobbers A
 	ldh a, [stageHeight]
 	dec a
 	dec a
 	ldh [rowToDraw], a
-	ld a, 10
+	ld a, STAGE_ROWS_ONSCREEN/2
 .loop::
 	push af
 	call DrawStageRow
@@ -105,7 +118,10 @@ RedrawStage:: ; $0997
 	jp DrawStageRow
 
 DrawStage:: ; $09BB
-	ld a, $3A
+; draw the entire stage
+; out(A) = 0
+; HANG if the stage has an odd number of rows
+	ld a, STAGE_ROWS_MAX-2
 	ldh [rowToDraw], a
 .loop::
 	call DrawStageRow
@@ -119,9 +135,14 @@ DrawStage:: ; $09BB
 	jr .loop
 
 CountBricks:: ; $09D0
+; count up the stage's breakable bricks
+; out(A) = out(E)
+; out(BC) = 0
+; out(DE) = be[bricksLeft] = final count
+; out(HL) = stage + STAGE_ROWS_MAX*STAGE_COLUMNS
 	ld hl, stage
 	ld de, $0000
-	ld bc, $0348
+	ld bc, STAGE_ROWS_MAX*STAGE_COLUMNS
 .loop::
 	push bc
 	push hl
@@ -149,6 +170,11 @@ CountBricks:: ; $09D0
 	ret
 
 DrawTile:: ; $09F9
+; draw a single tile (a vertical pair of bricks)
+; out(A) = 1
+; out(E) = 0
+; out(HL) = mainStripArray + 9
+; clobbers BC
 	call WaitToDraw
 	ldh a, [rowToDraw]
 	srl a
@@ -166,7 +192,7 @@ DrawTile:: ; $09F9
 	ldh a, [rowToDraw]
 	srl a
 	ld b, a
-	ld e, $1C
+	ld e, STAGE_COLUMNS*2
 	call MultiplyBxE
 	ldh a, [colToDraw]
 	ld l, a
@@ -187,7 +213,7 @@ DrawTile:: ; $09F9
 	push af
 .no_top::
 	ld b, $00
-	ld c, $0E
+	ld c, STAGE_COLUMNS
 	add hl, bc
 	ld a, [hl]
 	cp $00
@@ -205,12 +231,12 @@ DrawTile:: ; $09F9
 	ldh a, [tileToDraw]
 	dec a
 	ld b, a
-	ld e, $06
+	ld e, BrickTypes_SIZEOF
 	call MultiplyBxE
 	ld hl, BrickTypes
 	add hl, bc
 	pop af
-	ld b, $00
+	ld b, HIGH(BrickTypes_TILES)
 	ld c, a
 	add hl, bc
 	ld a, [hl]
@@ -220,13 +246,13 @@ DrawTile:: ; $09F9
 	ld b, a
 	ldh a, [vramOffset+1]
 	ld c, a
-	ld hl, $9821
+	ld hl, _SCRN0+SCRN_VX_B+1
 	add hl, bc
 	ld b, h
 	ld c, l
 	push bc
 	ld b, $00
-	ld c, $0E
+	ld c, STAGE_COLUMNS
 	add hl, bc
 	ld b, h
 	ld c, l
@@ -255,13 +281,18 @@ DrawTile:: ; $09F9
 	ret
 
 DrawStageRow:: ; $0A96
+; draw a row of tiles (two adjacent rows of bricks)
+; out(A) = 1
+; out(BC) = mainStripArray + 3 + STAGE_COLUMNS*2
+; out(DE) = mainStripArray + 3 + STAGE_COLUMNS
+; out(HL) = bottom-left brick of row in (stage)
 	call WaitToDraw
 	ldh a, [rowToDraw]
 	srl a
 	ld b, a
-	ld e, $20
+	ld e, SCRN_VX_B
 	call MultiplyBxE
-	ld hl, $9821
+	ld hl, _SCRN0+SCRN_VX_B+1
 	add hl, bc
 	ld b, h
 	ld c, l
@@ -270,17 +301,17 @@ DrawStageRow:: ; $0A96
 	ld [hl+], a
 	ld a, c
 	ld [hl+], a
-	ld a, $1C
+	ld a, STAGE_COLUMNS*2
 	ld [hl], a
 	ldh a, [rowToDraw]
 	srl a
 	ld b, a
-	ld e, $1C
+	ld e, STAGE_COLUMNS*2
 	call MultiplyBxE
 	ld hl, stage
 	add hl, bc
 	ld de, mainStripArray + $03
-	ld a, $0E
+	ld a, STAGE_COLUMNS
 .loop::
 	push af
 	push hl
@@ -298,7 +329,7 @@ DrawStageRow:: ; $0A96
 	push af
 .no_top::
 	ld b, $00
-	ld c, $0E
+	ld c, STAGE_COLUMNS
 	add hl, bc
 	ld a, [hl]
 	cp $00
@@ -316,12 +347,12 @@ DrawStageRow:: ; $0A96
 	ldh a, [tileToDraw]
 	dec a
 	ld b, a
-	ld e, $06
+	ld e, BrickTypes_SIZEOF
 	call MultiplyBxE
 	ld hl, BrickTypes
 	add hl, bc
 	pop af
-	ld b, $00
+	ld b, HIGH(BrickTypes_TILES)
 	ld c, a
 	add hl, bc
 	ld a, [hl]
@@ -332,7 +363,7 @@ DrawStageRow:: ; $0A96
 	ld [de], a
 	ld b, d
 	ld c, e
-	ld hl, 14
+	ld hl, STAGE_COLUMNS
 	add hl, bc
 	ld [hl+], a
 	ld b, h
@@ -350,6 +381,13 @@ DrawStageRow:: ; $0A96
 	ret
 
 UpdateScroll:: ; $0B21
+; update scroll counters, and offsets if appropriate
+; if the stage is a scroller:
+;   out(A) = STAGE_ROWS_ONSCREEN
+;   out(BC) = scrollCounters + STAGE_ROWS_ONSCREEN
+;   out(DE) = scrollModulo + STAGE_ROWS_ONSCREEN
+;   out(HL) = scrollOffsets + STAGE_ROWS_ONSCREEN
+; otherwise: out(A) = 0
 	ldh a, [scrollFlag]
 	cp $00
 	ret z
@@ -379,7 +417,7 @@ UpdateScroll:: ; $0B21
 	inc bc
 	pop af
 	inc a
-	cp $14
+	cp STAGE_ROWS_ONSCREEN
 	jr c, .loop
 	ret
 
@@ -388,10 +426,10 @@ IncMod112:: ; $0B53
 ; clobbers A
 	ld a, [hl]
 	inc a
-	cp $70
-	jr c, .skip_zero
+	cp STAGE_COLUMNS*8
+	jr c, .ok
 	ld a, $00
-.skip_zero::
+.ok::
 	ld [hl], a
 	ret
 
@@ -400,10 +438,10 @@ DecMod112:: ; $0B5D
 ; clobbers A
 	ld a, [hl]
 	dec a
-	cp $FF
-	jr nz, .skip_6f
-	ld a, $6F
-.skip_6f::
+	cp -1
+	jr nz, .ok
+	ld a, STAGE_COLUMNS*8-1
+.ok::
 	ld [hl], a
 	ret
 
@@ -411,10 +449,10 @@ IntStat_main:: ; $0B67
 	ldh a, [stageRowDrawing]
 	ld c, a
 	inc a
-; off-by-one error: row 20 is scrolled using row 0's counter.
+; off-by-one error: row 20 is scrolled using row 0's counter as an offset.
 ; fortunately, there's never anything on row 20 (hence why the devs tried to skip it).
-	cp 21
-	jr nc, .twenty_one
+	cp STAGE_ROWS_ONSCREEN+1
+	jr nc, .last_row
 	ldh [stageRowDrawing], a
 	sla a
 	sla a
@@ -432,7 +470,7 @@ IntStat_main:: ; $0B67
 	ld a, [stageScy]
 	ldh [rSCY], a
 	ret
-.twenty_one::
+.last_row::
 	xor a
 	ldh [stageRowDrawing], a
 	ld b, $07
@@ -444,11 +482,15 @@ IntStat_main:: ; $0B67
 	ldh [rSCX], a
 	ret
 
-Func0B9D:: ; $0B9D
+ResetScroll:: ; $0B9D
+; set all scroll offsets to 0
+; out(A) = out(B)
+; out(B) = 22 tiles' height if at least a screen's worth of bricks
+;   are above the screen, 14 tiles' height otherwise
 	ld a, $00
 	ldh [scxTmp], a
 	ld hl, scrollOffsets
-	ld b, $14
+	ld b, STAGE_ROWS_ONSCREEN
 .loop::
 	ld [hl+], a
 	dec b
@@ -457,31 +499,42 @@ Func0B9D:: ; $0B9D
 	ldh [scyTmp], a
 	; fallthrough
 
-Func0BAD:: ; $0BAD
+SetStageScy:: ; $0BAD
+; set SCY appropriately for stage rendering
+; out(A) = out(B)
+; out(B) = 22 tiles' height if at least a screen's worth of bricks
+;   are above the screen, 14 tiles' height otherwise
 	ldh a, [stageFallMax]
 	sla a
 	sla a
 	add a, $00
 	ld [stageScy], a
-	ld b, 112
+	ld b, 14*8
 	ldh a, [stageFallMax]
-	cp 21
-	jr c, .skip
-	ld b, 176
-.skip::
+	cp STAGE_ROWS_ONSCREEN+1
+	jr c, .ok
+	ld b, 22*8
+.ok::
 	ld a, b
 	ld [borderScy], a
 	ret
 
-Func0BC7:: ; $0BC7
+StageFallStep:: ; $0BC7
+; send the stage downward one row of bricks
+; if a new row of tiles was revealed:
+;   out(A) = 1
+;   out(BC) = mainStripArray + 3 + STAGE_COLUMNS*2
+;   out(DE) = mainStripArray + 3 + STAGE_COLUMNS
+;   out(HL) = bottom-left brick of row in (stage)
+; otherwise: out(A) = 0
 	ldh a, [stageFallMax]
 	cp $00
 	ret z
 	dec a
 	ldh [stageFallMax], a
 	call PlayMusic.eleven
-	call Func0BAD
-	call Func0BF2
+	call SetStageScy
+	call CountLostBricks
 	ldh a, [stageFallMax]
 	cp $00
 	ret z
@@ -494,19 +547,24 @@ Func0BC7:: ; $0BC7
 	ldh [rowToDraw], a
 	call DrawStageRow
 	ldh a, [rowToDraw]
-	add a, $16
+	add a, STAGE_ROWS_ONSCREEN+2
 	ldh [rowToDraw], a
 	jp DrawStageRow
 
-Func0BF2:: ; $0BF2
+CountLostBricks:: ; $0BF2
+; treat the breakable bricks just below the screen as destroyed without scoring them
+; out(A) = 0
+; out(BC) = new bricksLeft
+; out(DE) = last non-empty tile regarded, in (stage)
+; out(HL) = first tile in the row just below that regarded, in (stage)
 	ldh a, [stageFallMax]
-	add a, $14
+	add a, STAGE_ROWS_ONSCREEN
 	ld b, a
-	ld e, $0E
+	ld e, STAGE_COLUMNS
 	call MultiplyBxE
 	ld hl, stage
 	add hl, bc
-	ld a, $0E
+	ld a, STAGE_COLUMNS
 .loop::
 	push af
 	push hl
@@ -533,7 +591,7 @@ Func0BF2:: ; $0BF2
 	ldh [bricksLeft+1], a
 	or b
 	jr nz, .continue
-	ld a, $08
+	ld a, gameMode_NEXT_STAGE
 	ldh [gameMode], a
 .continue::
 	pop hl

@@ -17,17 +17,21 @@ DmgMain:: ; $0511
 	jp .loop
 
 MainLoop:: ; $052B
+; perform the action dictated by gameMode
+; if game is reset: out(A) = gameMode_TITLE_MUSIC
+; otherwise: see MainFuncList functions
+
 ; reset on START+SELECT
 	ldh a, [buttonsDown]
 	and PADF_START
-	jr nz, .do
+	jr nz, .no_reset
 	ldh a, [buttonsPressed]
 	and PADF_SELECT
-	jr nz, .do
-	ld a, $01
+	jr nz, .no_reset
+	ld a, gameMode_TITLE_MUSIC
 	ldh [gameMode], a
 	ret
-.do::
+.no_reset::
 	ldh a, [gameMode]
 	sla a
 	ld c, a
@@ -42,33 +46,33 @@ MainLoop:: ; $052B
 
 MainFuncList:: ; $054C
 	dw ResetHiScore, TitleScreenWithMusic, TitleScreen, DemoMode
-	dw StartGame, AwaitBall, Func07A4, LostBall
-	dw NextStage, Func0839, GiveSpecialBonus, GameOver
-	dw Func0907, WaitVblank.end, WaitVblank.end, WaitVblank.end
+	dw StartGame, AwaitBall, GamePlaying, LostBall
+	dw NextStage, DispNicePlay, GiveSpecialBonus, GameOver
+	dw PauseGame, WaitVblank.end, WaitVblank.end, WaitVblank.end
 
 ResetHiScore:: ; $056C
 ; set high score to 0200
-; out(A) = 1
+; out(A) = gameMode_TITLE_MUSIC
 	ld a, 200
 	ldh [hiScore], a
 	xor a
 	ldh [hiScore+1], a
-	ld a, $01
+	ld a, gameMode_TITLE_MUSIC
 	ldh [gameMode], a
 	ret
 
 TitleScreenWithMusic:: ; $0578
 ; set title music to play before returning to title screen
-; out(A) = 2
+; out(A) = gameMode_TITLE_SCREEN
 	ld a, $04
 	ld [titleScreenMusicCounter], a
-	ld a, $02
+	ld a, gameMode_TITLE_SCREEN
 	ldh [gameMode], a
 	ret
 
 TitleScreen:: ; $0582
 ; display title screen
-; out(A) = 3 if demo starts, 4 otherwise
+; out(A) = gameMode_DEMO if demo starts, gameMode_START_GAME otherwise
 	call TurnOffLCD
 	call SaveIE
 ; disable STAT interrupt
@@ -140,17 +144,17 @@ TitleScreen:: ; $0582
 	call CountBonus
 	call StartAudio
 	call DispGameScreen
-	ld a, $04
+	ld a, gameMode_START_GAME
 	ldh [gameMode], a
 	ret
 .start_demo::
-	ld a, $03
+	ld a, gameMode_DEMO
 	ldh [gameMode], a
 	ret
 
 DemoMode:: ; $0613
 ; show a demo of the game
-; out(A) = 1 if demo is quit manually, 2 if it times out
+; out(A) = gameMode_TITLE_MUSIC if demo is quit manually, gameMode_TITLE_SCREEN if it times out
 	call CancelAudio
 	call DispGameScreen
 .pick_stage::
@@ -159,13 +163,13 @@ DemoMode:: ; $0613
 	and $1F
 	ld [stageId], a
 	ld b, a
-	ld e, $03
+	ld e, StagePointers_SIZEOF
 	call MultiplyBxE
 	ld hl, StagePointers
 	add hl, bc
 	ld a, [hl]
-	bit 7, a
 ; try again if it's a special stage
+	bit SPECIAL_BIT, a
 	jr nz, .pick_stage
 	ld a, $FF
 	ld [stageNum], a
@@ -176,17 +180,17 @@ DemoMode:: ; $0613
 	call StartGame
 	ld a, $0A
 	ld [demoCountdown], a
-	call Func10FB
+	call RacquetEnd
 	call AwaitBall.continue
 	ldh a, [ballPosX]
-	sub $0B
+	sub 11
 	ldh [racquetX], a
 	call MakeRacquetSprite
 	ld a, 16
 	call DelayFrames
 .game_loop::
 	call UpdateScroll
-	call Func0CA6
+	call UpdateBall
 	call MakeRacquetSprite
 	ldh a, [racquetWidth]
 	ld b, a
@@ -194,8 +198,7 @@ DemoMode:: ; $0613
 	sub b
 	ld b, a
 	ldh a, [ballPosX]
-; perhaps this was meant to be "sub b", but that would have been wildly incorrect.
-	sub $b
+	sub 11
 	ldh [racquetX], a
 	call MoveRacquet.check
 	call RandomNumber
@@ -217,17 +220,17 @@ DemoMode:: ; $0613
 ; freeze for half a second before returning
 	ld a, 32
 	call DelayFrames
-	ld a, $02
+	ld a, gameMode_TITLE_SCREEN
 	ldh [gameMode], a
 	ret
 .quit_demo::
-	ld a, $01
+	ld a, gameMode_TITLE_MUSIC
 	ldh [gameMode], a
 	ret
 
 StartGame:: ; $06A2
 ; start a new stage
-; out(A) = 5
+; out(A) = gameMode_AWAIT_BALL
 
 ; erase any text that a special stage might have written
 	call EraseTimeLabel
@@ -242,19 +245,19 @@ StartGame:: ; $06A2
 ; get the current stage's properties
 	ld a, [stageId]
 	ld b, a
-	ld e, $03
+	ld e, StagePointers_SIZEOF
 	call MultiplyBxE
 	ld hl, StagePointers
 	add hl, bc
 	ld a, [hl]
-	bit 7, a
+	bit SPECIAL_BIT, a
 	push af
 	push af
 	call nz, IncSpecialNum
 	pop af
 	call z, IncStageNum
 	pop af
-	bit 6, a
+	bit SCROLLER_BIT, a
 	call nz, SetupScroll
 ; place racquet on-screen
 	ld a, 32 + OAM_X_OFS
@@ -265,7 +268,7 @@ StartGame:: ; $06A2
 	ld a, [stageId]
 	call SetupStage
 	call CountBricks
-	call Func0B9D
+	call ResetScroll
 	xor a
 ; BUG: operands switched.
 	ldh a, [stageRowDrawing]
@@ -302,7 +305,7 @@ StartGame:: ; $06A2
 	call nz, SpecialStart
 	xor a
 	ldh [stageFallCounter], a
-	ld a, $05
+	ld a, gameMode_AWAIT_BALL
 	ldh [gameMode], a
 	ret
 
@@ -325,6 +328,11 @@ IncStageNum:: ; $0744
 	ret
 
 SetupScroll:: ; $074C
+; setup scroll counters based on StagePointers_RULES byte in(A)
+; out(A) = 1
+; out(BC) = scrollModulo + STAGE_ROWS_ONSCREEN
+; out(DE) = scrollCounters + STAGE_ROWS_ONSCREEN
+; clobbers HL
 	and $3F
 	sla a
 	ld c, a
@@ -336,7 +344,7 @@ SetupScroll:: ; $074C
 	ld l, a
 	ld bc, scrollModulo
 	ld de, scrollCounters
-	ld a, $14
+	ld a, STAGE_ROWS_ONSCREEN
 .loop::
 	push af
 	ld a, [hl+]
@@ -353,8 +361,10 @@ SetupScroll:: ; $074C
 	ret
 
 AwaitBall:: ; $0773
+; wait for the player to press A & deploy a ball
+; out(A) = gameMode_GAME_PLAYING
 	call UpdateScroll
-	call Func109D
+	call MoveRacquetSprite
 	ldh a, [buttonsPressed]
 	and PADF_A
 	jr z, .continue
@@ -365,25 +375,27 @@ AwaitBall:: ; $0773
 	xor a
 	ldh [speedUpCounter], a
 	ldh [changeAngleCounter], a
-	call Func116D.sub_1177
-	call Func101B
+	call CheckStageFall.init_timer
+	call DeployBall
 	call DispBounceSpeed
 	call DispNumLives
 	call PlaySound.seven
 	ldh a, [specialStage]
 	cp $00
 	call nz, PlayMusic.six
-	ld a, $06
+	ld a, gameMode_GAME_PLAYING
 	ldh [gameMode], a
 	ret
 
-Func07A4:: ; $07A4
+GamePlaying:: ; $07A4
+; run one frame of gameplay
+; out(A) = gameMode_PAUSE if game paused, $80 otherwise
 	ldh a, [specialStage]
 	cp $00
 	call nz, SpecialTimeTick
 	call UpdateScroll
-	call Func0CA6
-	call Func109D
+	call UpdateBall
+	call MoveRacquetSprite
 	ldh a, [buttonsPressed]
 	and PADF_START
 	jr z, .start_pressed
@@ -398,11 +410,13 @@ Func07A4:: ; $07A4
 	ret nz
 	call MakePauseSprite
 	call PlayMusic.four
-	ld a, $0C
+	ld a, gameMode_PAUSE
 	ldh [gameMode], a
 	ret
 
 LostBall:: ; $07D3
+; animate the ball falling out of play
+; out(A) = 0 if out of lives, gameMode_AWAIT_BALL otherwise
 	call StopAudio
 	call DispSmoke
 	ld a, 64
@@ -410,7 +424,7 @@ LostBall:: ; $07D3
 	ldh a, [specialStage]
 	cp $00
 	jr nz, NextStage
-	ld a, $0B
+	ld a, gameMode_GAME_OVER
 	ldh [gameMode], a
 	ld a, [numLives]
 	cp $00
@@ -424,34 +438,41 @@ LostBall:: ; $07D3
 	ldh [racquetWidth], a
 	ld a, $02
 	ldh [stageFallCounter], a
-	ld a, $05
+	ld a, gameMode_AWAIT_BALL
 	ldh [gameMode], a
 	ret
 
 NextStage:: ; $0805
+; finish this stage & proceed to the next
+; out(A) = out(B)
+; out(B) = gameMode_NICE_PLAY after special 24, gameMode_START_GAME otherwise
 	ldh a, [specialStage]
 	cp $00
 	push af
-	call z, Func0823
+	call z, PlayStageEndMusic
 	pop af
 	call nz, GiveSpecialBonus
-	call Func082B
-	ld b, $04
+	call IncStageId
+	ld b, gameMode_START_GAME
 	ld a, [stageId]
 	cp $00
-	jr nz, .not_stage01
-	ld b, $09
-.not_stage01::
+	jr nz, .not_finished
+	ld b, gameMode_NICE_PLAY
+.not_finished::
 	ld a, b
 	ldh [gameMode], a
 	ret
 
-Func0823:: ; $0823
+PlayStageEndMusic:: ; $0823
+; play music after finishing a standard stage
+; out(A) = 0
 	call PlayMusic.five
 	ld a, 144
 	jp DelayFrames
 
-Func082B:: ; $082B
+IncStageId:: ; $082B
+; increment the stage ID, wrapping from 31+ to 0
+; out(A) = new stageId
 	ld a, [stageId]
 	inc a
 	cp $20
@@ -461,7 +482,9 @@ Func082B:: ; $082B
 	ld [stageId], a
 	ret
 
-Func0839:: ; $0839
+DispNicePlay:: ; $0839
+; congratulate the player for passing all 24 standard stages
+; out(A) = gameMode_START_GAME
 	call FadeOut
 	ldh a, [ieBackup]
 	and ~IEF_STAT
@@ -505,21 +528,21 @@ endr
 	call ClearStage
 	call DrawStage
 	call FadeIn
-	ld a, $04
+	ld a, gameMode_START_GAME
 	ldh [gameMode], a
 	ret
 
 FadeIn:: ; $08A7
-; out(A) = $E4
+; out(A) = %11100100
 ; out(B) = 0
-; out(HL) = $08C6
+; out(HL) = FadeInPalette + 4
 	ld hl, FadeInPalette
 	jr FadeOut.start
 
 FadeOut:: ; $08AC
-; out(A) = $E4
+; out(A) = 0
 ; out(B) = 0
-; out(HL) = $08CA
+; out(HL) = FadeOutPalette + 4
 	ld hl, FadeOutPalette
 .start::
 	ld b, $04
@@ -549,7 +572,9 @@ SetPalette:: ; $08CA
 	ret
 
 GameOver:: ; $08D1
-	call Func444D
+; display a "GAME OVER" screen
+; out(A) = gameMode_TITLE_MUSIC
+	call MarioEnd
 	ld a, 64
 	call DelayFrames
 	call TurnOffLCD
@@ -568,11 +593,13 @@ GameOver:: ; $08D1
 	call TurnOnLCD
 	ld a, 192
 	call DelayFrames
-	ld a, $01
+	ld a, gameMode_TITLE_MUSIC
 	ldh [gameMode], a
 	ret
 
-Func0907:: ; $0907
+PauseGame:: ; $0907
+; don't do anything unless the player presses START
+; out(A) = gameMode_GAME_PLAYING
 	ldh a, [buttonsPressed]
 	and PADF_START
 	jr z, .start
@@ -587,6 +614,6 @@ Func0907:: ; $0907
 	call DispBounceSpeed
 	call MakeLeftBorder
 	call PlayMusic.four
-	ld a, $06
+	ld a, gameMode_GAME_PLAYING
 	ldh [gameMode], a
 	ret

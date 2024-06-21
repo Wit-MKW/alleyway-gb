@@ -2,34 +2,42 @@ include "common.inc"
 
 SECTION "RST0", ROM0[$0000]
 RST0::
+; restart as if by turning the console off & on
 	jp Entry
 
 SECTION "RST1", ROM0[$0008]
 RST1::
+; HANG always
 	rst RST7
 
 SECTION "RST2", ROM0[$0010]
 RST2::
+; HANG always
 	rst RST7
 
 SECTION "RST3", ROM0[$0018]
 RST3::
+; HANG always
 	rst RST7
 
 SECTION "RST4", ROM0[$0020]
 RST4::
+; HANG always
 	rst RST7
 
 SECTION "RST5", ROM0[$0028]
 RST5::
+; HANG always
 	rst RST7
 
 SECTION "RST6", ROM0[$0030]
 RST6::
+; HANG always
 	rst RST7
 
 SECTION "RST7", ROM0[$0038]
 RST7::
+; HANG always
 	rst RST7
 
 SECTION "IntVblank", ROM0[$0040]
@@ -90,7 +98,7 @@ setcharmap DMG
 Entry:: ; $0150
 ; wait for vblank
 	ldh a, [rLY]
-	cp 145
+	cp SCRN_Y + 1
 	jr c, Entry
 
 ; turn off LCD
@@ -184,10 +192,9 @@ Entry:: ; $0150
 ; set LYC to top of screen (just after vblank)
 	ld a, $00
 	ldh [rLYC], a
-; stop timer, set to 4 kHz
+; disable timer
 	ld a, TACF_STOP|TACF_4KHZ
 	ldh [rTAC], a
-; timer interrupt every 256 ticks
 	ld a, $00
 	ldh [rTMA], a
 	ld a, $20
@@ -195,6 +202,7 @@ Entry:: ; $0150
 ; disable all interrupts
 	xor a
 	ldh [rIF], a
+; set other variables
 	xor a
 	ldh [scxTmp], a
 	ldh [scyTmp], a

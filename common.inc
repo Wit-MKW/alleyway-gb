@@ -29,6 +29,47 @@ macro strip
 .end\@::
 endm
 
+def SPECIAL_BIT equ 7
+def SCROLLER_BIT equ 6
+
+def STAGE_ROWS_ONSCREEN equ 20
+def STAGE_ROWS_HIGHEST equ 40
+def STAGE_ROWS_MAX equ 60
+
+def STAGE_COLUMNS equ 14
+
+rsreset
+def gameMode_RESET_HISCORE rb
+def gameMode_TITLE_MUSIC rb
+def gameMode_TITLE_SCREEN rb
+def gameMode_DEMO rb
+def gameMode_START_GAME rb
+def gameMode_AWAIT_BALL rb
+def gameMode_GAME_PLAYING rb
+def gameMode_LOST_BALL rb
+def gameMode_NEXT_STAGE rb
+def gameMode_NICE_PLAY rb
+def gameMode_SPECIAL_BONUS rb
+def gameMode_GAME_OVER rb
+def gameMode_PAUSE rb
+
+rsreset
+def BrickTypes_TILES rb 3
+def BrickTypes_POINTS rb
+def BrickTypes_SPEED rb
+def BrickTypes_SOUND rb
+def BrickTypes_SIZEOF rb 0
+
+rsreset
+def StagePointers_RULES rb
+def StagePointers_DATA rw
+def StagePointers_SIZEOF rb 0
+
+rsreset
+def SpecialRules_POINTS rw
+def SpecialRules_TIME rb
+def SpecialRules_SIZEOF rb 0
+
 PUSHC
 NEWCHARMAP Bricks
 charmap " ", $00

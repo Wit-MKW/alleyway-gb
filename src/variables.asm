@@ -1,15 +1,16 @@
 include "common.inc"
 
-SECTION "WRAM", WRAM0
-stage:: ds $400 ; $C000
-hitsLeft:: ds $400 ; $C400
-ds align[8] ; already aligned
+SECTION "WRAM", WRAM0[$C000]
+stage:: ds STAGE_ROWS_MAX*STAGE_COLUMNS ; $C000
+ds align[8] ; $C348-$C3FF
+hitsLeft:: ds STAGE_ROWS_MAX*STAGE_COLUMNS ; $C400
+ds align[8] ; $C748-$C7FF
 oamBuf:: ds $100 ; $C800
 mainStripUnused:: db ; $C900
 mainStripArray:: ds $FF ; $C901
-scrollOffsets:: ds 20 ; $CA00
-scrollModulo:: ds 20 ; $CA14
-scrollCounters:: ds 20 ; $CA28
+scrollOffsets:: ds STAGE_ROWS_ONSCREEN ; $CA00
+scrollModulo:: ds STAGE_ROWS_ONSCREEN ; $CA14
+scrollCounters:: ds STAGE_ROWS_ONSCREEN ; $CA28
 stageScy:: db ; $CA3C
 borderScy:: db ; $CA3D
 marioX:: db ; $CA3E

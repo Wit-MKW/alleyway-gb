@@ -1,8 +1,8 @@
 include "common.inc"
 setcharmap DMG
 
-def SPECIAL equ (1 << 7)
-def SCROLLER equ (1 << 6)
+def SPECIAL equ (1 << SPECIAL_BIT)
+def SCROLLER equ (1 << SCROLLER_BIT)
 
 def SCROLL_RIGHT equ (0 << 7)
 def SCROLL_LEFT equ (1 << 7)
@@ -798,7 +798,7 @@ Special24:: ; $3D2B
 	db "        -++++ ", $FF
 
 EmptyStage:: ; $3E44
-rept 40
+rept STAGE_ROWS_HIGHEST
 	db "              "
 endr
 	db $FF
@@ -813,7 +813,7 @@ ScrollConfigs:: ; $4075
 ; and four more aren't referenced in this list.
 
 Scroll02:: ; $408D
-rept 20
+rept STAGE_ROWS_ONSCREEN
 	db SCROLL_RIGHT | 4
 endr
 
@@ -994,32 +994,32 @@ rept 8
 endr
 
 UnusedScroll3:: ; $4155
-rept 20
+rept STAGE_ROWS_ONSCREEN
 	db SCROLL_RIGHT | 1
 endr
 
 UnusedScroll4:: ; $4169
-rept 20
+rept STAGE_ROWS_ONSCREEN
 	db SCROLL_RIGHT | 1
 endr
 
 UnusedScroll5:: ; $417D
-rept 10
+rept STAGE_ROWS_ONSCREEN/2
 	db SCROLL_RIGHT | 1
 	db SCROLL_LEFT | 1
 endr
 
 UnusedScroll6:: ; $4191
-for i, 20
+for i, STAGE_ROWS_ONSCREEN
 	db SCROLL_RIGHT | (i + 1)
 endr
 
 UnusedScroll7:: ; $41A5
-rept 20
+rept STAGE_ROWS_ONSCREEN
 	db SCROLL_RIGHT | 1
 endr
 
 UnusedScroll8:: ; $41B9
-rept 20
+rept STAGE_ROWS_ONSCREEN
 	db SCROLL_RIGHT | 1
 endr

@@ -2,7 +2,7 @@ include "common.inc"
 setcharmap DMG
 
 SECTION FRAGMENT "Main code", ROM0
-Func109D:: ; $109D
+MoveRacquetSprite:: ; $109D
 	call MoveRacquet
 	call MakeRacquetSprite
 	ret
@@ -69,7 +69,7 @@ MoveRacquet:: ; $10A4
 	ldh [racquetX], a
 	ret
 
-Func10FB:: ; $10FB
+RacquetEnd:: ; $10FB
 	xor a
 	ldh [smallRacquetFlag], a
 	ld a, 24
@@ -85,7 +85,7 @@ Func10FB:: ; $10FB
 	ldh a, [racquetX]
 	jr MoveRacquet.check
 
-Func1113:: ; $1113
+BounceOffRacquet:: ; $1113
 	push af
 	ld b, $00
 	ldh a, [bounceSpeed]
@@ -143,16 +143,16 @@ Func1113:: ; $1113
 	ldh [ballSpeedX], a
 	ld a, c
 	ldh [ballSpeedX+1], a
-	call Func116D
+	call CheckStageFall
 	jp PlaySound.four
 
-Func116D:: ; $116D
+CheckStageFall:: ; $116D
 	ldh a, [stageFallTimer]
 	dec a
 	ldh [stageFallTimer], a
 	jr nz, .write_timer
-	call Func0BC7
-.sub_1177::
+	call StageFallStep
+.init_timer::
 	ldh a, [stageFallCounter]
 	cp $0A
 	jr c, .read_modulo
@@ -182,7 +182,7 @@ MakeRacquetSprite:: ; $118F
 	ld [hl+], a
 	ld a, $00
 	ld [hl+], a
-	ld a, $00
+	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
 	ldh a, [racquetY]
 	ld [hl+], a
@@ -191,7 +191,7 @@ MakeRacquetSprite:: ; $118F
 	ld [hl+], a
 	ld a, $01
 	ld [hl+], a
-	ld a, $00
+	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
 	ldh a, [racquetY]
 	ld [hl+], a
@@ -200,7 +200,7 @@ MakeRacquetSprite:: ; $118F
 	ld [hl+], a
 	ld a, $00
 	ld [hl+], a
-	ld a, $20 ; horiz. mirror
+	ld a, OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
 	ret
 .small::
@@ -211,7 +211,7 @@ MakeRacquetSprite:: ; $118F
 	ld [hl+], a
 	ld a, $00
 	ld [hl+], a
-	ld a, $00
+	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
 	ldh a, [racquetY]
 	ld [hl+], a
@@ -220,7 +220,7 @@ MakeRacquetSprite:: ; $118F
 	ld [hl+], a
 	ld a, $00
 	ld [hl+], a
-	ld a, $20 ; horiz. mirror
+	ld a, OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
 	ldh a, [racquetY]
 	ld [hl+], a
@@ -229,6 +229,6 @@ MakeRacquetSprite:: ; $118F
 	ld [hl+], a
 	ld a, $01
 	ld [hl+], a
-	ld a, $00
+	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
 	ret

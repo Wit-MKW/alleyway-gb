@@ -239,7 +239,7 @@ ClearLastSixObjs:: ; $0378
 ; out(HL) = oamBuf+$A0
 	ld b, $18
 	ld a, $00
-	ld hl, oamBuf + $88
+	ld hl, oamBuf + 34*sizeof_OAM_ATTRS
 	jr ClearOAM.loop
 
 PrepareTileSet:: ; $0381

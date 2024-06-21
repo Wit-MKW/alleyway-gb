@@ -4,9 +4,9 @@ setcharmap DMG
 SECTION FRAGMENT "Main code", ROM0
 SineTables:: ; $11EE
 for i, 1, 4
-  for j, 0, 16, 2
-	dw SineTable{d:i}_{X:j}
-  endr
+	for j, 0, 16, 2
+		dw SineTable{d:i}_{X:j}
+	endr
 endr
 	dw SineTable4_0
 

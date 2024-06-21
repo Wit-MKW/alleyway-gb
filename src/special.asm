@@ -17,32 +17,32 @@ SpecialTimeTick:: ; $198C
 	; fallthrough
 
 DispSpecialTime:: ; $19A2
-	ld hl, oamBuf + $80
+	ld hl, oamBuf + 32*sizeof_OAM_ATTRS
 	ld a, [specialTime]
 	call ToDecimalA
 	ld c, a
-	ld a, 128
+	ld a, 112 + OAM_Y_OFS
 	ld [hl+], a
-	ld a, 144
+	ld a, 136 + OAM_X_OFS
 	ld [hl+], a
 	ld a, b
 	add a, "0"
 	ld [hl+], a
-	ld a, $00
+	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
-	ld a, 128
+	ld a, 112 + OAM_Y_OFS
 	ld [hl+], a
-	ld a, 152
+	ld a, 144 + OAM_X_OFS
 	ld [hl+], a
 	ld a, c
 	add a, "0"
 	ld [hl+], a
-	ld a, $00
+	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
 	ret
 
 TimeUpMode:: ; $19C7
-	ld a, $07
+	ld a, gameMode_LOST_BALL
 	ldh [gameMode], a
 	ret
 
@@ -65,7 +65,7 @@ GetSpecialRules:: ; $19E2
 	ld a, $03
 .ok::
 	ld b, a
-	ld e, $03
+	ld e, SpecialRules_SIZEOF
 	call MultiplyBxE
 	ld hl, SpecialRules
 	add hl, bc
@@ -119,8 +119,8 @@ endr
 	ld h, a
 	ldh a, [score]
 	ld l, a
-	ld b, $00
-	ld c, 10
+	ld b, HIGH(10)
+	ld c, LOW(10)
 	add hl, bc
 	ld a, h
 	ldh [score+1], a
@@ -141,8 +141,8 @@ endr
 	ld h, a
 	ldh a, [score]
 	ld l, a
-	ld b, $00
-	ld c, $01
+	ld b, HIGH(1)
+	ld c, LOW(1)
 	add hl, bc
 	ld a, h
 	ldh [score+1], a
