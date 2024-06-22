@@ -55,7 +55,7 @@ drawNeeded:: db ; $FFA3
 gameMode:: db ; $FFA4
 
 bonusesGiven:: db ; $FFA5
-nextBonus:: dw ; $FFA6
+nextBonus:: dw ; $FFA6, little-endian
 
 stageHeight:: db ; $FFA8
 stageFallMax:: db ; $FFA9

@@ -178,7 +178,7 @@ DrawTile:: ; $09F9
 	ldh a, [rowToDraw]
 	srl a
 	ld b, a
-	ld e, $20
+	ld e, SCRN_VX_B
 	call MultiplyBxE
 	ldh a, [colToDraw]
 	ld l, a
@@ -211,8 +211,8 @@ DrawTile:: ; $09F9
 	or $01
 	push af
 .no_top::
-	ld b, $00
-	ld c, STAGE_COLUMNS
+	ld b, HIGH(STAGE_COLUMNS)
+	ld c, LOW(STAGE_COLUMNS)
 	add hl, bc
 	ld a, [hl]
 	cp $00
@@ -455,7 +455,7 @@ IntStat_main:: ; $0B67
 	ldh [stageRowDrawing], a
 	sla a
 	sla a
-	ld b, $07
+	ld b, 7
 	add a, b
 	ldh [rLYC], a
 	ld b, $00
@@ -472,7 +472,7 @@ IntStat_main:: ; $0B67
 .last_row::
 	xor a
 	ldh [stageRowDrawing], a
-	ld b, $07
+	ld b, 7
 	add a, b
 	ldh [rLYC], a
 	ld a, [borderScy]

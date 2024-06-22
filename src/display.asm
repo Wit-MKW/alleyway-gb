@@ -10,7 +10,7 @@ _IntVblank:: ; $01EF
 ; get built-in input status
 	call GetInput
 ; get paddle status
-	ld a, $02
+	ld a, 2
 	ldh [paddleCounter], a
 	ld a, SCF_START|SCF_SOURCE
 	ldh [rSC], a

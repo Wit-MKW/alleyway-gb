@@ -85,9 +85,9 @@ GetSpecialRules:: ; $19E2
 ; out(HL) = pointer to rules
 	ld a, [specialNum]
 	dec a
-	cp $03
+	cp 3
 	jr c, .ok
-	ld a, $03
+	ld a, 3
 .ok::
 	ld b, a
 	ld e, SpecialRules_SIZEOF
@@ -116,9 +116,11 @@ FinishSpecialStage:: ; $19F7
 	jp DelayFrames
 .no_bricks::
 	call PlayMusic.special_bonus
+rept 319 / 255
 	ld a, 255
 	call DelayFrames
-	ld a, 64
+endr
+	ld a, 319 % 255
 	call DelayFrames
 	jp .but_why
 .but_why::

@@ -294,7 +294,7 @@ _DoOamDma:: ; $FF80
 	di
 	ld a, HIGH(oamBuf)
 	ldh [rDMA], a
-	ld a, $28
+	ld a, 40
 .stall
 	dec a
 	jr nz, .stall

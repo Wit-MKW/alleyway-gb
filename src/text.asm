@@ -377,7 +377,7 @@ DispGameScreen:: ; $4603
 	call StopAudio
 	ld a, 127
 	ldh [rWX], a
-	ld a, $00
+	ld a, 0
 	ldh [rWY], a
 	ldh a, [lcdcTmp]
 	or LCDCF_WIN9C00|LCDCF_WINON
@@ -385,7 +385,7 @@ DispGameScreen:: ; $4603
 	xor a
 ; BUG: operands switched.
 	ldh a, [stageRowDrawing]
-	ld a, $08
+	ld a, 8
 	ldh [rLYC], a
 	ld a, STATF_LYC|STATF_LYCF|STATF_HBL
 	ldh [rSTAT], a

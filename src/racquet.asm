@@ -79,7 +79,7 @@ RacquetEnd:: ; $10FB
 	ldh [racquetX], a
 	ldh a, [racquetWidth]
 	ld b, a
-	ld a, 128
+	ld a, 120 + OAM_X_OFS
 	sub b
 	ld b, a
 	ldh a, [racquetX]

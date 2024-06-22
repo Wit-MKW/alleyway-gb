@@ -165,7 +165,7 @@ AudioTestNoise:: ; $68EE
 	jp nz, .up_button
 	bit PADB_DOWN, a
 	jp nz, .down_button
-	jp AudioTestStart.nothing
+	jp AudioTestEffect.nothing
 .a_button::
 	ld a, $01
 	ld [audioNoiseFlag], a

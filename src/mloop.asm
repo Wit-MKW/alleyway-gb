@@ -64,7 +64,7 @@ ResetHiScore:: ; $056C
 TitleScreenWithMusic:: ; $0578
 ; set title music to play before returning to title screen
 ; out(A) = gameMode_TITLE_SCREEN
-	ld a, $04
+	ld a, 4
 	ld [titleScreenMusicCounter], a
 	ld a, gameMode_TITLE_SCREEN
 	ldh [gameMode], a
@@ -98,7 +98,7 @@ TitleScreen:: ; $0582
 	call TurnOnLCD
 	ld a, [titleScreenMusicCounter]
 	inc a
-	cp $05
+	cp 5
 	jr nz, .skip_zero
 	xor a
 .skip_zero::
@@ -112,7 +112,7 @@ TitleScreen:: ; $0582
 	call z, PlayMusic.title
 	pop af
 	call nz, CancelAudio
-	ld a, $03
+	ld a, 3
 	ld [demoCountdown], a
 .loop::
 	call WaitVblank
@@ -139,7 +139,7 @@ TitleScreen:: ; $0582
 	ldh [bonusesGiven], a
 	ldh [score], a
 	ldh [score+1], a
-	ld a, $04
+	ld a, 4
 	ld [numLives], a
 	call CountBonus
 	call StartAudio
@@ -171,14 +171,14 @@ DemoMode:: ; $0613
 ; try again if it's a special stage
 	bit SPECIAL_BIT, a
 	jr nz, .pick_stage
-	ld a, $FF
+	ld a, -1 ; will be incremented to 00
 	ld [stageNum], a
 	inc a
 	ldh [score], a
 	ldh [score+1], a
 	ld [numLives], a
 	call StartGame
-	ld a, $0A
+	ld a, 10
 	ld [demoCountdown], a
 	call RacquetEnd
 	call AwaitBall.continue
@@ -194,7 +194,7 @@ DemoMode:: ; $0613
 	call MakeRacquetSprite
 	ldh a, [racquetWidth]
 	ld b, a
-	ld a, $80
+	ld a, 120 + OAM_X_OFS
 	sub b
 	ld b, a
 	ldh a, [ballPosX]
@@ -279,7 +279,7 @@ StartGame:: ; $06A2
 	call DispBounceSpeed
 ; show Mario jumping into the racquet on stage 01
 	ld a, [stageNum]
-	cp $01
+	cp 1
 	call z, MarioStart
 	ldh a, [specialStage]
 	cp $00
@@ -436,7 +436,7 @@ LostBall:: ; $07D3
 	ldh [smallRacquetFlag], a
 	ld a, 24
 	ldh [racquetWidth], a
-	ld a, $02
+	ld a, 2
 	ldh [stageFallCounter], a
 	ld a, gameMode_AWAIT_BALL
 	ldh [gameMode], a
@@ -455,7 +455,7 @@ NextStage:: ; $0805
 	call IncStageId
 	ld b, gameMode_START_GAME
 	ld a, [stageId]
-	cp $00
+	cp 0
 	jr nz, .not_finished
 	ld b, gameMode_NICE_PLAY
 .not_finished::
@@ -475,9 +475,9 @@ IncStageId:: ; $082B
 ; out(A) = new stageId
 	ld a, [stageId]
 	inc a
-	cp $20
+	cp 32
 	jr c, .skip_zero
-	ld a, $00
+	ld a, 0
 .skip_zero::
 	ld [stageId], a
 	ret
@@ -507,7 +507,7 @@ rept HIGH(672)
 endr
 	ld a, LOW(672)
 	call DelayFrames
-	ld a, $01
+	ld a, 1
 	call DelayFrames
 	call MarioWink
 rept HIGH(257)
@@ -545,7 +545,7 @@ FadeOut:: ; $08AC
 ; out(HL) = FadeOutPalette + 4
 	ld hl, FadeOutPalette
 .start::
-	ld b, $04
+	ld b, 4
 .loop::
 	ld a, [hl+]
 	call SetPalette

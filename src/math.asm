@@ -11,7 +11,7 @@ MultiplyBxE:: ; $0454
 	ld c, $00
 	srl b
 	rr c
-	ld a, $08
+	ld a, 8
 .loop::
 	sla e
 	jr nc, .skip_add
@@ -145,10 +145,10 @@ ToDecimalAB:: ; $048F
 RandomNumber:: ; $0505
 ; out(A) = [random] += (64 + 1)
 ; BUG: RNG is pathetic, especially since the upper two bits are always ignored.
-	ld b, $05
+	ld b, 5
 	ldh a, [random]
 .loop::
-	add a, $0D
+	add a, 13
 	dec b
 	jr nz, .loop
 	ldh [random], a

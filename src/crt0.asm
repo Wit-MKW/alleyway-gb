@@ -122,9 +122,9 @@ Entry:: ; $0150
 	jr nz, .vram_clear_loop
 
 ; zero-fill WRAM
-; BUG: $C000-$C0FF (inclusive) is not written to by this routine.
+; BUG: this routine reaches $A100-$BFFF (inclusive).
 	ld hl, $DFFF
-	ld c, $3F ; FIX: "ld c, $40"
+	ld c, $3F ; FIX: "ld c, $20"
 	xor a
 	ld b, $00
 .wram_clear_loop::
