@@ -8,6 +8,8 @@ def SCROLL_RIGHT equ (0 << 7)
 def SCROLL_LEFT equ (1 << 7)
 
 SECTION FRAGMENT "Main code", ROM0
+
+; BUG: the ball cannot bounce off the right edge of the racquet at a 15° angle.
 NormalRacquetAngles:: ; $1B41
 	;  15°, 30°, 30°, 30°, 45°, 45°, 45°, 45°
 	db $03, $06, $06, $06, $09, $09, $09, $09

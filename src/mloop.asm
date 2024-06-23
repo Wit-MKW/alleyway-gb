@@ -602,13 +602,13 @@ PauseGame:: ; $0907
 ; out(A) = gameMode_GAME_PLAYING
 	ldh a, [buttonsPressed]
 	and PADF_START
-	jr z, .start
+	jr z, .start_pressed
 	ldh a, [paddleButonsPressed]
 	and $80
 	ret nz
 	ld a, $FF
 	ldh [paddleButonsPressed], a
-.start::
+.start_pressed::
 	call ClearOAM
 	call DispScore
 	call DispBounceSpeed

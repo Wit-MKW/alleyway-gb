@@ -58,7 +58,7 @@ bonusesGiven:: db ; $FFA5
 nextBonus:: dw ; $FFA6, little-endian
 
 stageHeight:: db ; $FFA8
-stageFallMax:: db ; $FFA9
+stageFallRows:: db ; $FFA9
 specialStage:: db ; $FFAA
 scrollFlag:: db ; $FFAB
 stageRowDrawing:: db ; $FFAC

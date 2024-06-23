@@ -186,7 +186,7 @@ Entry:: ; $0150
 	ldh [rBGP], a
 	ldh [rOBP0], a
 	ldh [rOBP1], a
-; acknowledge buttons held on frame 0
+; no buttons yet
 	ld a, $FF
 	ldh [buttonsDown], a
 ; set LYC to top of screen (just after vblank)

@@ -3,12 +3,18 @@ setcharmap DMG
 
 SECTION FRAGMENT "Main code", ROM0
 UpdateBall:: ; $0CA6
+; perform one frame of ball physics, then update its sprite
+; out(A) = OAMF_PAL0|OAMF_BANK0
+; out(HL) = oamBuf + 4*sizeof_OAM_ATTRS
+; clobbers BC and DE
 	call UpdateBallPos
-	call DoBallPhysics
+	call DoBallCollisions
 	call MakeBallSprite
 	ret
 
-DoBallPhysics:: ; $0CB0
+DoBallCollisions:: ; $0CB0
+; after the ball has moved a frame, modify that motion based on what it collides with
+; clobbers all registers
 	nop
 	ldh a, [ballSpeedY]
 	and $80
@@ -84,9 +90,15 @@ DoBallPhysics:: ; $0CB0
 	ldh a, [bounceFlag]
 	cp $00
 	ret z
-	; fallthrough otherwise
+	; fallthrough otherwise, although nothing will happen
 
 TestForBounce:: ; $0D37
+; respond to the ball colliding with anything
+; clobbers all registers
+; BUG: while the ball's top-left pixel has full collision, the rest of its
+;   top row of pixels has only horizontal collision, the rest of its left
+;   column of pixels has only vertical collision, and the rest (over half)
+;   of its pixels have no collision at all.
 	ldh a, [ballSpeedX]
 	and $80
 	push af
@@ -102,6 +114,8 @@ TestForBounce:: ; $0D37
 	ret
 
 TestDown:: ; $0D50
+; as the ball travels up, respond to its left side colliding with anything
+; clobbers all registers
 	ldh a, [ballPosY]
 	add a, $03
 	ldh [ballPosYTest], a
@@ -120,6 +134,8 @@ TestDown:: ; $0D50
 	jp PassThroughY
 
 TestUp:: ; $0D73
+; as the ball travels up, respond to its left side colliding with anything
+; clobbers all registers
 	ldh a, [ballPosY]
 	ldh [ballPosYTest], a
 	ldh a, [ballPosXLast]
@@ -138,6 +154,8 @@ TestUp:: ; $0D73
 	jp PassThroughY
 
 TestRight:: ; $0D96
+; as the ball travels right, respond to its top colliding with anything
+; clobbers all registers
 	ldh a, [ballPosYLast]
 	ldh [ballPosYTest], a
 	ldh a, [ballPosX]
@@ -156,6 +174,8 @@ TestRight:: ; $0D96
 	jp PassThroughX
 
 TestLeft:: ; $0DB9
+; as the ball travels left, respond to its top colliding with anything
+; clobbers all registers
 	ldh a, [ballPosYLast]
 	ldh [ballPosYTest], a
 	ldh a, [ballPosX]
@@ -174,6 +194,9 @@ TestLeft:: ; $0DB9
 	jp PassThroughX
 
 TestBallPos:: ; $0DDC
+; check if the current test position is inside a brick (or outside the playfield)
+; out(A) = 1 if so, 0 otherwise
+; clobbers BC, DE, and HL
 	ld a, [stageScy]
 	sub $00
 	ld b, a
@@ -191,7 +214,7 @@ TestBallPos:: ; $0DDC
 	ret
 .check::
 	ld b, a
-	ldh a, [stageFallMax]
+	ldh a, [stageFallRows]
 	ld c, a
 	ld a, b
 	sub c
@@ -283,6 +306,9 @@ TestBallPos:: ; $0DDC
 	jr .set_bounce_flag
 
 BounceY:: ; $0E8D
+; bounce the ball off a row it would have entered & switch its Y-direction
+; out(A) = updated [ballPosY]
+; out(BC) = updated Y-velocity
 	ldh a, [ballSpeedY]
 	and $80
 	push af
@@ -303,6 +329,9 @@ BounceY:: ; $0E8D
 	ret
 
 BounceX:: ; $0EAD
+; remove the ball from a column it would have entered & switch its X-direction
+; out(A) = updated [ballPosX]
+; out(BC) = updated X-velocity
 	ldh a, [ballSpeedX]
 	and $80
 	push af
@@ -323,8 +352,14 @@ BounceX:: ; $0EAD
 	ret
 
 PassThroughY:: ; $0ECD
-	ret
 ; dummied out
+	ret
+; pass the ball through its current row
+; out(A) = updated [ballPosY]
+; out(B) = prior [ballPosY] & 3
+; * if the ball is fully within one row, nothing happens except out(A) = 0.
+;   however, the function is never called in such cases.
+; BUG: the ball may go a fair distance beyond the row boundary.
 	ldh a, [ballSpeedY]
 	and $80
 	push af
@@ -334,6 +369,9 @@ PassThroughY:: ; $0ECD
 	ret
 
 PassThroughX:: ; $0EDB
+; pass the ball through its current column
+; out(A) = updated [ballPosX]
+; if ball is travelling right, see BounceRightLeft for out(B)
 	ldh a, [ballSpeedX]
 	and $80
 	push af
@@ -343,6 +381,11 @@ PassThroughX:: ; $0EDB
 	ret
 
 BounceDownUp:: ; $0EE8
+; assume that the ball travelled down to its current position, and set its
+;   position as if its travel had changed to up at the last row boundary
+; out(A) = updated [ballPosY]
+; out(B) = prior [ballPosY] & 3
+; * if the ball is fully within one row, nothing happens except out(A) = 0.
 	ldh a, [ballPosY]
 	and $03
 	ret z
@@ -355,6 +398,11 @@ BounceDownUp:: ; $0EE8
 	ret
 
 BounceUpDown:: ; $0EF7
+; assume that the ball travelled up to its current position, and set its
+;   position as if its travel had changed to down at the last row boundary
+; out(A) = updated [ballPosY]
+; out(B) = prior [ballPosY] & 3
+; * if the ball is fully within one row, nothing happens except out(A) = 0.
 	ldh a, [ballPosY]
 	and $03
 	ret z
@@ -368,11 +416,16 @@ BounceUpDown:: ; $0EF7
 	ret
 
 BounceRightLeft:: ; $0F08
-	ld b, $04
+; send the ball just to the left of the column that its rightmost pixel is in
+; out(A) = updated [ballPosX]
+; out(B) = -4 if the ball is fully within one column, +4 otherwise
+; * if the ball is fully in the right half of a column, it will not move &
+;   out(B) will be +4, but the function is never called in such cases.
+	ld b, +4
 	ldh a, [ballPosX]
 	and $04
 	jr nz, .pos
-	ld b, -$04
+	ld b, -4
 .pos::
 	ldh a, [ballPosX]
 	and $F8
@@ -385,6 +438,8 @@ BounceRightLeft:: ; $0F08
 	ret
 
 BounceLeftRight:: ; $0F20
+; send the ball just to the right of the column that its leftmost pixel is in
+; out(A) = updated [ballPosX]
 	ldh a, [ballPosX]
 	and $F8
 	add a, $08
@@ -396,6 +451,18 @@ BounceLeftRight:: ; $0F20
 	ret
 
 SetBrickSpeed:: ; $0F2F
+; if the brick type in [tileToDraw] requests a faster-than-current speed, set it
+; if action performed:
+;   out(A) = out(C)
+;   out(BC) = resulting horizontal velocity
+;   out(E) = 0
+;   out(HL) = pointer to next sine table entry
+; otherwise:
+;   out(A) = [bounceSpeed]
+;   out(B) = brick speed if not zero, otherwise HIGH(BrickTypes_SPEED)
+;   out(C) = LOW(BrickTypes_SPEED)
+;   out(E) = 0
+;   out(HL) = pointer to brick speed
 	ldh a, [tileToDraw]
 	dec a
 	ld b, a
@@ -418,6 +485,13 @@ SetBrickSpeed:: ; $0F2F
 	jr SetBounceSpeed
 
 CheckChangeAngle:: ; $0F4F
+; every 10th call, change the ball's angle randomly
+; if action performed:
+;   out(A) = 0
+;   out(BC) = resulting horizontal velocity
+;   out(HL) = pointer to next sine table entry
+; otherwise: out(A) = updated [changeAngleCounter]
+; * see SetBounceSpeed for angle details
 	ldh a, [changeAngleCounter]
 	inc a
 	cp 10
@@ -429,6 +503,12 @@ CheckChangeAngle:: ; $0F4F
 	ret
 
 CheckSpeedUp:: ; $0F5D
+; every 8th call, run IncBounceSpeed & SetBounceSpeed (see those for details)
+; if action performed:
+;   out(A) = 0
+;   out(BC) = resulting horizontal velocity
+;   out(HL) = pointer to next sine table entry
+; otherwise: out(A) = updated [speedUpCounter]
 	ldh a, [speedUpCounter]
 	inc a
 	cp $08
@@ -441,16 +521,22 @@ CheckSpeedUp:: ; $0F5D
 	ret
 
 IncBounceSpeed:: ; $0F6E
+; add .125px/frame to bounce speed, wrapping from 4+ px/frame to 1.25px/frame
+; out(A) = updated [bounceSpeed]
 	ldh a, [bounceSpeed]
 	inc a
 	cp 26
 	jr c, .ok
-	ld a, $03
+	ld a, 3
 .ok::
 	ldh [bounceSpeed], a
 	jp DispBounceSpeed
 
 UpdateBallPos:: ; $0F7C
+; perform one frame of ball motion
+; out(A) = out(H)
+; out(BC) = ball's horizontal velocity
+; out(HL) = ball's updated X-coordinate
 	ldh a, [ballPosY]
 	ldh [ballPosYLast], a
 	ld h, a
@@ -491,6 +577,8 @@ UpdateBallPos:: ; $0F7C
 	ret
 
 NegativeBC:: ; $0FB3
+; out(A) = out(C) - 1
+; out(BC) = -in(BC)
 	ld a, b
 	xor $FF
 	ld b, a
@@ -501,6 +589,11 @@ NegativeBC:: ; $0FB3
 	ret
 
 SetBounceSpeed:: ; $0FBD
+; set the ball's speed from [bounceSpeed], and its angle at random
+; out(A) = out(C)
+; out(BC) = resulting horizontal velocity
+; out(HL) = pointer to next sine table entry
+; * random angle: 3/8 chance of 30°, 3/8 chance of 40°, 1/4 chance of 50°
 	ld b, $00
 	ldh a, [bounceSpeed]
 	dec a
@@ -566,6 +659,10 @@ VerticalAngles:: ; $1013
 	db $0A, $0C, $0E, $0A, $0C, $0E, $0A, $0C
 
 DeployBall:: ; $101B
+; deploy a ball coming toward the racquet
+; out(A) = out(C)
+; out(BC) = +181 if ball comes from left, -181 if from right
+; out(HL) = pointer to 50°, 1px/frame sine table entry
 	xor a
 	ldh [ballPosY+1], a
 	ldh [ballPosX+1], a
@@ -641,6 +738,9 @@ DeployBall:: ; $101B
 	ret
 
 MakeBallSprite:: ; $108D
+; make the sprite for the ball
+; out(A) = OAMF_PAL0|OAMF_BANK0
+; out(HL) = oamBuf + 4*sizeof_OAM_ATTRS
 	ld hl, oamBuf + 3*sizeof_OAM_ATTRS
 	ldh a, [ballPosY]
 	ld [hl+], a
