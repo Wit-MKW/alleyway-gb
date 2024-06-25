@@ -68,7 +68,7 @@ SetupStage:: ; $092A
 	jr nc, .stage_fall
 	xor a
 .stage_fall::
-	ldh [stageFallMax], a
+	ldh [stageFallRows], a
 	ret
 
 ClearStage:: ; $0983
@@ -110,7 +110,7 @@ RedrawStage:: ; $0997
 	pop af
 	dec a
 	jr nz, .loop
-	ldh a, [stageFallMax]
+	ldh a, [stageFallRows]
 	cp $00
 	ret z
 	dec a
@@ -503,13 +503,13 @@ SetStageScy:: ; $0BAD
 ; out(A) = out(B)
 ; out(B) = 22 tiles' height if at least a screen's worth of bricks
 ;   are above the screen, 14 tiles' height otherwise
-	ldh a, [stageFallMax]
+	ldh a, [stageFallRows]
 	sla a
 	sla a
 	add a, $00
 	ld [stageScy], a
 	ld b, 14*8
-	ldh a, [stageFallMax]
+	ldh a, [stageFallRows]
 	cp STAGE_ROWS_ONSCREEN+1
 	jr c, .ok
 	ld b, 22*8
@@ -526,15 +526,15 @@ StageFallStep:: ; $0BC7
 ;   out(DE) = mainStripArray + 3 + STAGE_COLUMNS
 ;   out(HL) = bottom-left brick of row in (stage)
 ; otherwise: out(A) = 0
-	ldh a, [stageFallMax]
+	ldh a, [stageFallRows]
 	cp $00
 	ret z
 	dec a
-	ldh [stageFallMax], a
+	ldh [stageFallRows], a
 	call PlayMusic.stage_fall
 	call SetStageScy
 	call CountLostBricks
-	ldh a, [stageFallMax]
+	ldh a, [stageFallRows]
 	cp $00
 	ret z
 	dec a
@@ -556,7 +556,7 @@ CountLostBricks:: ; $0BF2
 ; out(BC) = new bricksLeft
 ; out(DE) = last non-empty tile regarded, in (stage)
 ; out(HL) = first tile in the row just below that regarded, in (stage)
-	ldh a, [stageFallMax]
+	ldh a, [stageFallRows]
 	add a, STAGE_ROWS_ONSCREEN
 	ld b, a
 	ld e, STAGE_COLUMNS
