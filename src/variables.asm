@@ -1,6 +1,6 @@
 include "common.inc"
 
-SECTION "WRAM", WRAM0[$C000]
+SECTION "WRAM", WRAM0[_RAM]
 stage:: ds STAGE_ROWS_MAX*STAGE_COLUMNS ; $C000
 ds align[8] ; $C348-$C3FF
 hitsLeft:: ds STAGE_ROWS_MAX*STAGE_COLUMNS ; $C400
@@ -27,7 +27,7 @@ specialTime:: db ; $CA48
 demoCountdown:: ds 2 ; $CA49
 titleScreenMusicCounter:: db ; $CA4B
 
-SECTION "HRAM", HRAM[$FF8C]
+SECTION "HRAM", HRAM[_HRAM+12]
 buttonsDown:: db ; $FF8C
 buttonsPressed:: db ; $FF8D
 buttonsUp:: db ; $FF8E

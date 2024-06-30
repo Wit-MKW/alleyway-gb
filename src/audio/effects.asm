@@ -3,6 +3,11 @@ setcharmap DMG
 
 SECTION FRAGMENT "Audio", ROM0
 UpdateAud1:: ; $69FB
+; update channel 1 (sfx channel) for this frame
+; if update occurred:
+;   out(C) = LOW(rNR14)
+;   out(HL) = last byte of sample data
+; clobbers A
 	ld a, [audioPlaying1]
 	cp EFFECT_ONE_UP
 	jp z, .continue_one_up
@@ -681,10 +686,13 @@ UpdateAud1:: ; $69FB
 	jp FinishedAud1
 
 ClearAudioUnused4:: ; $6F8B
+; out(A) = 0
 	call _ClearAudioUnused4
 	ret
 
 FinishedAud1:: ; $6F8F
+; mute channel 1 upon its completion
+; out(A) = 0
 	xor a
 	ld [audioPlaying1], a
 	ldh [rAUD1ENV], a
@@ -693,9 +701,14 @@ FinishedAud1:: ; $6F8F
 	ret
 
 UpdateAud1Ret:: ; $6F9C
+; do nothing
 	ret
 
 LoadFiveRegs:: ; $6F9D
+; copy five bytes from in(HL) to $FF00+in(C)
+; out(A) = last byte
+; out(C) = in(C)+4
+; out(HL) = in(HL)+4
 rept 4
 	ld a, [hl+]
 	ldh [c], a
@@ -817,6 +830,12 @@ NoiseConfig:: ; $704C
 	db 0|AUDLEN_DUTY_12_5, $F7|AUDENV_DOWN, $57|AUD4POLY_15STEP, AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF
 
 UpdateChannels:: ; $7050
+; set up noise if it is set to play
+;   out(A) = AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF
+;   out(C) = LOW(rNR44)
+;   out(HL) = NoiseConfig+3
+; otherwise, continue left-to-right rotation of audio
+;   out(A) = updated [rAUDTERM] if on one side, 0 otherwise
 	ld a, [audioNoiseFlag]
 	cp $01
 	jp z, .noise
@@ -835,6 +854,10 @@ UpdateChannels:: ; $7050
 	ret
 
 LoadFourRegs:: ; $7073
+; copy four bytes from in(HL) to $FF00+in(C)
+; out(A) = last byte
+; out(C) = in(C)+3
+; out(HL) = in(HL)+3
 rept 3
 	ld a, [hl+]
 	ld [c], a
@@ -845,6 +868,8 @@ endr
 	ret
 
 UpdateAudTerm:: ; $707F
+; continue left-to-right rotation of audio
+; out(A) = updated [rAUDTERM] if on one side, 0 otherwise
 	ld a, [audioAllStereoCounter]
 	cp $00
 	jp z, .zero

@@ -4,8 +4,8 @@ setcharmap DMG
 def SPECIAL equ (1 << SPECIAL_BIT)
 def SCROLLER equ (1 << SCROLLER_BIT)
 
-def SCROLL_RIGHT equ (0 << 7)
-def SCROLL_LEFT equ (1 << 7)
+def SCROLL_LEFT equ (0 << 7)
+def SCROLL_RIGHT equ (1 << 7)
 
 SECTION FRAGMENT "Main code", ROM0
 
@@ -816,24 +816,24 @@ ScrollConfigs:: ; $4075
 
 Scroll02:: ; $408D
 rept STAGE_ROWS_ONSCREEN
-	db SCROLL_RIGHT | 4
+	db SCROLL_LEFT | 4
 endr
 
 Scroll05:: ; $40A1
 	db $00
 	db $00
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db $00
-	db $00
 	db SCROLL_LEFT | 4
 	db SCROLL_LEFT | 4
 	db $00
 	db $00
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
+	db $00
+	db $00
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
 	db $00
 	db $00
 	db $00
@@ -844,30 +844,28 @@ Scroll05:: ; $40A1
 Scroll08:: ; $40B5
 	db $00
 	db $00
-	db SCROLL_RIGHT | 8
-	db SCROLL_RIGHT | 8
-	db SCROLL_RIGHT | 8
-	db SCROLL_RIGHT | 8
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 2
-	db SCROLL_RIGHT | 2
-	db SCROLL_RIGHT | 2
-	db SCROLL_RIGHT | 2
-	db SCROLL_RIGHT | 2
-	db SCROLL_RIGHT | 2
-	db SCROLL_RIGHT | 2
-	db SCROLL_RIGHT | 2
+	db SCROLL_LEFT | 8
+	db SCROLL_LEFT | 8
+	db SCROLL_LEFT | 8
+	db SCROLL_LEFT | 8
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 2
+	db SCROLL_LEFT | 2
+	db SCROLL_LEFT | 2
+	db SCROLL_LEFT | 2
+	db SCROLL_LEFT | 2
+	db SCROLL_LEFT | 2
+	db SCROLL_LEFT | 2
+	db SCROLL_LEFT | 2
 
 Scroll11:: ; $40C9
 	db $00
 	db $00
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_LEFT | 4
@@ -880,6 +878,8 @@ Scroll11:: ; $40C9
 	db SCROLL_RIGHT | 4
 	db SCROLL_LEFT | 4
 	db SCROLL_LEFT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
 	db $00
 	db $00
 	db $00
@@ -888,68 +888,68 @@ Scroll11:: ; $40C9
 Scroll14:: ; $40DD
 	db $00
 	db $00
+	db SCROLL_RIGHT | 15
+	db SCROLL_RIGHT | 15
+	db SCROLL_RIGHT | 15
+	db SCROLL_RIGHT | 15
+	db SCROLL_RIGHT | 15
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
 	db SCROLL_LEFT | 15
 	db SCROLL_LEFT | 15
 	db SCROLL_LEFT | 15
 	db SCROLL_LEFT | 15
 	db SCROLL_LEFT | 15
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 4
-	db SCROLL_RIGHT | 15
-	db SCROLL_RIGHT | 15
-	db SCROLL_RIGHT | 15
-	db SCROLL_RIGHT | 15
-	db SCROLL_RIGHT | 15
-	db SCROLL_RIGHT | 15
+	db SCROLL_LEFT | 15
 	db $00
 	db $00
 
 Scroll17:: ; $40F1
 	db $00
 	db $00
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
-	db SCROLL_RIGHT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
+	db SCROLL_LEFT | 16
 	db $00
 	db $00
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
 
 Scroll20:: ; $4105
 	db $00
 	db $00
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_LEFT | 4
 	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
+	db SCROLL_RIGHT | 4
 
 Scroll23:: ; $4119
 	db $00
@@ -958,70 +958,70 @@ Scroll23:: ; $4119
 	db $00
 	db $00
 	db $00
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
-	db SCROLL_LEFT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
+	db SCROLL_LEFT | 4
 	db $00
 	db $00
 
 UnusedScroll1:: ; $412D
 rept 4
-	db SCROLL_RIGHT | 9
-	db SCROLL_RIGHT | 9
 	db SCROLL_LEFT | 9
 	db SCROLL_LEFT | 9
+	db SCROLL_RIGHT | 9
+	db SCROLL_RIGHT | 9
 endr
-	db SCROLL_RIGHT | 9
-	db SCROLL_RIGHT | 9
-	db SCROLL_LEFT | 1
-	db SCROLL_LEFT | 1
+	db SCROLL_LEFT | 9
+	db SCROLL_LEFT | 9
+	db SCROLL_RIGHT | 1
+	db SCROLL_RIGHT | 1
 
 UnusedScroll2:: ; $4141
-	db SCROLL_RIGHT | 1
-	db SCROLL_RIGHT | 1
-	db SCROLL_RIGHT | 1
-	db SCROLL_RIGHT | 1
-rept 8
 	db SCROLL_LEFT | 1
+	db SCROLL_LEFT | 1
+	db SCROLL_LEFT | 1
+	db SCROLL_LEFT | 1
+rept 8
 	db SCROLL_RIGHT | 1
+	db SCROLL_LEFT | 1
 endr
 
 UnusedScroll3:: ; $4155
 rept STAGE_ROWS_ONSCREEN
-	db SCROLL_RIGHT | 1
+	db SCROLL_LEFT | 1
 endr
 
 UnusedScroll4:: ; $4169
 rept STAGE_ROWS_ONSCREEN
-	db SCROLL_RIGHT | 1
+	db SCROLL_LEFT | 1
 endr
 
 UnusedScroll5:: ; $417D
 rept STAGE_ROWS_ONSCREEN/2
-	db SCROLL_RIGHT | 1
 	db SCROLL_LEFT | 1
+	db SCROLL_RIGHT | 1
 endr
 
 UnusedScroll6:: ; $4191
 for i, STAGE_ROWS_ONSCREEN
-	db SCROLL_RIGHT | (i + 1)
+	db SCROLL_LEFT | (i + 1)
 endr
 
 UnusedScroll7:: ; $41A5
 rept STAGE_ROWS_ONSCREEN
-	db SCROLL_RIGHT | 1
+	db SCROLL_LEFT | 1
 endr
 
 UnusedScroll8:: ; $41B9
 rept STAGE_ROWS_ONSCREEN
-	db SCROLL_RIGHT | 1
+	db SCROLL_LEFT | 1
 endr

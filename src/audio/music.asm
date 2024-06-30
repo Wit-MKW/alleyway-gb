@@ -51,6 +51,12 @@ def MUSIC_NEXT equ $7F
 
 SECTION FRAGMENT "Audio", ROM0
 UpdateAud23:: ; $70AE
+; update channels 2&3 (music channels) for this frame
+; clobbers A
+; if new note started: clobbers HL
+; if new non-rest note started:
+;   out(D) = 0
+;   clobbers E
 	ld a, [audioStarting23]
 	cp MUSIC_TITLE
 	jp z, .title
@@ -372,6 +378,12 @@ UpdateAud23:: ; $70AE
 	ret
 
 ReadNotes23:: ; $738C
+; update channel 2&3's notes for this frame
+; clobbers A
+; if new note started: clobbers HL
+; if new non-rest note started:
+;   out(D) = 0
+;   clobbers E
 	ld a, [audioCounter2]
 	dec a
 	ld [audioCounter2], a
@@ -386,7 +398,7 @@ ReadNotes23:: ; $738C
 	bit 7, a
 	jp nz, SetNoteLength2
 	cp $00
-	jp z, StopAud1
+	jp z, StopAud2
 	cp MUSIC_NEXT
 	jp z, AudioNext
 	cp REST
@@ -424,6 +436,12 @@ ReadNotes23:: ; $738C
 	ld a, [audioModulo2]
 	ld [audioCounter2], a
 .note_not_finished2::
+; update channel 3's note for this frame
+; clobbers A
+; if new note started: clobbers HL
+; if new non-rest note started:
+;   out(D) = 0
+;   clobbers E
 	ld a, [audioCounter3]
 	dec a
 	ld [audioCounter3], a
@@ -483,6 +501,10 @@ ReadNotes23:: ; $738C
 	ret
 
 LoadWaveRam:: ; $745F
+; setup wave RAM with a fixed wave
+; out(A) = 0
+; out(C) = LOW(_AUD3WAVERAM) + $10 - [prior audioWaveRamCounter]
+; out(HL) = WaveRam + $10 - [prior audioWaveRamCounter]
 	ld hl, WaveRam
 	ld c, LOW(_AUD3WAVERAM)
 .loop::
@@ -499,6 +521,10 @@ LoadWaveRam:: ; $745F
 	ret
 
 SetNoteLength2:: ; $7478
+; set channel 2's note length from in(A)
+; out(A) = new length
+; out(D) = 0
+; out(E) = in(A) & $7F
 	push hl
 	and $7F
 	ld hl, NoteLengths
@@ -512,6 +538,10 @@ SetNoteLength2:: ; $7478
 	jp ReadNotes23.next_byte2
 
 SetNoteLength3:: ; $748D
+; set channel 3's note length from in(A)
+; out(A) = new length
+; out(D) = 0
+; out(E) = in(A) & $7F
 	push hl
 	and $7F
 	ld hl, NoteLengths
@@ -525,11 +555,20 @@ SetNoteLength3:: ; $748D
 	jp ReadNotes23.next_byte3
 
 AudioNext:: ; $74A2
+; play the next music (in practice, always a loop) for channels 2&3
+; clobbers A
+; clobbers HL
+; if new music starts with non-rest note:
+;   out(D) = 0
+;   clobbers E
 	ld a, [audioNext23]
 	ld [audioStarting23], a
 	jp UpdateAud23
 
 UpdateAudTerm2:: ; $74AB
+; if appropriate, alternate channel 2 between left & right
+; clobbers A
+; * this also silences channel 4.
 	ld a, [audio2StereoFlag]
 	cp $01
 	jp nz, .mono
@@ -570,14 +609,18 @@ UpdateAudTerm2:: ; $74AB
 	ld [audio2StereoFlag], a
 	ret
 
-StopAud1:: ; $74F9
+StopAud2:: ; $74F9
+; cancel anything to be played on channel 2 & mute [BUG: channel 1]
+; out(A) = 0
 	xor a
 	ld [audioNext23], a
 	ld [audio2StereoFlag], a
-	ldh [rAUD1ENV], a
+	ldh [rAUD1ENV], a ; FIX: "ldh [rAUD2ENV], a"
 	ret
 
 StopAud3:: ; $7503
+; cancel anything to be played on channel 3 & mute it
+; out(A) = 0
 	xor a
 	ld [audioNext3], a
 	ld [audio2StereoFlag], a
@@ -585,6 +628,8 @@ StopAud3:: ; $7503
 	ret
 
 _StopAudio:: ; $750D
+; cancel anything to be played on channels 2&3 & mute channels 1-3
+; out(A) = 0
 	xor a
 	ld [audioUnused], a
 	ld [audioNext23], a
@@ -595,21 +640,27 @@ _StopAudio:: ; $750D
 	ret
 
 RestAud2:: ; $751E
+; take a rest on channel 2
+; out(A) = 0
 	xor a
 	ldh [rAUD2ENV], a
 	ret
 
 RestAud3:: ; $7522
+; take a rest on channel 3
+; out(A) = 0
 	xor a
 	ldh [rAUD3ENA], a
 	ret
 
 SetAudioUnused4:: ; $7526
+; out(A) = 1
 	ld a, $01
 	ld [audioUnused4], a
 	ret
 
 _ClearAudioUnused4:: ; $752C
+; out(A) = 0
 	xor a
 	ld [audioUnused4], a
 	ret
