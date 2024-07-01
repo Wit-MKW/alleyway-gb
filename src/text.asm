@@ -560,11 +560,11 @@ DispWindowStageNum:: ; $47A1
 ; out(HL) = mainStripArray + 6
 	call WaitToDraw
 	ld hl, mainStripArray
-	ld a, $9D
+	ld a, HIGH(_SCRN1 + 11*SCRN_VX_B + 2)
 	ld [hl+], a
-	ld a, $62
+	ld a, LOW(_SCRN1 + 11*SCRN_VX_B + 2)
 	ld [hl+], a
-	ld a, $02
+	ld a, 2
 	ld [hl+], a
 	ld a, [stageNum]
 	call ToDecimalA
@@ -587,11 +587,11 @@ DispNumLives:: ; $47C7
 ; out(HL) = mainStripArray + 5
 	call WaitToDraw
 	ld hl, mainStripArray
-	ld a, $9E
+	ld a, HIGH(_SCRN1 + 16*SCRN_VX_B + 4)
 	ld [hl+], a
-	ld a, $04
+	ld a, LOW(_SCRN1 + 16*SCRN_VX_B + 4)
 	ld [hl+], a
-	ld a, $01
+	ld a, 1
 	ld [hl+], a
 	ld a, [numLives]
 	add a, "0"
@@ -608,11 +608,11 @@ DispTimeLabel:: ; $47E4
 ; out(HL) = mainStripArray + 8
 	call WaitToDraw
 	ld hl, mainStripArray
-	ld a, $9D
+	ld a, HIGH(_SCRN1 + 13*SCRN_VX_B + 1)
 	ld [hl+], a
-	ld a, $A1
+	ld a, LOW(_SCRN1 + 13*SCRN_VX_B + 1)
 	ld [hl+], a
-	ld a, $04
+	ld a, 4
 	ld [hl+], a
 	ld a, "T"
 	ld [hl+], a
@@ -635,11 +635,11 @@ EraseTimeLabel:: ; $4807
 ; out(HL) = mainStripArray + 8
 	call WaitToDraw
 	ld hl, mainStripArray
-	ld a, $9D
+	ld a, HIGH(_SCRN1 + 13*SCRN_VX_B + 1)
 	ld [hl+], a
-	ld a, $A1
+	ld a, LOW(_SCRN1 + 13*SCRN_VX_B + 1)
 	ld [hl+], a
-	ld a, $04
+	ld a, 4
 	ld [hl+], a
 	ld a, " "
 	ld [hl+], a

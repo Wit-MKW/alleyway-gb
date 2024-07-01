@@ -309,7 +309,7 @@ DrawStageRow:: ; $0A96
 	call MultiplyBxE
 	ld hl, stage
 	add hl, bc
-	ld de, mainStripArray + $03
+	ld de, mainStripArray + 3
 	ld a, STAGE_COLUMNS
 .loop::
 	push af

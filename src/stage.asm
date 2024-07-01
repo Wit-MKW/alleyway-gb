@@ -43,7 +43,7 @@ SpecialRules:: ; $1B71
 	be 1500
 
 StageFallModulo:: ; $1B7D
-	db $08, $08, $05, $05, $03, $03, $02, $02, $02, $02; and $01 forever after.
+	db 8, 8, 5, 5, 3, 3, 2, 2, 2, 2; and 1 forever after.
 
 BrickTypes:: ; $1B87
 ; (top only), (bottom only), (both), (points << 4 | hits), (speed), (sound)
@@ -51,16 +51,16 @@ BrickTypes:: ; $1B87
 ; needs to touch the brick to destroy it, passing straight through it until then.
 
 ; light (GBC light blue, SGB dim blue)
-	db $AB, $AE, $A8, $11, $00, $01
+	db $AB, $AE, $A8, $11, 0, 1
 ; medium (GBC light yellow, SGB light magenta)
-	db $AC, $AF, $A9, $21, $05, $02
+	db $AC, $AF, $A9, $21, 5, 2
 ; dark (GBC dark green, SGB light yellow)
-	db $AD, $B0, $AA, $31, $07, $03
+	db $AD, $B0, $AA, $31, 7, 3
 ; bumpers
-	db $00, $00, $B3, $10, $00, $00
+	db $00, $00, $B3, $10, 0, 0
 rept 11
 ; unused
-	db $00, $00, $00, $11, $00, $00
+	db $00, $00, $00, $11, 0, 0
 endr
 
 StagePointers:: ; $1BE1
