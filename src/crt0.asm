@@ -110,7 +110,7 @@ Entry:: ; $0150
 
 ; zero-fill VRAM
 ; BUG: $8000-$80FF (inclusive) is not written to by this routine.
-	ld hl, $9FFF
+	ld hl, _VRAM+$1FFF
 	ld c, $1F ; FIX: "ld c, $20"
 	xor a
 	ld b, $00
@@ -123,7 +123,7 @@ Entry:: ; $0150
 
 ; zero-fill WRAM
 ; BUG: this routine reaches $A100-$BFFF (inclusive).
-	ld hl, $DFFF
+	ld hl, _RAM+$1FFF
 	ld c, $3F ; FIX: "ld c, $20"
 	xor a
 	ld b, $00
@@ -135,7 +135,7 @@ Entry:: ; $0150
 	jr nz, .wram_clear_loop
 
 ; zero-fill HRAM
-	ld hl, $FFFE
+	ld hl, _HRAM+$7E
 	ld b, $7F
 .hram_clear_loop::
 	ld [hl-], a
@@ -144,7 +144,7 @@ Entry:: ; $0150
 
 ; zero-fill OAM
 ; BUG: $FE00 is not written to by this routine.
-	ld hl, $FEFF
+	ld hl, _OAMRAM+$FF
 	ld b, $FF ; FIX: "ld b, $00"
 .oam_clear_loop::
 	ld [hl-], a

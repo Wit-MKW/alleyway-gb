@@ -1,8 +1,8 @@
 include "common.inc"
 setcharmap DMG
 
-def audioButtonsDown equ $FF80
-def audioButtonsPressed equ $FF81
+def audioButtonsDown equ _HRAM
+def audioButtonsPressed equ _HRAM+1
 
 SECTION FRAGMENT "Main code", ROM0
 TurnOnAudio:: ; $6375
@@ -476,7 +476,7 @@ StopAudio:: ; $7FF3
 	call _StopAudio
 	ret
 
-SECTION "Audio WRAM", WRAM0[$DFD0]
+SECTION "Audio WRAM", WRAM0[_RAM+$1FD0]
 audioSpecialCounter1:: db ; $DFD0
 audioSpecialCounter2:: db ; $DFD1
 audio2StereoFlag:: db ; $DFD2
