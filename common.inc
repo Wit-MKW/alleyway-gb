@@ -18,13 +18,13 @@ def STRIP_COLUMN equ (1 << 7)
 def STRIP_FILL equ (1 << 6)
 
 macro strip
-	be \1
-	if ((\2) & STRIP_FILL) == 0
-		db (\2) | (.end\@ - (@ + 1))
+	be (\1) + (\2) * SCRN_VX_B + (\3)
+	if ((\4) & STRIP_FILL) == 0
+		db (\4) | (.end\@ - (@ + 1))
 	else
-		db (\2)
+		db (\4)
 	endc
-	shift 2
+	shift 4
 	db \#
 .end\@::
 endm

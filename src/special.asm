@@ -215,8 +215,8 @@ DispSpecialBonusText:: ; $1A97
 	jp WaitVblank
 
 SpecialBonusText:: ; $1AAF
-	strip $9B42, 0, $C4,$C5,$C6,$C7,"Al BONUS" ; "SPECIAL BONUS"
-	strip $9B69, 0, "PTS."
+	strip _SCRN0,26,2, 0, $C4,$C5,$C6,$C7,"Al BONUS" ; "SPECIAL BONUS"
+	strip _SCRN0,27,9, 0,                    "PTS."
 	db $00
 .end:: ; $1AC6
 
@@ -241,8 +241,8 @@ EraseSpecialBonusText:: ; $1AC6
 	jp WaitVblank
 
 BlankSpecialBonusText:: ; $1ADE
-	strip $9B42, 0, "            "
-	strip $9B69, 0, "    "
+	strip _SCRN0,26,2, 0, "            "
+	strip _SCRN0,27,9, 0,        "    "
 	db $00
 .end:: ; $1AF5
 
@@ -267,7 +267,7 @@ DispTryAgainText:: ; $1AF5
 	jp WaitVblank
 
 TryAgainText:: ; $1B0D
-	strip $99C3, 0, "TRY AGAIN!"
+	strip _SCRN0,14,3, 0, "TRY AGAIN!"
 	db $00
 .end:: ; $1B1B
 
@@ -292,6 +292,6 @@ EraseTryAgainText:: ; $1B1B
 	jp WaitVblank
 
 BlankTryAgainText:: ; $1B33
-	strip $99C3, 0, "          "
+	strip _SCRN0,14,3, 0, "          "
 	db $00
 .end:: ; $1B41
