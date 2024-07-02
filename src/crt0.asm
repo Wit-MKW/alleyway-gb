@@ -198,7 +198,7 @@ Entry:: ; $0150
 	ld a, $00
 	ldh [rTMA], a
 	ld a, $20
-	ldh [unused], a
+	ldh [hUnused], a
 ; disable all interrupts
 	xor a
 	ldh [rIF], a

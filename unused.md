@@ -57,8 +57,8 @@ entry in the 1.0 table.
 - Tile number \$B6, which resembles an equals-sign `=`, goes unused.
 ## `variables.asm`
 - The variable `mainStripUnused` is only ever written to (with a zero) at the end of `DrawMainStripArray`, and is never read from.
-- The variables `buttonsUnused` & `paddleUnused` are never written to nor read from.
-- The variable `unused` is only ever written to (with \$20) in `crt0.asm` after disabling the timer, and is never read from.
+- The variables `wUnused`, `buttonsUnused`, and `paddleUnused` are never written to nor read from.
+- The variable `hUnused` is only ever written to (with \$20) in `crt0.asm` after disabling the timer, and is never read from.
 ## `audio/audiomain.asm`
 - The functions labelled `AudioTestEffect`, `AudioTestEffectMusic`, `AudioTestNoise`, and `AudioTestMusic` go unused. They would use input acquired by `AudioGetInput` (which also goes unused & would overwrite parts of `_DoOamDma`) to perform various tests of the audio engine.
 - There are several unused variables; some are written to match other variables but never read, others are never written to nor read, and `audioUnused4` is only ever written to by two unused functions & never read.

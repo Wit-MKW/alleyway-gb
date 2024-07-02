@@ -24,7 +24,8 @@ stageId:: db ; $CA45
 stageNum:: db ; $CA46
 specialNum:: db ; $CA47
 specialTime:: db ; $CA48
-demoCountdown:: ds 2 ; $CA49
+demoCountdown:: db ; $CA49
+wUnused:: db ; $CA4A
 titleScreenMusicCounter:: db ; $CA4B
 
 SECTION "HRAM", HRAM[_HRAM+12]
@@ -41,7 +42,7 @@ paddleUnused:: db ; $FF94
 
 gfxArrayWidth:: db ; $FF95
 decOutput:: ds 5 ; $FF96
-unused:: db ; $FF9B
+hUnused:: db ; $FF9B
 
 lcdcTmp:: db ; $FF9C
 ieBackup:: db ; $FF9D
