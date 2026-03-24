@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "points", ROM0
 UpdateScore:: ; $0C32
 ; update current score based on destroying brick type in(A)
 ; out(B) = (added points)

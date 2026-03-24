@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "mloop", ROM0
 DmgMain:: ; $0511
 	nop
 	call TurnOnAudio

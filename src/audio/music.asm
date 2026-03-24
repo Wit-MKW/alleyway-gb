@@ -49,7 +49,7 @@ def SHARP equs "+ 1"
 def REST equ $01
 def MUSIC_NEXT equ $7F
 
-SECTION FRAGMENT "Audio", ROM0
+SECTION "audio/music", ROM0
 UpdateAud23:: ; $70AE
 ; update channels 2&3 (music channels) for this frame
 ; clobbers A
@@ -509,7 +509,7 @@ LoadWaveRam:: ; $745F
 	ld c, LOW(_AUD3WAVERAM)
 .loop::
 	ld a, [hl+]
-	ld [c], a
+	ldh [c], a
 	inc c
 	ld a, [audioWaveRamCounter]
 	inc a

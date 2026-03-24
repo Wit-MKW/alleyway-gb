@@ -1,4 +1,4 @@
-SECTION FRAGMENT "Main code", ROM0
+SECTION "tiles", ROM0
 
 tiles0_2bpp:: ; $4375
 incbin "tiles0.2bpp"

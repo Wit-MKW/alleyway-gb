@@ -60,7 +60,7 @@ SECTION "IntJoypad", ROM0[INT_HANDLER_JOYPAD]
 IntJoypad::
 	reti
 
-SECTION FRAGMENT "Main code", ROM0[$0100]
+SECTION "crt0", ROM0[$0100]
 HeaderEntry::
 	nop
 	jp Entry

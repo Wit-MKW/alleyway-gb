@@ -13,32 +13,47 @@ rgbgfx -v -v -v -v -v -v -o tiles2.2bpp tiles2.png
 echo
 
 # create object files
+rm -r build 2> /dev/null
+mkdir -p build/audio
 cd src
 for file in {,audio/}*.asm; do
 	echo "==> $file <=="
-	rgbasm -v -I.. -I../hardware.inc -o ${file/asm/gbo} -Weverything $file
+	rgbasm -v -I.. -I../hardware.inc -o "../build/${file/\.asm/.gbo}" -Weverything $file
 done
 echo
 
+# create linker script
+(	echo 'ROM0'
+	echo 'ORG $100'
+	for file in *.asm; do
+		printf '"%s"\n' "${file/\.asm/}"
+	done
+	echo '"audiomain"'
+	echo 'ALIGN 10,0'
+	for file in audio/*.asm; do
+		printf '"%s"\n' "${file/\.asm/}"
+	done
+) > ../linkscript
+
 # link into ROM
 echo '==> rgblink <=='
-rgblink -dtvw -m 'Alleyway (World).map' -n 'Alleyway (World).sym' -o 'Alleyway (World).gb' -p 0xFF {,audio/}*.gbo
+rgblink -dtvw -l ../linkscript -m '../Alleyway (World).map' -n '../Alleyway (World).sym' -o '../Alleyway (World).gb' -p 0xFF ../build/{,audio/}*.gbo
 
 # fix checksums
 echo '==> rgbfix <=='
-rgbfix -f hg 'Alleyway (World).gb'
+rgbfix -f hg '../Alleyway (World).gb'
 
 # check ROM
 true
-if [[ $(head -c336 'Alleyway (World).gb' | tail -c80 | cksum -o3) != '3416921627 80' ]]; then
+if [[ $(head -c336 '../Alleyway (World).gb' | tail -c80 | cksum -o3) != '3416921627 80' ]]; then
 	echo 'Header CRC32 is incorrect!'
 	false
 fi
-if [[ $(cksum -o3 'Alleyway (World).gb') != '1556092294 32768 Alleyway (World).gb' ]]; then
+if [[ $(cksum -o3 '../Alleyway (World).gb') != '1556092294 32768 ../Alleyway (World).gb' ]]; then
 	echo 'ROM CRC32 and/or size is incorrect!'
 	false
 fi
-if ! (echo '0cf2b8d0428f389f5361f67a0cd1ace05a1c75cc  Alleyway (World).gb' | shasum -c); then
+if ! (echo '0cf2b8d0428f389f5361f67a0cd1ace05a1c75cc  ../Alleyway (World).gb' | shasum -c); then
 	echo 'ROM SHA1 is incorrect!'
 	false
 fi

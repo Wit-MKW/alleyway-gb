@@ -1,5 +1,8 @@
 include "common.inc"
 
+SECTION "variables", ROM0
+; empty section
+
 SECTION "WRAM", WRAM0[_RAM]
 stage:: ds STAGE_ROWS_MAX*STAGE_COLUMNS ; $C000
 ds align[8] ; $C348-$C3FF

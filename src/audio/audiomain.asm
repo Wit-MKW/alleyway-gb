@@ -4,7 +4,7 @@ setcharmap DMG
 def audioButtonsDown equ _HRAM
 def audioButtonsPressed equ _HRAM+1
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "audiomain", ROM0
 TurnOnAudio:: ; $6375
 ; initialise audio hardware
 ; out(A) = AUDTERM_4_LEFT|AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT|AUDTERM_4_RIGHT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT
@@ -150,7 +150,7 @@ PlayMusic:: ; $63E8
 	ld [audioStarting23], a
 	ret
 
-SECTION FRAGMENT "Audio", ROM0, align[10]
+SECTION "audio/audiomain", ROM0, align[10]
 _UpdateAudio:: ; $6800
 ; update audio for this frame
 	call CheckCancel

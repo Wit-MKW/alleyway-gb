@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Audio", ROM0
+SECTION "audio/effects", ROM0
 UpdateAud1:: ; $69FB
 ; update channel 1 (sfx channel) for this frame
 ; if update occurred:
@@ -860,11 +860,11 @@ LoadFourRegs:: ; $7073
 ; out(HL) = in(HL)+3
 rept 3
 	ld a, [hl+]
-	ld [c], a
+	ldh [c], a
 	inc c
 endr
 	ld a, [hl+]
-	ld [c], a
+	ldh [c], a
 	ret
 
 UpdateAudTerm:: ; $707F

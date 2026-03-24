@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "gfx", ROM0
 DrawMainStripArray:: ; $02A1
 ; draw the strip array at mainStripArray if needed
 ; out(A) = 0
@@ -210,7 +210,7 @@ FillNameTable1:: ; $035D
 .start::
 	ld bc, SCRN_VX_B * SCRN_VY_B
 .loop::
-	ld a, " "
+	ld a, ' '
 	ld [hl+], a
 	dec bc
 	ld a, b

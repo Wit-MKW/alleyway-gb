@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "racquet", ROM0
 MoveRacquetSprite:: ; $109D
 ; perform one frame of racquet movement, then update its sprite
 ; out(A) = OAMF_PAL0|OAMF_BANK0 (|OAMF_XFLIP unless small racquet)

@@ -7,6 +7,6 @@ Switch Online members as part of the 35th anniversary of the Game Boy, which is
 how I first played the game, at which point I decided to disassemble it.
 
 To build, use the shell script `build.sh` in the root of the source tree. This
-will produce a 32 KiB file in the `src` directory named `Alleyway (World).gb`
-with a CRC32 of `5cc01586`, a header CRC32 of `cbaa161b`, and a SHA1 of
+will produce a 32 KiB file named `Alleyway (World).gb` with a CRC32 of
+`5cc01586`, a header CRC32 of `cbaa161b`, and a SHA1 of
 `0cf2b8d0428f389f5361f67a0cd1ace05a1c75cc`.

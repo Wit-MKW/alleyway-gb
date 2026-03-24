@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "puck", ROM0
 UpdateBall:: ; $0CA6
 ; perform one frame of ball physics, then update its sprite
 ; out(A) = OAMF_PAL0|OAMF_BANK0

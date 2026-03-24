@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "math", ROM0
 MultiplyBxE:: ; $0454
 ; out(BC) = in(B) * in(E)
 ; out(E) = 0

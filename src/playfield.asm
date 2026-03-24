@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "playfield", ROM0
 SetupStage:: ; $092A
 ; load the stage with ID in(A) into WRAM
 ; out(A) = max(out(B) - STAGE_ROWS_ONSCREEN, 0)

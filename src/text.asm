@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "text", ROM0
 TitleScreenStripArray:: ; $41CD
 	strip _SCRN0, 0, 0, 0, $AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA
 	strip _SCRN0, 1, 0, 0, $AC,$AC,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$AC,$AC,$A9
@@ -454,15 +454,15 @@ MakeStageNumSprite:: ; $4669
 	ld [oamBuf + OAMA_FLAGS + 37*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_FLAGS + 38*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_FLAGS + 39*sizeof_OAM_ATTRS], a
-	ld a, "S"
+	ld a, 'S'
 	ld [oamBuf + OAMA_TILEID + 32*sizeof_OAM_ATTRS], a
-	ld a, "T"
+	ld a, 'T'
 	ld [oamBuf + OAMA_TILEID + 33*sizeof_OAM_ATTRS], a
-	ld a, "A"
+	ld a, 'A'
 	ld [oamBuf + OAMA_TILEID + 34*sizeof_OAM_ATTRS], a
-	ld a, "G"
+	ld a, 'G'
 	ld [oamBuf + OAMA_TILEID + 35*sizeof_OAM_ATTRS], a
-	ld a, "E"
+	ld a, 'E'
 	ld [oamBuf + OAMA_TILEID + 36*sizeof_OAM_ATTRS], a
 	ld a, $3E ; blank space.
 	ld [oamBuf + OAMA_TILEID + 37*sizeof_OAM_ATTRS], a
@@ -470,10 +470,10 @@ MakeStageNumSprite:: ; $4669
 	call ToDecimalA
 	push af
 	ld a, b
-	add a, "0"
+	add a, '0'
 	ld [oamBuf + OAMA_TILEID + 38*sizeof_OAM_ATTRS], a
 	pop af
-	add a, "0"
+	add a, '0'
 	ld [oamBuf + OAMA_TILEID + 39*sizeof_OAM_ATTRS], a
 	ret
 
@@ -504,15 +504,15 @@ MakeBonusSprite:: ; $46F7
 	ld [oamBuf + OAMA_FLAGS + 38*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_FLAGS + 39*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_FLAGS + 36*sizeof_OAM_ATTRS], a
-	ld a, "B"
+	ld a, 'B'
 	ld [oamBuf + OAMA_TILEID + 32*sizeof_OAM_ATTRS], a
-	ld a, "O"
+	ld a, 'O'
 	ld [oamBuf + OAMA_TILEID + 33*sizeof_OAM_ATTRS], a
-	ld a, "N"
+	ld a, 'N'
 	ld [oamBuf + OAMA_TILEID + 34*sizeof_OAM_ATTRS], a
-	ld a, "U"
+	ld a, 'U'
 	ld [oamBuf + OAMA_TILEID + 35*sizeof_OAM_ATTRS], a
-	ld a, "S"
+	ld a, 'S'
 	ld [oamBuf + OAMA_TILEID + 36*sizeof_OAM_ATTRS], a
 	ret
 
@@ -542,15 +542,15 @@ MakePauseSprite:: ; $474C
 	ld [oamBuf + OAMA_FLAGS + 38*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_FLAGS + 39*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_FLAGS + 36*sizeof_OAM_ATTRS], a
-	ld a, "P"
+	ld a, 'P'
 	ld [oamBuf + OAMA_TILEID + 32*sizeof_OAM_ATTRS], a
-	ld a, "A"
+	ld a, 'A'
 	ld [oamBuf + OAMA_TILEID + 33*sizeof_OAM_ATTRS], a
-	ld a, "U"
+	ld a, 'U'
 	ld [oamBuf + OAMA_TILEID + 34*sizeof_OAM_ATTRS], a
-	ld a, "S"
+	ld a, 'S'
 	ld [oamBuf + OAMA_TILEID + 35*sizeof_OAM_ATTRS], a
-	ld a, "E"
+	ld a, 'E'
 	ld [oamBuf + OAMA_TILEID + 36*sizeof_OAM_ATTRS], a
 	ret
 
@@ -570,10 +570,10 @@ DispWindowStageNum:: ; $47A1
 	call ToDecimalA
 	push af
 	ld a, b
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	pop af
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	xor a
 	ld [hl+], a
@@ -594,7 +594,7 @@ DispNumLives:: ; $47C7
 	ld a, 1
 	ld [hl+], a
 	ld a, [numLives]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	xor a
 	ld [hl+], a
@@ -614,13 +614,13 @@ DispTimeLabel:: ; $47E4
 	ld [hl+], a
 	ld a, 4
 	ld [hl+], a
-	ld a, "T"
+	ld a, 'T'
 	ld [hl+], a
-	ld a, "I"
+	ld a, 'I'
 	ld [hl+], a
-	ld a, "M"
+	ld a, 'M'
 	ld [hl+], a
-	ld a, "E"
+	ld a, 'E'
 	ld [hl+], a
 .end::
 	xor a
@@ -641,7 +641,7 @@ EraseTimeLabel:: ; $4807
 	ld [hl+], a
 	ld a, 4
 	ld [hl+], a
-	ld a, " "
+	ld a, ' '
 	ld [hl+], a
 	ld [hl+], a
 	ld [hl+], a
@@ -662,7 +662,7 @@ DispScore:: ; $481E
 	ld [hl+], a
 	ld a, 128 + OAM_X_OFS
 	ld [hl+], a
-	ld b, " "
+	ld b, ' '
 	ldh a, [decOutput+4]
 	cp $00
 	jr z, .good_icon
@@ -683,7 +683,7 @@ DispScore:: ; $481E
 	ld a, 128 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+3]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -692,7 +692,7 @@ DispScore:: ; $481E
 	ld a, 136 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+2]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -701,7 +701,7 @@ DispScore:: ; $481E
 	ld a, 144 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+1]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -710,7 +710,7 @@ DispScore:: ; $481E
 	ld a, 152 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -722,7 +722,7 @@ DispScore:: ; $481E
 	ld [hl+], a
 	ld a, 128 + OAM_X_OFS
 	ld [hl+], a
-	ld b, " "
+	ld b, ' '
 	ldh a, [decOutput+4]
 	cp $00
 	jr z, .good_icon_hi
@@ -743,7 +743,7 @@ DispScore:: ; $481E
 	ld a, 128 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+3]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -752,7 +752,7 @@ DispScore:: ; $481E
 	ld a, 136 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+2]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -761,7 +761,7 @@ DispScore:: ; $481E
 	ld a, 144 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+1]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -770,7 +770,7 @@ DispScore:: ; $481E
 	ld a, 152 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -790,7 +790,7 @@ DispHiScore:: ; $48E4
 	ld [hl+], a
 	ld a, 104 + OAM_X_OFS
 	ld [hl+], a
-	ld b, " "
+	ld b, ' '
 	ldh a, [decOutput+4]
 	cp $00
 	jr z, .good_icon
@@ -811,7 +811,7 @@ DispHiScore:: ; $48E4
 	ld a, 104 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+3]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -820,7 +820,7 @@ DispHiScore:: ; $48E4
 	ld a, 112 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+2]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -829,7 +829,7 @@ DispHiScore:: ; $48E4
 	ld a, 120 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+1]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -838,7 +838,7 @@ DispHiScore:: ; $48E4
 	ld a, 128 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -858,7 +858,7 @@ DispSpecialBonus:: ; $4949
 	ld a, 40 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+3]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -867,7 +867,7 @@ DispSpecialBonus:: ; $4949
 	ld a, 48 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+2]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -876,7 +876,7 @@ DispSpecialBonus:: ; $4949
 	ld a, 56 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput+1]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -885,7 +885,7 @@ DispSpecialBonus:: ; $4949
 	ld a, 64 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [decOutput]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -928,21 +928,21 @@ DispGameOver:: ; $498A
 	ld [oamBuf + OAMA_FLAGS + 5*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_FLAGS + 6*sizeof_OAM_ATTRS], a
 	ld [oamBuf + OAMA_FLAGS + 7*sizeof_OAM_ATTRS], a
-	ld a, "G"
+	ld a, 'G'
 	ld [oamBuf + OAMA_TILEID], a
-	ld a, "A"
+	ld a, 'A'
 	ld [oamBuf + OAMA_TILEID + sizeof_OAM_ATTRS], a
-	ld a, "M"
+	ld a, 'M'
 	ld [oamBuf + OAMA_TILEID + 2*sizeof_OAM_ATTRS], a
-	ld a, "E"
+	ld a, 'E'
 	ld [oamBuf + OAMA_TILEID + 3*sizeof_OAM_ATTRS], a
-	ld a, "O"
+	ld a, 'O'
 	ld [oamBuf + OAMA_TILEID + 4*sizeof_OAM_ATTRS], a
-	ld a, "V"
+	ld a, 'V'
 	ld [oamBuf + OAMA_TILEID + 5*sizeof_OAM_ATTRS], a
-	ld a, "E"
+	ld a, 'E'
 	ld [oamBuf + OAMA_TILEID + 6*sizeof_OAM_ATTRS], a
-	ld a, "R"
+	ld a, 'R'
 	ld [oamBuf + OAMA_TILEID + 7*sizeof_OAM_ATTRS], a
 	ret
 
@@ -983,7 +983,7 @@ DispBounceSpeed:: ; $4A29
 	ld a, 8 + OAM_X_OFS
 	ld [hl+], a
 	ldh a, [bounceSpeed]
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a

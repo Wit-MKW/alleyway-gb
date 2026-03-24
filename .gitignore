@@ -1,5 +1,6 @@
+build
+linkscript
 *.2bpp
-*.gbo
 *.gb
 *.map
 *.sym

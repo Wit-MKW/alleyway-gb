@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "special", ROM0
 SpecialTimeTick:: ; $198C
 ; tick the special timer if appropriate, play faster music if it hits 20, then display it
 ; if timer updated:
@@ -38,7 +38,7 @@ DispSpecialTime:: ; $19A2
 	ld a, 136 + OAM_X_OFS
 	ld [hl+], a
 	ld a, b
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
@@ -47,7 +47,7 @@ DispSpecialTime:: ; $19A2
 	ld a, 144 + OAM_X_OFS
 	ld [hl+], a
 	ld a, c
-	add a, "0"
+	add a, '0'
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a

@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "input", ROM0
 GetInput:: ; $03C1
 ; write current input data to HRAM
 ; out(B) = 0

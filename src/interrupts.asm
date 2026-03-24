@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "interrupts", ROM0
 DisableVblank:: ; $0446
 ; disable vblank interrupt
 ; out(A) = [rIE] &= ~IEF_VBLANK

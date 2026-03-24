@@ -9,7 +9,7 @@ macro sine_table_entry
 	popo
 endm
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "sinetables", ROM0
 SineTables:: ; $11EE
 for i, 25
 	dw SineTable_{d:i}

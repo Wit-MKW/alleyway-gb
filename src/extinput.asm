@@ -47,7 +47,7 @@ setcharmap DMG
 ;       might well have matched the $01 byte that the Game Boy
 ;       initially sends in lieu of a button status.
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "extinput", ROM0
 _IntSerial:: ; $0272
 	push af
 	push bc
@@ -59,8 +59,6 @@ _IntSerial:: ; $0272
 	ld b, a
 	ldh a, [rSB]
 	ldh [paddleButtons], a
-; ~((new buttons) ^ (old buttons)) | (new buttons)
-; only newly-cleared bits (newly-pressed buttons) are clear
 	ld c, a
 	xor b
 	xor $FF

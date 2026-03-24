@@ -1,7 +1,7 @@
 include "common.inc"
 setcharmap DMG
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "display", ROM0
 _IntVblank:: ; $01EF
 	push af
 	push bc

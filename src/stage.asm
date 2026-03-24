@@ -7,7 +7,7 @@ def SCROLLER equ (1 << SCROLLER_BIT)
 def SCROLL_LEFT equ (0 << 7)
 def SCROLL_RIGHT equ (1 << 7)
 
-SECTION FRAGMENT "Main code", ROM0
+SECTION "stage", ROM0
 
 ; BUG: the ball cannot bounce off the right edge of the racquet at a 15° angle.
 NormalRacquetAngles:: ; $1B41
