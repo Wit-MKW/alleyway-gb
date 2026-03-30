@@ -16,7 +16,7 @@ for i, 25
 endr
 
 for i, 25
-SineTable_{d:i}:: ; $1220 + $4C*i
+SineTable_{d:i}: ; $1220 + $4C*i
 for j, 19
 	sine_table_entry j, i
 endr

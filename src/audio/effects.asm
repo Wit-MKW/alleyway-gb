@@ -60,7 +60,7 @@ UpdateAud1:: ; $69FB
 	cp EFFECT_BOUNCE_WALL
 	jp z, .continue_bounce_wall
 	ret
-.start_one_up::
+.start_one_up
 	ld a, EFFECT_ONE_UP
 	ld [audioPlaying1], a
 	ld a, $07
@@ -69,7 +69,7 @@ UpdateAud1:: ; $69FB
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.start_brick1::
+.start_brick1
 	ld a, [audioPlayingRacquetShrink]
 	cp $01
 	jp z, .no_start_brick1
@@ -80,9 +80,9 @@ UpdateAud1:: ; $69FB
 	ld hl, SampleBrick1_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
-.no_start_brick1::
+.no_start_brick1
 	ret
-.start_bumper::
+.start_bumper
 	ld a, [audioPlayingRacquetShrink]
 	cp $01
 	jp z, .no_start_bumper
@@ -93,9 +93,9 @@ UpdateAud1:: ; $69FB
 	ld hl, SampleBumper_05
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
-.no_start_bumper::
+.no_start_bumper
 	ret
-.start_bounce_racquet::
+.start_bounce_racquet
 	ld a, [audioPlayingRacquetShrink]
 	cp $01
 	jp z, .no_start_bounce_racquet
@@ -106,9 +106,9 @@ UpdateAud1:: ; $69FB
 	ld hl, SampleBounceRacquet_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
-.no_start_bounce_racquet::
+.no_start_bounce_racquet
 	ret
-.start_brick2::
+.start_brick2
 	ld a, [audioPlayingRacquetShrink]
 	cp $01
 	jp z, .no_start_brick2
@@ -119,9 +119,9 @@ UpdateAud1:: ; $69FB
 	ld hl, SampleBrick2_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
-.no_start_brick2::
+.no_start_brick2
 	ret
-.start_brick3::
+.start_brick3
 	ld a, [audioPlayingRacquetShrink]
 	cp $01
 	jp z, .no_start_brick3
@@ -132,9 +132,9 @@ UpdateAud1:: ; $69FB
 	ld hl, SampleBrick3_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
-.no_start_brick3::
+.no_start_brick3
 	ret
-.start_deploy_ball::
+.start_deploy_ball
 	ld a, EFFECT_DEPLOY_BALL
 	ld [audioPlaying1], a
 	ld a, $04
@@ -143,7 +143,7 @@ UpdateAud1:: ; $69FB
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.start_special_bonus::
+.start_special_bonus
 	ld a, EFFECT_SPECIAL_BONUS
 	ld [audioPlaying1], a
 	ld a, $05
@@ -152,7 +152,7 @@ UpdateAud1:: ; $69FB
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.start_mario_start::
+.start_mario_start
 	ld a, EFFECT_MARIO_START
 	ld [audioPlaying1], a
 	ld a, $63 ; G#5
@@ -164,7 +164,7 @@ UpdateAud1:: ; $69FB
 	ld a, $FF
 	ld [audioCounter1], a
 	ret
-.start_mario_end::
+.start_mario_end
 	ld a, EFFECT_MARIO_END
 	ld [audioPlaying1], a
 	ld a, $0B ; C4
@@ -178,7 +178,7 @@ UpdateAud1:: ; $69FB
 	ld a, $FF
 	ld [audioCounter1], a
 	ret
-.start_racquet_shrink::
+.start_racquet_shrink
 	ld a, EFFECT_RACQUET_SHRINK
 	ld [audioPlaying1], a
 	ld a, $A5 ; F#6
@@ -188,7 +188,7 @@ UpdateAud1:: ; $69FB
 	ld a, $01
 	ld [audioPlayingRacquetShrink], a
 	ret
-.start_bounce_wall::
+.start_bounce_wall
 	ld a, [audioPlayingRacquetShrink]
 	cp $01
 	jp z, .no_start_bounce_wall
@@ -202,9 +202,9 @@ UpdateAud1:: ; $69FB
 	ld [audioSpecialHigh1], a
 	ld a, $FF
 	ld [audioCounter1], a
-.no_start_bounce_wall::
+.no_start_bounce_wall
 	ret
-.continue_one_up::
+.continue_one_up
 	ld a, [audioCounter1]
 	inc a
 	ld [audioCounter1], a
@@ -229,34 +229,34 @@ UpdateAud1:: ; $69FB
 	xor a
 	ld [audioPlaying1], a
 	jp FinishedAud1
-.continue_one_up_06::
+.continue_one_up_06
 	ld hl, SampleOneUp_06
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_one_up_05::
+.continue_one_up_05
 	ld hl, SampleOneUp_05
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_one_up_04::
+.continue_one_up_04
 	ld hl, SampleOneUp_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_one_up_03::
+.continue_one_up_03
 	ld hl, SampleOneUp_03
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_one_up_02::
+.continue_one_up_02
 	ld hl, SampleOneUp_02
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	xor a
 	ld [audioPlayingRacquetShrink], a
 	ret
-.continue_brick1::
+.continue_brick1
 	ld a, [audioCounter1]
 	inc a
 	ld [audioCounter1], a
@@ -275,22 +275,22 @@ UpdateAud1:: ; $69FB
 	jp z, .continue_brick1_02
 	cp $01
 	jp FinishedAud1
-.continue_brick1_04::
+.continue_brick1_04
 	ld hl, SampleBrick1_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_brick1_03::
+.continue_brick1_03
 	ld hl, SampleBrick1_03
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_brick1_02::
+.continue_brick1_02
 	ld hl, SampleBrick1_02
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_bumper::
+.continue_bumper
 	ld a, [audioCounter1]
 	inc a
 	ld [audioCounter1], a
@@ -309,22 +309,22 @@ UpdateAud1:: ; $69FB
 	jp z, .continue_bumper_02
 	cp $01
 	jp FinishedAud1
-.continue_bumper_04::
+.continue_bumper_04
 	ld hl, SampleBumper_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_bumper_03::
+.continue_bumper_03
 	ld hl, SampleBumper_03
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_bumper_02::
+.continue_bumper_02
 	ld hl, SampleBumper_02
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_bounce_racquet::
+.continue_bounce_racquet
 	ld a, [audioCounter1]
 	inc a
 	ld [audioCounter1], a
@@ -343,22 +343,22 @@ UpdateAud1:: ; $69FB
 	jp z, .continue_bounce_racquet_02
 	cp $01
 	jp FinishedAud1
-.continue_bounce_racquet_04::
+.continue_bounce_racquet_04
 	ld hl, SampleBounceRacquet_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_bounce_racquet_03::
+.continue_bounce_racquet_03
 	ld hl, SampleBounceRacquet_03
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_bounce_racquet_02::
+.continue_bounce_racquet_02
 	ld hl, SampleBounceRacquet_02
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_brick2::
+.continue_brick2
 	ld a, [audioCounter1]
 	inc a
 	ld [audioCounter1], a
@@ -377,22 +377,22 @@ UpdateAud1:: ; $69FB
 	jp z, .continue_brick2_02
 	cp $01
 	jp FinishedAud1
-.continue_brick2_04::
+.continue_brick2_04
 	ld hl, SampleBrick2_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_brick2_03::
+.continue_brick2_03
 	ld hl, SampleBrick2_03
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_brick2_02::
+.continue_brick2_02
 	ld hl, SampleBrick2_02
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_brick3::
+.continue_brick3
 	ld a, [audioCounter1]
 	inc a
 	ld [audioCounter1], a
@@ -411,22 +411,22 @@ UpdateAud1:: ; $69FB
 	jp z, .continue_brick3_02
 	cp $01
 	jp FinishedAud1
-.continue_brick3_04::
+.continue_brick3_04
 	ld hl, SampleBrick3_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_brick3_03::
+.continue_brick3_03
 	ld hl, SampleBrick3_03
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_brick3_02::
+.continue_brick3_02
 	ld hl, SampleBrick3_02
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_deploy_ball::
+.continue_deploy_ball
 	ld a, [audioCounter1]
 	inc a
 	ld [audioCounter1], a
@@ -443,17 +443,17 @@ UpdateAud1:: ; $69FB
 	jp z, .continue_deploy_ball_02
 	cp $01
 	jp FinishedAud1
-.continue_deploy_ball_03::
+.continue_deploy_ball_03
 	ld hl, SampleDeployBall_03
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_deploy_ball_02::
+.continue_deploy_ball_02
 	ld hl, SampleDeployBall_02
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_special_bonus::
+.continue_special_bonus
 	ld a, [audioCounter1]
 	inc a
 	ld [audioCounter1], a
@@ -472,22 +472,22 @@ UpdateAud1:: ; $69FB
 	jp z, .continue_special_bonus_02
 	cp $01
 	jp FinishedAud1
-.continue_special_bonus_04::
+.continue_special_bonus_04
 	ld hl, SampleSpecialBonus_04
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_special_bonus_03::
+.continue_special_bonus_03
 	ld hl, SampleSpecialBonus_03
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_special_bonus_02::
+.continue_special_bonus_02
 	ld hl, SampleSpecialBonus_02
 	ld c, LOW(rNR10)
 	call LoadFiveRegs
 	ret
-.continue_mario_start::
+.continue_mario_start
 	ld a, $05
 	ld [audioSpecialCounter1], a
 	ld a, $04
@@ -501,7 +501,7 @@ UpdateAud1:: ; $69FB
 	ld a, [audioCounter1]
 	cp $00
 	jp z, .continue_mario_start_mode2
-.continue_mario_start_mode1::
+.continue_mario_start_mode1
 	ld a, [audioSpecialLow1]
 	inc a
 	cp $63 ; G#5
@@ -517,11 +517,11 @@ UpdateAud1:: ; $69FB
 	ld a, [audioSpecialHigh1]
 	ldh [rAUD1HIGH], a
 	ret
-.continue_mario_start_finish1::
+.continue_mario_start_finish1
 	ld a, $00
 	ld [audioCounter1], a
 	ret
-.continue_mario_start_mode2::
+.continue_mario_start_mode2
 	ld a, [audioSpecialLow2]
 	dec a
 	cp $10 ; C#5
@@ -537,12 +537,12 @@ UpdateAud1:: ; $69FB
 	ld a, [audioSpecialHigh1]
 	ldh [rAUD1HIGH], a
 	ret
-.continue_mario_start_finish2::
+.continue_mario_start_finish2
 	xor a
 	ld [audioPlaying1], a
 	ldh [rAUD1ENV], a
 	jp FinishedAud1
-.continue_mario_end::
+.continue_mario_end
 	ld a, $09
 	ld [audioSpecialCounter1], a
 	ld a, $04
@@ -556,7 +556,7 @@ UpdateAud1:: ; $69FB
 	ld a, [audioCounter1]
 	cp $00
 	jp z, .continue_mario_end_mode2
-.continue_mario_end_mode1::
+.continue_mario_end_mode1
 	ld a, [audioSpecialLow1]
 	inc a
 	cp $89 ; F4
@@ -572,11 +572,11 @@ UpdateAud1:: ; $69FB
 	ld a, [audioSpecialHigh1]
 	ldh [rAUD1HIGH], a
 	ret
-.continue_mario_end_finish1::
+.continue_mario_end_finish1
 	ld a, $00
 	ld [audioCounter1], a
 	ret
-.continue_mario_end_mode2::
+.continue_mario_end_mode2
 	ld a, [audioSpecialLow2]
 	dec a
 	cp $1E ; D5
@@ -592,12 +592,12 @@ UpdateAud1:: ; $69FB
 	ld a, [audioSpecialHigh2]
 	ldh [rAUD1HIGH], a
 	ret
-.continue_mario_end_finish2::
+.continue_mario_end_finish2
 	xor a
 	ld [audioPlaying1], a
 	ldh [rAUD1ENV], a
 	ret
-.continue_racquet_shrink::
+.continue_racquet_shrink
 	ld a, $08
 	ld [audioSpecialCounter2], a
 	ld a, $00|AUD1SWEEP_UP
@@ -606,7 +606,7 @@ UpdateAud1:: ; $69FB
 	ldh [rAUD1LEN], a
 	ld a, $90|AUDENV_DOWN
 	ldh [rAUD1ENV], a
-.continue_racquet_shrink_loop::
+.continue_racquet_shrink_loop
 	ld a, [audioSpecialLow2]
 	dec a
 	cp $06 ; C5
@@ -622,14 +622,14 @@ UpdateAud1:: ; $69FB
 	ld a, [audioSpecialHigh2]
 	ldh [rAUD1HIGH], a
 	ret
-.continue_racquet_shrink_finish::
+.continue_racquet_shrink_finish
 	xor a
 	ld [audioPlaying1], a
 	ldh [rAUD1ENV], a
 	ld [audioPlayingRacquetShrink], a
 	jp FinishedAud1
 	ret
-.continue_bounce_wall::
+.continue_bounce_wall
 	ld a, $28
 	ld [audioSpecialCounter1], a
 	ld a, $28
@@ -643,7 +643,7 @@ UpdateAud1:: ; $69FB
 	ld a, [audioCounter1]
 	cp $00
 	jp z, .continue_bounce_wall_mode2
-.continue_bounce_wall_mode1::
+.continue_bounce_wall_mode1
 	ld a, [audioSpecialLow1]
 	dec a
 	cp $10 ; F3
@@ -659,11 +659,11 @@ UpdateAud1:: ; $69FB
 	ld a, [audioSpecialHigh1]
 	ldh [rAUD1HIGH], a
 	ret
-.continue_bounce_wall_finish1::
+.continue_bounce_wall_finish1
 	ld a, $00
 	ld [audioCounter1], a
 	ret
-.continue_bounce_wall_mode2::
+.continue_bounce_wall_mode2
 	ld a, [audioSpecialLow2]
 	inc a
 	cp $63 ; G3
@@ -679,18 +679,18 @@ UpdateAud1:: ; $69FB
 	ld a, [audioSpecialHigh1]
 	ldh [rAUD1HIGH], a
 	ret
-.continue_bounce_wall_finish2::
+.continue_bounce_wall_finish2
 	xor a
 	ld [audioPlaying1], a
 	ldh [rAUD1ENV], a
 	jp FinishedAud1
 
-ClearAudioUnused4:: ; $6F8B
+ClearAudioUnused4: ; $6F8B
 ; out(A) = 0
 	call _ClearAudioUnused4
 	ret
 
-FinishedAud1:: ; $6F8F
+FinishedAud1: ; $6F8F
 ; mute channel 1 upon its completion
 ; out(A) = 0
 	xor a
@@ -700,11 +700,11 @@ FinishedAud1:: ; $6F8F
 	ld [audioSampleCounter1], a
 	ret
 
-UpdateAud1Ret:: ; $6F9C
+UpdateAud1Ret: ; $6F9C
 ; do nothing
 	ret
 
-LoadFiveRegs:: ; $6F9D
+LoadFiveRegs: ; $6F9D
 ; copy five bytes from in(HL) to $FF00+in(C)
 ; out(A) = last byte
 ; out(C) = in(C)+4
@@ -720,113 +720,113 @@ endr
 
 ; AUD1 (SWEEP, LEN, ENV,  LOW,HIGH)
 
-SampleBounceRacquet_04:: ; $6FAC
+SampleBounceRacquet_04: ; $6FAC
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $72|AUDENV_DOWN
 	dw $74B|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F#5
-SampleBounceRacquet_03:: ; $6FB1
+SampleBounceRacquet_03: ; $6FB1
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $15|AUDENV_DOWN
 	dw $74B|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F#5
-SampleBounceRacquet_02:: ; $6FB6
+SampleBounceRacquet_02: ; $6FB6
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $17|AUDENV_DOWN
 	dw $74B|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F#5
 
-SampleBrick1_04:: ; $6FBB
+SampleBrick1_04: ; $6FBB
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $72|AUDENV_DOWN
 	dw $77B|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B5
-SampleBrick1_03:: ; $6FC0
+SampleBrick1_03: ; $6FC0
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $15|AUDENV_DOWN
 	dw $77B|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B5
-SampleBrick1_02:: ; $6FC5
+SampleBrick1_02: ; $6FC5
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $17|AUDENV_DOWN
 	dw $77B|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B5
 
-SampleBumper_05:: ; $6FCA
+SampleBumper_05: ; $6FCA
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $C2|AUDENV_DOWN
 	dw $7AC|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; G6
-SampleBumper_04:: ; $6FCF
+SampleBumper_04: ; $6FCF
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $C2|AUDENV_DOWN
 	dw $7BE|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B6
-SampleBumper_03:: ; $6FD4
+SampleBumper_03: ; $6FD4
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $95|AUDENV_DOWN
 	dw $7BE|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B6
-SampleBumper_02:: ; $6FD9
+SampleBumper_02: ; $6FD9
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $40|AUDENV_UP
 	dw $7BE|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B6
 
-SampleOneUp_07:: ; $6FDE
+SampleOneUp_07: ; $6FDE
 	db $00|AUD1SWEEP_UP, 49|AUDLEN_DUTY_25, $F2|AUDENV_DOWN
 	dw $759|(AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF)<<8 ; G5
-SampleOneUp_06:: ; $6FE3
+SampleOneUp_06: ; $6FE3
 	db $00|AUD1SWEEP_UP, 63|AUDLEN_DUTY_25, $F2|AUDENV_DOWN
 	dw $783|(AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF)<<8 ; C6
-SampleOneUp_05:: ; $6FE8
+SampleOneUp_05: ; $6FE8
 	db $00|AUD1SWEEP_UP, 63|AUDLEN_DUTY_50, $F2|AUDENV_DOWN
 	dw $79D|(AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF)<<8 ; E6
-SampleOneUp_04:: ; $6FED
+SampleOneUp_04: ; $6FED
 	db $00|AUD1SWEEP_UP, 63|AUDLEN_DUTY_50, $F2|AUDENV_DOWN
 	dw $783|(AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF)<<8 ; C6
-SampleOneUp_03:: ; $6FF2
+SampleOneUp_03: ; $6FF2
 	db $00|AUD1SWEEP_UP, 63|AUDLEN_DUTY_50, $F2|AUDENV_DOWN
 	dw $790|(AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF)<<8 ; D6
-SampleOneUp_02:: ; $6FF7
+SampleOneUp_02: ; $6FF7
 	db $00|AUD1SWEEP_UP, 63|AUDLEN_DUTY_50, $F2|AUDENV_DOWN
 	dw $7AC|(AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF)<<8 ; G6
 
-SampleBrick2_04:: ; $6FFC
+SampleBrick2_04: ; $6FFC
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $72|AUDENV_DOWN
 	dw $797|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; D#6
-SampleBrick2_03:: ; $7001
+SampleBrick2_03: ; $7001
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $15|AUDENV_DOWN
 	dw $797|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; D#6
-SampleBrick2_02:: ; $7006
+SampleBrick2_02: ; $7006
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $17|AUDENV_DOWN
 	dw $797|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; D#6
 
-SampleBrick3_04:: ; $700B
+SampleBrick3_04: ; $700B
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $72|AUDENV_DOWN
 	dw $7A7|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F#6
-SampleBrick3_03:: ; $7010
+SampleBrick3_03: ; $7010
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $15|AUDENV_DOWN
 	dw $7A7|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F#6
-SampleBrick3_02:: ; $7015
+SampleBrick3_02: ; $7015
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $17|AUDENV_DOWN
 	dw $7A7|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F#6
 
-SampleDeployBall_04:: ; $701A
+SampleDeployBall_04: ; $701A
 	db $12|AUD1SWEEP_DOWN, 1|AUDLEN_DUTY_50, $F0|AUDENV_DOWN
 	dw $79D|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; E6->A3->C#3->A2->F#2->E2->D#2->D2->Db2->C#2->C#2
-SampleDeployBall_03:: ; $701F
+SampleDeployBall_03: ; $701F
 	db $11|AUD1SWEEP_DOWN, 3|AUDLEN_DUTY_50, $72|AUDENV_DOWN
 	dw $79E|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; E6->B2->E2->Db2->C#2->C2 (proceeding imperceptibly lower.)
-SampleDeployBall_02:: ; $7024
+SampleDeployBall_02: ; $7024
 	db $12|AUD1SWEEP_UP, 3|AUDLEN_DUTY_25, $32|AUDENV_UP
 	dw $79F|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; E6 (period overflows, sweep stops.)
 
-SampleSpecialBonus_05:: ; $7029
+SampleSpecialBonus_05: ; $7029
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $72|AUDENV_DOWN
 	dw $77F|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B5
-SampleSpecialBonus_04:: ; $702E
+SampleSpecialBonus_04: ; $702E
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $15|AUDENV_DOWN
 	dw $77F|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B5
-SampleSpecialBonus_03:: ; $7033
+SampleSpecialBonus_03: ; $7033
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $72|AUDENV_DOWN
 	dw $77F|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B5
-SampleSpecialBonus_02:: ; $7038
+SampleSpecialBonus_02: ; $7038
 	db $00|AUD1SWEEP_UP, 1|AUDLEN_DUTY_50, $17|AUDENV_DOWN
 	dw $77F|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; B5
 
 ; unused duplicate of EFFECT_DEPLOY_BALL, pitched up
-UnusedSample1:: ; $703D
+UnusedSample1: ; $703D
 	db $12|AUD1SWEEP_DOWN, 1|AUDLEN_DUTY_50, $F0|AUDENV_DOWN
 	dw $7E9|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F8->B3->D2->A2->Gb2->E2->D#2->D2->Db2->C#2->C#2
-UnusedSample2:: ; $7042
+UnusedSample2: ; $7042
 	db $11|AUD1SWEEP_DOWN, 3|AUDLEN_DUTY_50, $72|AUDENV_DOWN
 	dw $7E9|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F8->B2->F2->D2->C#2->C2 (proceeding imperceptibly lower.)
-UnusedSample3:: ; $7047
+UnusedSample3: ; $7047
 	db $12|AUD1SWEEP_UP, 3|AUDLEN_DUTY_25, $32|AUDENV_UP
 	dw $7E9|(AUDHIGH_RESTART|AUDHIGH_LENGTH_ON)<<8 ; F8 (period overflows, sweep stops.)
 
-NoiseConfig:: ; $704C
+NoiseConfig: ; $704C
 	db 0|AUDLEN_DUTY_12_5, $F7|AUDENV_DOWN, $57|AUD4POLY_15STEP, AUDHIGH_RESTART|AUDHIGH_LENGTH_OFF
 
 UpdateChannels:: ; $7050
@@ -841,7 +841,7 @@ UpdateChannels:: ; $7050
 	jp z, .noise
 	call UpdateAudTerm
 	ret
-.noise::
+.noise
 	ld hl, NoiseConfig
 	ld c, LOW(rNR41)
 	ld a, 73
@@ -853,7 +853,7 @@ UpdateChannels:: ; $7050
 	call LoadFourRegs
 	ret
 
-LoadFourRegs:: ; $7073
+LoadFourRegs: ; $7073
 ; copy four bytes from in(HL) to $FF00+in(C)
 ; out(A) = last byte
 ; out(C) = in(C)+3
@@ -867,7 +867,7 @@ endr
 	ldh [c], a
 	ret
 
-UpdateAudTerm:: ; $707F
+UpdateAudTerm: ; $707F
 ; continue left-to-right rotation of audio
 ; out(A) = updated [rAUDTERM] if on one side, 0 otherwise
 	ld a, [audioAllStereoCounter]
@@ -884,14 +884,14 @@ UpdateAudTerm:: ; $707F
 	ld a, AUDTERM_4_RIGHT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT
 	ldh [rAUDTERM], a
 	ret
-.left::
+.left
 	ld a, AUDTERM_4_LEFT|AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT
 	ldh [rAUDTERM], a
 	ret
-.both::
+.both
 	ld a, AUDTERM_4_RIGHT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT|AUDTERM_4_LEFT|AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT
 	ldh [rAUDTERM], a
-.zero::
+.zero
 	xor a
 	ld [audioAllStereoCounter], a
 	ret

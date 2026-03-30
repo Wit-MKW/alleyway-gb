@@ -175,7 +175,7 @@ setcharmap Bricks
 	db 0
 	dw Stage01
 
-Stage01:: ; $1C44
+Stage01: ; $1C44
 	db "XXXXXXXXXXXXXX"
 	db "XXXXXXXXXXXXXX"
 	db "              "
@@ -190,7 +190,7 @@ Stage01:: ; $1C44
 	db " ------------ "
 	db " ------------ "
 	db "              ", $FF
-Stage04:: ; $1D09
+Stage04: ; $1D09
 	db "              "
 	db "              "
 	db "##############"
@@ -205,7 +205,7 @@ Stage04:: ; $1D09
 	db "--------------"
 	db "--------------"
 	db "              ", $FF
-Stage07:: ; $1DCE
+Stage07: ; $1DCE
 	db "              "
 	db "              "
 	db "# # # # # # # "
@@ -226,7 +226,7 @@ Stage07:: ; $1DCE
 	db " - - - - - - -"
 	db "- - - - - - - "
 	db "- - - - - - - ", $FF
-Stage10:: ; $1EE7
+Stage10: ; $1EE7
 	db "              "
 	db "              "
 	db "              "
@@ -243,7 +243,7 @@ Stage10:: ; $1EE7
 	db "----X----X----"
 	db "----X----X----"
 	db "    X    X    ", $FF
-Stage13:: ; $1FC8
+Stage13: ; $1FC8
 	db "              "
 	db "              "
 	db "#     ##     #"
@@ -262,7 +262,7 @@ Stage13:: ; $1FC8
 	db " -----  ----- "
 	db "  ---    ---  "
 	db "   -      -   ", $FF
-Stage16:: ; $20C5
+Stage16: ; $20C5
 	db "              "
 	db "              "
 	db "    +++++++   "
@@ -283,7 +283,7 @@ Stage16:: ; $20C5
 	db "              "
 	db "XX          XX"
 	db "XX          XX", $FF
-Stage19:: ; $21DE
+Stage19: ; $21DE
 	db "              "
 	db "              "
 	db "##############"
@@ -304,7 +304,7 @@ Stage19:: ; $21DE
 	db "--------------"
 	db "--------------"
 	db "--------------", $FF
-Stage22:: ; $22F7
+Stage22: ; $22F7
 	db "              "
 	db "              "
 	db "              "
@@ -324,7 +324,7 @@ Stage22:: ; $22F7
 	db "   XXX  XXX   "
 	db "   XXX  XXX   ", $FF
 
-Stage03:: ; $23F4
+Stage03: ; $23F4
 rept 18
 	db "              "
 endr
@@ -350,7 +350,7 @@ endr
 	db "              "
 	db "              "
 	db "              ", $FF
-Stage06:: ; $2625
+Stage06: ; $2625
 rept 8
 	db "              "
 endr
@@ -386,7 +386,7 @@ endr
 	db "              "
 	db "              "
 	db "              ", $FF
-Stage09:: ; $2856
+Stage09: ; $2856
 	db "              "
 	db "              "
 	db "# # # # # # # "
@@ -427,7 +427,7 @@ Stage09:: ; $2856
 	db "- - - - - - - "
 	db " - - - - - - -"
 	db " - - - - - - -", $FF
-Stage12:: ; $2A87
+Stage12: ; $2A87
 rept 6
 	db "              "
 endr
@@ -465,7 +465,7 @@ endr
 	db "              "
 	db "              "
 	db "              ", $FF
-Stage15:: ; $2CB8
+Stage15: ; $2CB8
 	db "              "
 	db "              "
 	db "              "
@@ -506,7 +506,7 @@ Stage15:: ; $2CB8
 	db "   -      -   "
 	db "              "
 	db "              ", $FF
-Stage18:: ; $2EE9
+Stage18: ; $2EE9
 	db "              "
 	db "              "
 	db "   +++++++    "
@@ -547,7 +547,7 @@ Stage18:: ; $2EE9
 	db "              "
 	db "XX          XX"
 	db "XX          XX", $FF
-Stage21:: ; $311A
+Stage21: ; $311A
 	db "              "
 	db "              "
 	db "              "
@@ -588,7 +588,7 @@ Stage21:: ; $311A
 	db "              "
 	db "              "
 	db "              ", $FF
-Stage24:: ; $334B
+Stage24: ; $334B
 	db "              "
 	db "              "
 	db "              "
@@ -630,7 +630,7 @@ Stage24:: ; $334B
 	db "              "
 	db "              ", $FF
 
-Special03:: ; $357C
+Special03: ; $357C
 	db "    ++++++    "
 	db "  ++++++++    "
 	db "    -#-###    "
@@ -651,7 +651,7 @@ Special03:: ; $357C
 	db "  ###   ###   "
 	db " ++++   ++++  "
 	db " ++++   ++++  ", $FF
-Special06:: ; $3695
+Special06: ; $3695
 	db " --           "
 	db " --           "
 	db " #-+   ###    "
@@ -672,7 +672,7 @@ Special06:: ; $3695
 	db "   ++++  +++  "
 	db "  -+++    ++- "
 	db "  -++     ++- ", $FF
-Special09:: ; $37AE
+Special09: ; $37AE
 	db "      -+      "
 	db "     --++     "
 	db "    -----+    "
@@ -693,7 +693,7 @@ Special09:: ; $37AE
 	db " -+ -+  -+ -+ "
 	db "  -  -- -+ -+ "
 	db "  --   -- --  ", $FF
-Special12:: ; $38C7
+Special12: ; $38C7
 	db "   +-   -+    "
 	db "  #+     +#   "
 	db " -##+  -+-#   "
@@ -714,7 +714,7 @@ Special12:: ; $38C7
 	db "  ++++-+++++  "
 	db "   +++-+++    "
 	db "     +-+      ", $FF
-Special15:: ; $39E0
+Special15: ; $39E0
 	db "              "
 	db "              "
 	db "     ###### # "
@@ -735,7 +735,7 @@ Special15:: ; $39E0
 	db "   ##--####+# "
 	db "   ######## # "
 	db "    ####### # ", $FF
-Special18:: ; $3AF9
+Special18: ; $3AF9
 	db "      ++      "
 	db "     ++++     "
 	db "  ###++++###  "
@@ -756,7 +756,7 @@ Special18:: ; $3AF9
 	db "   ##----##   "
 	db "  ## ---- ##  "
 	db "  ##  --  ##  ", $FF
-Special21:: ; $3C12
+Special21: ; $3C12
 	db "   +++        "
 	db "    +++       "
 	db "   ####   --  "
@@ -777,7 +777,7 @@ Special21:: ; $3C12
 	db "  ++-----# -  "
 	db "   ------- -  "
 	db "    ----      ", $FF
-Special24:: ; $3D2B
+Special24: ; $3D2B
 	db "     -        "
 	db "  #+--        "
 	db " #-+-         "
@@ -799,7 +799,7 @@ Special24:: ; $3D2B
 	db "         ++++ "
 	db "        -++++ ", $FF
 
-EmptyStage:: ; $3E44
+EmptyStage: ; $3E44
 rept STAGE_ROWS_HIGHEST
 	db "              "
 endr
@@ -814,12 +814,12 @@ ScrollConfigs:: ; $4075
 	dw UnusedScroll1, UnusedScroll2, UnusedScroll3, UnusedScroll4
 ; and four more aren't referenced in this list.
 
-Scroll02:: ; $408D
+Scroll02: ; $408D
 rept STAGE_ROWS_ONSCREEN
 	db SCROLL_LEFT | 4
 endr
 
-Scroll05:: ; $40A1
+Scroll05: ; $40A1
 	db $00
 	db $00
 	db SCROLL_LEFT | 4
@@ -841,7 +841,7 @@ Scroll05:: ; $40A1
 	db $00
 	db $00
 
-Scroll08:: ; $40B5
+Scroll08: ; $40B5
 	db $00
 	db $00
 	db SCROLL_LEFT | 8
@@ -863,7 +863,7 @@ Scroll08:: ; $40B5
 	db SCROLL_LEFT | 2
 	db SCROLL_LEFT | 2
 
-Scroll11:: ; $40C9
+Scroll11: ; $40C9
 	db $00
 	db $00
 	db SCROLL_RIGHT | 4
@@ -885,7 +885,7 @@ Scroll11:: ; $40C9
 	db $00
 	db $00
 
-Scroll14:: ; $40DD
+Scroll14: ; $40DD
 	db $00
 	db $00
 	db SCROLL_RIGHT | 15
@@ -907,7 +907,7 @@ Scroll14:: ; $40DD
 	db $00
 	db $00
 
-Scroll17:: ; $40F1
+Scroll17: ; $40F1
 	db $00
 	db $00
 	db SCROLL_LEFT | 16
@@ -929,7 +929,7 @@ Scroll17:: ; $40F1
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 
-Scroll20:: ; $4105
+Scroll20: ; $4105
 	db $00
 	db $00
 	db SCROLL_RIGHT | 4
@@ -951,7 +951,7 @@ Scroll20:: ; $4105
 	db SCROLL_RIGHT | 4
 	db SCROLL_RIGHT | 4
 
-Scroll23:: ; $4119
+Scroll23: ; $4119
 	db $00
 	db $00
 	db $00
@@ -973,7 +973,7 @@ Scroll23:: ; $4119
 	db $00
 	db $00
 
-UnusedScroll1:: ; $412D
+UnusedScroll1: ; $412D
 rept 4
 	db SCROLL_LEFT | 9
 	db SCROLL_LEFT | 9
@@ -985,7 +985,7 @@ endr
 	db SCROLL_RIGHT | 1
 	db SCROLL_RIGHT | 1
 
-UnusedScroll2:: ; $4141
+UnusedScroll2: ; $4141
 	db SCROLL_LEFT | 1
 	db SCROLL_LEFT | 1
 	db SCROLL_LEFT | 1
@@ -995,33 +995,33 @@ rept 8
 	db SCROLL_LEFT | 1
 endr
 
-UnusedScroll3:: ; $4155
+UnusedScroll3: ; $4155
 rept STAGE_ROWS_ONSCREEN
 	db SCROLL_LEFT | 1
 endr
 
-UnusedScroll4:: ; $4169
+UnusedScroll4: ; $4169
 rept STAGE_ROWS_ONSCREEN
 	db SCROLL_LEFT | 1
 endr
 
-UnusedScroll5:: ; $417D
+UnusedScroll5: ; $417D
 rept STAGE_ROWS_ONSCREEN/2
 	db SCROLL_LEFT | 1
 	db SCROLL_RIGHT | 1
 endr
 
-UnusedScroll6:: ; $4191
+UnusedScroll6: ; $4191
 for i, STAGE_ROWS_ONSCREEN
 	db SCROLL_LEFT | (i + 1)
 endr
 
-UnusedScroll7:: ; $41A5
+UnusedScroll7: ; $41A5
 rept STAGE_ROWS_ONSCREEN
 	db SCROLL_LEFT | 1
 endr
 
-UnusedScroll8:: ; $41B9
+UnusedScroll8: ; $41B9
 rept STAGE_ROWS_ONSCREEN
 	db SCROLL_LEFT | 1
 endr

@@ -16,7 +16,7 @@ DrawMainStripArray:: ; $02A1
 	ld [mainStripUnused], a
 	ld [mainStripArray], a
 	ldh [drawNeeded], a
-.end::
+.end
 	ret
 
 DrawStripArray:: ; $02B7
@@ -68,22 +68,22 @@ DrawStrip:: ; $02C7
 	dec a
 	jr z, .copy_col
 	jr .fill_col
-.copy_row::
+.copy_row
 	ld a, [de]
 	ld [hl+], a
 	inc de
 	dec b
 	jr nz, .copy_row
 	ret
-.fill_row::
+.fill_row
 	ld a, [de]
 	inc de
-.loop::
+.loop
 	ld [hl+], a
 	dec b
 	jr nz, .loop
 	ret
-.copy_col::
+.copy_col
 	ld a, [de]
 	ld [hl], a
 	inc de
@@ -94,7 +94,7 @@ DrawStrip:: ; $02C7
 	dec b
 	jr nz, .copy_col
 	ret
-.fill_col::
+.fill_col
 	ld a, [de]
 	ld [hl], a
 	ld a, b
@@ -128,7 +128,7 @@ DrawGfxArray:: ; $0302
 	push de
 	push af
 	push bc
-.loop::
+.loop
 	ld a, [hl+]
 	cp $FF
 	jr z, .end
@@ -145,10 +145,10 @@ DrawGfxArray:: ; $0302
 	pop af
 	and $80
 	jr z, .fill
-.copy::
+.copy
 	ldh a, [gfxArrayWidth]
 	ld b, a
-.copy_loop::
+.copy_loop
 	ld a, [hl+]
 	ld [de], a
 	inc de
@@ -166,10 +166,10 @@ DrawGfxArray:: ; $0302
 	jr nz, .copy
 	pop de
 	jr .loop
-.fill::
+.fill
 	ldh a, [gfxArrayWidth]
 	ld b, a
-.fill_loop::
+.fill_loop
 	ld a, [hl]
 	ld [de], a
 	inc de
@@ -188,7 +188,7 @@ DrawGfxArray:: ; $0302
 	pop de
 	inc hl
 	jr .loop
-.end::
+.end
 	pop bc
 	pop af
 	ret
@@ -207,9 +207,9 @@ FillNameTable1:: ; $035D
 ; out(BC) = 0
 ; out(HL) = _SCRN1 + SCRN_VX_B*SCRN_VY_B
 	ld hl, _SCRN1
-.start::
+.start
 	ld bc, SCRN_VX_B * SCRN_VY_B
-.loop::
+.loop
 	ld a, ' '
 	ld [hl+], a
 	dec bc
@@ -226,7 +226,7 @@ ClearOAM:: ; $036C
 	ld b, OAM_COUNT*sizeof_OAM_ATTRS
 	ld a, $00
 	ld hl, oamBuf
-.loop::
+.loop
 	ld [hl+], a
 	dec b
 	jr nz, .loop
@@ -251,7 +251,7 @@ PrepareTileSet:: ; $0381
 	ld hl, tiles2_2bpp
 	ld de, _VRAM+$1000
 	ld bc, $0800
-.loop1::
+.loop1
 	ld a, [hl+]
 	ld [de], a
 	inc de
@@ -263,7 +263,7 @@ PrepareTileSet:: ; $0381
 	ld hl, tiles1_2bpp
 	ld de, _VRAM+$0800
 	ld bc, $0800
-.loop2::
+.loop2
 	ld a, [hl+]
 	ld [de], a
 	inc de
@@ -275,7 +275,7 @@ PrepareTileSet:: ; $0381
 	ld hl, tiles0_2bpp
 	ld de, _VRAM
 	ld bc, $0800
-.loop3::
+.loop3
 	ld a, [hl+]
 	ld [de], a
 	inc de

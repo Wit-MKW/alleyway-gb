@@ -20,7 +20,7 @@ TitleScreenStripArray:: ; $41CD
 	strip _SCRN0,16, 4, 0,  "©1989 ",$18,$19,$1A,$1B,$1C,$1D ; "©1989 Nintendo"
 	db $00
 
-NicePlay:: ; $42B3
+NicePlay: ; $42B3
 	strip _SCRN0, 2,3, 0, "NICE PLAY!"
 	strip _SCRN0, 4,4, 0,         $44,$45," "," "," ",$44,$45
 	strip _SCRN0, 5,3, 0,     $44,$46,$20,$21,$22,$23,$24,$44,$45
@@ -53,7 +53,7 @@ MarioStart:: ; $43DC
 	ld [marioY], a
 	ld a, $03
 	ld [marioFrameAlt], a
-.run_loop::
+.run_loop
 	call MarioRunStep
 	call DispCurrentMarioFrame
 	ld a, [marioX]
@@ -71,13 +71,13 @@ MarioStart:: ; $43DC
 	xor a
 	ld [marioJumpCounter], a
 	ld [marioSpeedX], a
-.jump_loop::
+.jump_loop
 	call DispCurrentMarioFrame
 	call MarioJump
 	ld a, [marioJumpCounter]
 	cp 24
 	jr c, .jump_loop
-.fall_loop::
+.fall_loop
 	call DispCurrentMarioFrame
 	ld a, [marioY]
 	inc a
@@ -116,20 +116,20 @@ MarioEnd:: ; $444D
 	jr nc, .right
 	ld b, $01
 	ld c, $06
-.right::
+.right
 	ld a, b
 	ld [marioSpeedX], a
 	ld a, c
 	ld [marioFrame], a
 	xor a
 	ld [marioJumpCounter], a
-.loop1::
+.loop1
 	call DispCurrentMarioFrame
 	call MarioJump
 	ld a, [marioJumpCounter]
 	cp 24
 	jr c, .loop1
-.loop2::
+.loop2
 	call DispCurrentMarioFrame
 	ld a, [marioY]
 	inc a
@@ -144,7 +144,7 @@ MarioEnd:: ; $444D
 	call DelayFrames
 	ret
 
-MarioRunStep:: ; $44A4
+MarioRunStep: ; $44A4
 ; advance Mario's running animation
 ; if frame changed: out(A) = [marioFrameAlt] = 5
 ; otherwise: out(A) = --[marioFrameAlt]
@@ -157,13 +157,13 @@ MarioRunStep:: ; $44A4
 	cp $03
 	jr c, .skip_zero
 	xor a
-.skip_zero::
+.skip_zero
 	ld [marioFrame], a
 	ld a, $05
 	ld [marioFrameAlt], a
 	ret
 
-DispCurrentMarioFrame:: ; $44BE
+DispCurrentMarioFrame: ; $44BE
 ; display the Mario frame with ID [marioFrame]
 ; out(A) = 0
 ; out(B) = [marioX]
@@ -179,7 +179,7 @@ DispCurrentMarioFrame:: ; $44BE
 	call DispMarioFrame
 	jp WaitVblank
 
-MarioJump:: ; $44CF
+MarioJump: ; $44CF
 ; advance Mario's jumping motion by one frame
 ; out(A) = Mario's OAMA_X coordinate
 ; out(B) = distance Mario moved horizontally
@@ -206,11 +206,11 @@ MarioJump:: ; $44CF
 	ld [marioX], a
 	ret
 
-MarioSpeedY:: ; $44F5
+MarioSpeedY: ; $44F5
 	db -3, -3, -3, -2, -2, -2, -1, -1, -1, -0, -1, -0
 	db  0,  1,  0,  1,  1,  1,  2,  2,  2,  3,  3,  3
 
-OpenRacquetDoor:: ; $450D
+OpenRacquetDoor: ; $450D
 ; show the door into the racquet opening
 ; out(A) = 3
 ; out(BC) = 0
@@ -218,7 +218,7 @@ OpenRacquetDoor:: ; $450D
 ; out(HL) = pointer to last tile ID
 	call MakeRacquetSprite
 	xor a
-.loop::
+.loop
 	push af
 	call SetRacquetTiles
 	ld a, $08
@@ -229,14 +229,14 @@ OpenRacquetDoor:: ; $450D
 	jr c, .loop
 	ret
 
-CloseRacquetDoor:: ; $4521
+CloseRacquetDoor: ; $4521
 ; show the door into the racquet closing
 ; out(A) = -1
 ; out(BC) = 0
 ; out(E) = 0
 ; out(HL) = pointer to last tile ID
 	ld a, $02
-.loop::
+.loop
 	push af
 	call SetRacquetTiles
 	ld a, 12
@@ -247,7 +247,7 @@ CloseRacquetDoor:: ; $4521
 	jr nz, .loop
 	ret
 
-SetRacquetTiles:: ; $4533
+SetRacquetTiles: ; $4533
 ; change the tiles that form the racquet
 ; out(A) = last tile ID
 ; out(B) = 0
@@ -274,10 +274,10 @@ SetRacquetTiles:: ; $4533
 	ld [oamBuf + OAMA_TILEID + 2*sizeof_OAM_ATTRS], a
 	ret
 
-RacquetFrames:: ; $4551
+RacquetFrames: ; $4551
 	db $00, $01, $02
 
-RacquetTiles:: ; $4554
+RacquetTiles: ; $4554
 	db $00, $04, $00
 	db $00, $03, $00
 	db $02, $03, $02
@@ -297,7 +297,7 @@ DispSmoke:: ; $455D
 	ld [marioY], a
 	xor a
 	ld [marioFrameAlt], a
-.loop::
+.loop
 	push bc
 	ld a, [marioX]
 	ld b, a
@@ -319,11 +319,11 @@ DispSmoke:: ; $455D
 	jr c, .loop
 	jp ClearLastSixObjs
 
-SmokeFrames:: ; $4599
+SmokeFrames: ; $4599
 	ds 8, $07
 	ds 12, $08
 	ds 16, $09
-.end:: ; $45BD
+.end
 
 MarioWink:: ; $45BD
 ; show Mario winking on the "NICE PLAY!" screen
@@ -334,7 +334,7 @@ MarioWink:: ; $45BD
 ; out(HL) = oamBuf + 40*sizeof_OAM_ATTRS
 	xor a
 	ld [marioFrameAlt], a
-.loop::
+.loop
 	push bc
 	ld b, 48 + OAM_X_OFS
 	ld c, 56 + OAM_Y_OFS
@@ -354,13 +354,13 @@ MarioWink:: ; $45BD
 	jr c, .loop
 	jp ClearLastSixObjs
 
-WinkFrames:: ; $45E6
+WinkFrames: ; $45E6
 	ds 8, $0A
 	ds 6, $0B
 	ds 6, $0C
 	ds 8, $0B
 	db $0A
-.end:: ; $4603
+.end
 
 DispGameScreen:: ; $4603
 ; setup the game screen
@@ -410,7 +410,7 @@ DispGameScreen:: ; $4603
 	call DrawStripArray.start
 	ld a, %00000000
 	call SetPalette
-.not_finished::
+.not_finished
 	call MakeLeftBorder
 	call RestoreIE
 	jp TurnOnLCD
@@ -622,7 +622,7 @@ DispTimeLabel:: ; $47E4
 	ld [hl+], a
 	ld a, 'E'
 	ld [hl+], a
-.end::
+.end
 	xor a
 	ld [hl+], a
 	inc a
@@ -673,7 +673,7 @@ DispScore:: ; $481E
 	cp $02
 	jr z, .good_icon
 	ld b, $C9 ; star.
-.good_icon::
+.good_icon
 	ld a, b
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
@@ -733,7 +733,7 @@ DispScore:: ; $481E
 	cp $02
 	jr z, .good_icon_hi
 	ld b, $C9 ; star.
-.good_icon_hi::
+.good_icon_hi
 	ld a, b
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
@@ -801,7 +801,7 @@ DispHiScore:: ; $48E4
 	cp $02
 	jr z, .good_icon
 	ld b, $C9
-.good_icon::
+.good_icon
 	ld a, b
 	ld [hl+], a
 	ld a, OAMF_PAL0|OAMF_BANK0
@@ -955,7 +955,7 @@ MakeLeftBorder:: ; $4A0F
 	ld hl, oamBuf + 15*sizeof_OAM_ATTRS
 	ld e, 8 + OAM_Y_OFS
 	ld d, SCRN_Y_B - 1
-.loop::
+.loop
 	ld a, e
 	ld [hl+], a
 	ld a, OAM_X_OFS
@@ -989,7 +989,7 @@ DispBounceSpeed:: ; $4A29
 	ld [hl+], a
 	ret
 
-GameScreen:: ; $4A3C
+GameScreen: ; $4A3C
 	strip _SCRN1, 0,0, 0, $BE
 	strip _SCRN1, 1,0, STRIP_COLUMN|STRIP_FILL|24, $B4
 	strip _SCRN0, 0,0, 0, $BD
@@ -1000,7 +1000,7 @@ GameScreen:: ; $4A3C
 	strip _SCRN1,16,2, 0, $B1,"x" ; "[Mario]x"
 	db $00
 
-DispMarioFrame:: ; $4A66
+DispMarioFrame: ; $4A66
 ; display the Mario frame with ID in(A)
 ; out(A) = 0
 ; out(DE) = end of frame data
@@ -1016,7 +1016,7 @@ DispMarioFrame:: ; $4A66
 	ld e, [hl]
 	ld hl, oamBuf + 34*sizeof_OAM_ATTRS
 	ld a, $04
-.loop::
+.loop
 	push af
 	ld a, [de]
 	add a, c
@@ -1037,81 +1037,81 @@ DispMarioFrame:: ; $4A66
 	jr nz, .loop
 	ret
 
-MarioFramePointers:: ; $4A8B
+MarioFramePointers: ; $4A8B
 for i, 13
 	be MarioFrame{d:i}
 endr
 
 ; jump into racquet
-MarioFrame0:: ; $4AA5
+MarioFrame0: ; $4AA5
 	db 0, 0, $06, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $07, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $08, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $09, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
-MarioFrame1:: ; $4AB5
+MarioFrame1: ; $4AB5
 	db 0, 0, $0A, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $0B, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $0C, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $0D, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
-MarioFrame2:: ; $4AC5
+MarioFrame2: ; $4AC5
 	db 0, 0, $0E, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $0F, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $10, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $11, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
-MarioFrame3:: ; $4AD5
+MarioFrame3: ; $4AD5
 	db 0, 0, $12, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $13, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $14, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $15, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
-MarioFrame4:: ; $4AE5
+MarioFrame4: ; $4AE5
 	db 0, 0, $16, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $17, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $18, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $19, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 
 ; jump out of racquet to the right
-MarioFrame5:: ; $4AF5
+MarioFrame5: ; $4AF5
 	db 0, 0, $1A, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $17, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $18, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $19, OAMF_PRI|OAMF_PAL0|OAMF_BANK0
 
 ; jump out of racquet to the left
-MarioFrame6:: ; $4B05
+MarioFrame6: ; $4B05
 	db 0, 0, $17, OAMF_PRI|OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $1A, OAMF_PRI|OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $19, OAMF_PRI|OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $18, OAMF_PRI|OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 
 ; puff of smoke under ball
-MarioFrame7:: ; $4B15
+MarioFrame7: ; $4B15
 	db 0, 0, " ", OAMF_PAL0|OAMF_BANK0
 	db 0, 8, " ", OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $1B, OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $1B, OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
-MarioFrame8:: ; $4B25
+MarioFrame8: ; $4B25
 	db 0, 0, $1C, OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $1C, OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $1D, OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $1D, OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
-MarioFrame9:: ; $4B35
+MarioFrame9: ; $4B35
 	db 0, 0, $1E, OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $1E, OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $1F, OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $1F, OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 
 ; "NICE PLAY!" wink
-MarioFrame10:: ; $4B45
+MarioFrame10: ; $4B45
 	db 0, 0, " ", OAMF_PAL0|OAMF_BANK0
 	db 0, 8, " ", OAMF_PAL0|OAMF_BANK0
 	db 8, 0, " ", OAMF_PAL0|OAMF_BANK0
 	db 8, 8, " ", OAMF_PAL0|OAMF_BANK0
-MarioFrame11:: ; $4B55
+MarioFrame11: ; $4B55
 	db 0, 0, $21, OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $22, OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $23, OAMF_PAL0|OAMF_BANK0
 	db 8, 8, $24, OAMF_PAL0|OAMF_BANK0
-MarioFrame12:: ; $4B65
+MarioFrame12: ; $4B65
 	db 0, 0, $21, OAMF_PAL0|OAMF_BANK0
 	db 0, 8, $22, OAMF_PAL0|OAMF_BANK0
 	db 8, 0, $25, OAMF_PAL0|OAMF_BANK0

@@ -7,7 +7,7 @@ DisableVblank:: ; $0446
 ; out(A) = [rIE] &= ~IEF_VBLANK
 	ldh a, [rIE]
 	and ~IEF_VBLANK
-.store::
+.store
 	ldh [rIE], a
 	ret
 

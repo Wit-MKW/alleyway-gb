@@ -14,7 +14,7 @@ MoveRacquetSprite:: ; $109D
 	call MakeRacquetSprite
 	ret
 
-MoveRacquet:: ; $10A4
+MoveRacquet: ; $10A4
 ; perform one frame of racquet movement based on user input
 ; out(A) = final [racquetX]
 ; if paddle used: out(B) = 119 + OAM_X_OFS - [racquetWidth]
@@ -32,7 +32,7 @@ MoveRacquet:: ; $10A4
 	rrca
 	jr nc, .ab_down
 	ld b, 3
-.ab_down::
+.ab_down
 	ldh a, [buttonsDown]
 	xor $FF
 	and PADF_LEFT|PADF_RIGHT
@@ -45,7 +45,7 @@ MoveRacquet:: ; $10A4
 	jr nc, .left
 	ld a, 7 + OAM_X_OFS
 	jr .left
-.right::
+.right
 	ldh a, [racquetWidth]
 	ld c, a
 	ld a, 119 + OAM_X_OFS
@@ -56,10 +56,10 @@ MoveRacquet:: ; $10A4
 	cp c
 	jr c, .left
 	ld a, c
-.left::
+.left
 	ldh [racquetX], a
 	ret
-.paddle::
+.paddle
 	ldh a, [racquetWidth]
 	ld b, a
 	ld a, 119 + OAM_X_OFS
@@ -71,14 +71,14 @@ MoveRacquet:: ; $10A4
 .check::
 	cp 7 + OAM_X_OFS
 	jr nc, .max
-.min::
+.min
 	ld a, 7 + OAM_X_OFS
 	jr .done
-.max::
+.max
 	cp b
 	jr c, .done
 	ld a, b
-.done::
+.done
 	ldh [racquetX], a
 	ret
 
@@ -131,7 +131,7 @@ BounceOffRacquet:: ; $1113
 	cp $00
 	jr z, .normalY
 	ld hl, SmallRacquetAngles
-.normalY::
+.normalY
 	add hl, de
 	ld a, [hl]
 	sla a
@@ -157,13 +157,13 @@ BounceOffRacquet:: ; $1113
 	cp $00
 	jr z, .normalX
 	ld d, 6
-.normalX::
+.normalX
 	pop af
 ; BUG: this checks what side the left edge of the ball is on, not the whole ball.
 	cp d
 	jr nc, .pos
 	call NegativeBC
-.pos::
+.pos
 	ld a, b
 	ldh [ballSpeedX], a
 	ld a, c
@@ -171,7 +171,7 @@ BounceOffRacquet:: ; $1113
 	call CheckStageFall
 	jp PlaySound.bounce_racquet
 
-CheckStageFall:: ; $116D
+CheckStageFall: ; $116D
 ; check if the stage should fall a row after hitting the racquet
 ; out(A) = updated [stageFallTimer]
 ; if action performed:
@@ -195,7 +195,7 @@ CheckStageFall:: ; $116D
 	jr c, .read_modulo
 	ld a, 1
 	jr .write_timer
-.read_modulo::
+.read_modulo
 	ld c, a
 	ld b, $00
 	inc a
@@ -203,7 +203,7 @@ CheckStageFall:: ; $116D
 	ld hl, StageFallModulo
 	add hl, bc
 	ld a, [hl]
-.write_timer::
+.write_timer
 	ldh [stageFallTimer], a
 	ret
 
@@ -243,7 +243,7 @@ MakeRacquetSprite:: ; $118F
 	ld a, OAMF_XFLIP|OAMF_PAL0|OAMF_BANK0
 	ld [hl+], a
 	ret
-.small::
+.small
 	ldh a, [racquetY]
 	ld [hl+], a
 	ldh a, [racquetX]

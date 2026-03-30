@@ -77,7 +77,7 @@ GiveBonus:: ; $0C71
 	inc a
 	ld [numLives], a
 	call PlaySound.one_up
-.skip_inc::
+.skip_inc
 	call DispNumLives
 	; fallthrough
 

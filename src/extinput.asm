@@ -67,7 +67,7 @@ _IntSerial:: ; $0272
 	pop bc
 	pop af
 	reti
-.got_angle::
+.got_angle
 	ldh a, [rSB]
 	ldh [paddleAngle], a
 	ld a, SCF_START|SCF_SOURCE

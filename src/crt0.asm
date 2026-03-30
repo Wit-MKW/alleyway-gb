@@ -1,63 +1,63 @@
 include "common.inc"
 
 SECTION "RST0", ROM0[$0000]
-RST0::
+RST0:
 ; restart as if by turning the console off & on
 	jp Entry
 
 SECTION "RST1", ROM0[$0008]
-RST1::
+RST1:
 ; HANG
 	rst RST7
 
 SECTION "RST2", ROM0[$0010]
-RST2::
+RST2:
 ; HANG
 	rst RST7
 
 SECTION "RST3", ROM0[$0018]
-RST3::
+RST3:
 ; HANG
 	rst RST7
 
 SECTION "RST4", ROM0[$0020]
-RST4::
+RST4:
 ; HANG
 	rst RST7
 
 SECTION "RST5", ROM0[$0028]
-RST5::
+RST5:
 ; HANG
 	rst RST7
 
 SECTION "RST6", ROM0[$0030]
-RST6::
+RST6:
 ; HANG
 	rst RST7
 
 SECTION "RST7", ROM0[$0038]
-RST7::
+RST7:
 ; HANG
 	rst RST7
 
 SECTION "IntVblank", ROM0[INT_HANDLER_VBLANK]
-IntVblank::
+IntVblank:
 	jp _IntVblank
 
 SECTION "IntStat", ROM0[INT_HANDLER_STAT]
-IntStat::
+IntStat:
 	jp _IntStat
 
 SECTION "IntTimer", ROM0[INT_HANDLER_TIMER]
-IntTimer::
+IntTimer:
 	jp _IntTimer
 
 SECTION "IntSerial", ROM0[INT_HANDLER_SERIAL]
-IntSerial::
+IntSerial:
 	jp _IntSerial
 
 SECTION "IntJoypad", ROM0[INT_HANDLER_JOYPAD]
-IntJoypad::
+IntJoypad:
 	reti
 
 SECTION "crt0", ROM0[$0100]
@@ -114,7 +114,7 @@ Entry:: ; $0150
 	ld c, $1F ; FIX: "ld c, $20"
 	xor a
 	ld b, $00
-.vram_clear_loop::
+.vram_clear_loop
 	ld [hl-], a
 	dec b
 	jr nz, .vram_clear_loop
@@ -127,7 +127,7 @@ Entry:: ; $0150
 	ld c, $3F ; FIX: "ld c, $20"
 	xor a
 	ld b, $00
-.wram_clear_loop::
+.wram_clear_loop
 	ld [hl-], a
 	dec b
 	jr nz, .wram_clear_loop
@@ -137,7 +137,7 @@ Entry:: ; $0150
 ; zero-fill HRAM
 	ld hl, _HRAM+$7E
 	ld b, $7F
-.hram_clear_loop::
+.hram_clear_loop
 	ld [hl-], a
 	dec b
 	jr nz, .hram_clear_loop
@@ -146,7 +146,7 @@ Entry:: ; $0150
 ; BUG: $FE00 is not written to by this routine.
 	ld hl, _OAMRAM+$FF
 	ld b, $FF ; FIX: "ld b, $00"
-.oam_clear_loop::
+.oam_clear_loop
 	ld [hl-], a
 	dec b
 	jr nz, .oam_clear_loop
@@ -160,7 +160,7 @@ Entry:: ; $0150
 	ld c, LOW(_DoOamDma)
 	ld b, DoOamDma.end - DoOamDma
 	ld hl, DoOamDma
-.hram_setup_loop::
+.hram_setup_loop
 	ld a, [hl+]
 	ldh [c], a
 	inc c

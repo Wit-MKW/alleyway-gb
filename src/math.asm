@@ -12,11 +12,11 @@ MultiplyBxE:: ; $0454
 	srl b
 	rr c
 	ld a, 8
-.loop::
+.loop
 	sla e
 	jr nc, .skip_add
 	add hl, bc
-.skip_add::
+.skip_add
 	srl b
 	rr c
 	dec a
@@ -45,12 +45,12 @@ ToDecimalA:: ; $047C
 ; out(C) = floor(in(A) / 100)
 	ld b, $FF
 	ld c, $FF
-.loop100::
+.loop100
 	inc c
 	sub 100
 	jr nc, .loop100
 	add a, 100
-.loop10::
+.loop10
 	inc b
 	sub 10
 	jr nc, .loop10
@@ -70,7 +70,7 @@ ToDecimalAB:: ; $048F
 	ldh [decOutput], a
 
 	ld b, $FF
-.loop10000::
+.loop10000
 	inc b
 	ldh a, [decOutput]
 	sub LOW(10000)
@@ -90,7 +90,7 @@ ToDecimalAB:: ; $048F
 	ldh [decOutput+4], a
 
 	ld b, $FF
-.loop1000::
+.loop1000
 	inc b
 	ldh a, [decOutput]
 	sub LOW(1000)
@@ -110,7 +110,7 @@ ToDecimalAB:: ; $048F
 	ldh [decOutput+3], a
 
 	ld b, $FF
-.loop100::
+.loop100
 	inc b
 	ldh a, [decOutput]
 	sub LOW(100)
@@ -127,7 +127,7 @@ ToDecimalAB:: ; $048F
 	ldh [decOutput+2], a
 
 	ld b, $FF
-.loop10::
+.loop10
 	inc b
 	ldh a, [decOutput]
 	sub 10
@@ -147,7 +147,7 @@ RandomNumber:: ; $0505
 ; BUG: RNG is pathetic, especially since the upper two bits are always ignored.
 	ld b, 5
 	ldh a, [random]
-.loop::
+.loop
 	add a, 13
 	dec b
 	jr nz, .loop

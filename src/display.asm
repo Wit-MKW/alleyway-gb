@@ -44,7 +44,7 @@ WaitVblank:: ; $0221
 ; out(A) = 1
 	ld a, $00
 	ldh [vblankTrigger], a
-.loop::
+.loop
 	halt
 	ldh a, [vblankTrigger]
 	cp $00

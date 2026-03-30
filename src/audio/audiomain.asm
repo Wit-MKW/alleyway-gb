@@ -94,7 +94,7 @@ PlaySound:: ; $63AE
 	jr .done
 .bounce_wall::
 	ld a, EFFECT_BOUNCE_WALL
-.done::
+.done
 	ld [audioStarting1], a
 	ret
 
@@ -103,7 +103,7 @@ PlayNoise:: ; $63E0
 ; out(A) = 1
 	ld a, $01
 	jr .but_why
-.but_why::
+.but_why
 	ld [audioNoiseFlag], a
 	ret
 
@@ -146,12 +146,12 @@ PlayMusic:: ; $63E8
 	jr .done
 .nice_play::
 	ld a, MUSIC_NICE_PLAY
-.done::
+.done
 	ld [audioStarting23], a
 	ret
 
 SECTION "audio/audiomain", ROM0, align[10]
-_UpdateAudio:: ; $6800
+_UpdateAudio: ; $6800
 ; update audio for this frame
 	call CheckCancel
 	call UpdateAud1
@@ -164,7 +164,7 @@ _UpdateAudio:: ; $6800
 	ld [audioStarting23], a
 	ret
 
-AudioTestEffect:: ; $681A
+AudioTestEffect: ; $681A
 ; play a sound effect based on what button is pressed
 ; * A: EFFECT_ONE_UP
 ; * B: EFFECT_BRICK1
@@ -193,42 +193,42 @@ AudioTestEffect:: ; $681A
 	bit PADB_DOWN, a
 	jp nz, .down_button
 	jp .nothing
-.a_button::
+.a_button
 	ld a, EFFECT_ONE_UP
 	ld [audioStarting1], a
 	ret
-.b_button::
+.b_button
 	ld a, EFFECT_BRICK1
 	ld [audioStarting1], a
 	ret
-.start_button::
+.start_button
 	ld a, EFFECT_BUMPER
 	ld [audioStarting1], a
 	ret
-.select_button::
+.select_button
 	ld a, EFFECT_BOUNCE_RACQUET
 	ld [audioStarting1], a
 	ret
-.right_button::
+.right_button
 	ld a, EFFECT_BRICK2
 	ld [audioStarting1], a
 	ret
-.left_button::
+.left_button
 	ld a, EFFECT_BRICK3
 	ld [audioStarting1], a
 	ret
-.up_button::
+.up_button
 	ld a, EFFECT_DEPLOY_BALL
 	ld [audioStarting1], a
 	ret
-.down_button::
+.down_button
 	ld a, EFFECT_SPECIAL_BONUS
 	ld [audioStarting1], a
 	ret
-.nothing::
+.nothing
 	ret
 
-AudioTestEffectMusic:: ; $6878
+AudioTestEffectMusic: ; $6878
 ; play a sound effect & music based on what button is pressed
 ; * see AudioTestEffect & AudioTestMusic for details.
 	ldh a, [audioButtonsPressed]
@@ -249,50 +249,50 @@ AudioTestEffectMusic:: ; $6878
 	bit PADB_DOWN, a
 	jp nz, .down_button
 	jp .nothing
-.a_button::
+.a_button
 	ld a, MUSIC_TITLE ; EFFECT_ONE_UP
 	ld [audioStarting1], a
 	ld [audioStarting23], a
 	ret
-.b_button::
+.b_button
 	ld a, MUSIC_MARIO_START ; EFFECT_BRICK1
 	ld [audioStarting1], a
 	ld [audioStarting23], a
 	ret
-.start_button::
+.start_button
 	ld a, MUSIC_GAME_OVER ; EFFECT_BUMPER
 	ld [audioStarting1], a
 	ld [audioStarting23], a
 	ret
-.select_button::
+.select_button
 	ld a, MUSIC_PAUSE ; EFFECT_BOUNCE_RACQUET
 	ld [audioStarting1], a
 	ld [audioStarting23], a
 	ret
-.right_button::
+.right_button
 	ld a, MUSIC_STAGE_END ; EFFECT_BRICK2
 	ld [audioStarting1], a
 	ld [audioStarting23], a
 	ret
-.left_button::
+.left_button
 	ld a, MUSIC_SPECIAL ; EFFECT_BRICK3
 	ld [audioStarting1], a
 	ld [audioStarting23], a
 	ret
-.up_button::
+.up_button
 	ld a, MUSIC_SPECIAL_FAST ; EFFECT_DEPLOY_BALL
 	ld [audioStarting1], a
 	ld [audioStarting23], a
 	ret
-.down_button::
+.down_button
 	ld a, MUSIC_SPECIAL_INTRO ; EFFECT_SPECIAL_BONUS
 	ld [audioStarting1], a
 	ld [audioStarting23], a
 	ret
-.nothing::
+.nothing
 	ret
 
-AudioTestNoise:: ; $68EE
+AudioTestNoise: ; $68EE
 ; play the noise of the ball falling out of play if the A button is pressed
 	ldh a, [audioButtonsPressed]
 	bit PADB_A, a
@@ -312,42 +312,42 @@ AudioTestNoise:: ; $68EE
 	bit PADB_DOWN, a
 	jp nz, .down_button
 	jp AudioTestEffect.nothing
-.a_button::
+.a_button
 	ld a, $01
 	ld [audioNoiseFlag], a
 	ret
-.b_button::
+.b_button
 	ld a, $02
 	ld [audioNoiseFlag], a
 	ret
-.start_button::
+.start_button
 	ld a, $03
 	ld [audioNoiseFlag], a
 	ret
-.select_button::
+.select_button
 	ld a, $04
 	ld [audioNoiseFlag], a
 	ret
-.right_button::
+.right_button
 	ld a, $05
 	ld [audioNoiseFlag], a
 	ret
-.left_button::
+.left_button
 	ld a, $06
 	ld [audioNoiseFlag], a
 	ret
-.up_button::
+.up_button
 	ld a, $07
 	ld [audioNoiseFlag], a
 	ret
-.down_button::
+.down_button
 	ld a, $08
 	ld [audioNoiseFlag], a
 	ret
-.nothing::
+.nothing
 	ret
 
-AudioTestMusic:: ; $694C
+AudioTestMusic: ; $694C
 ; play music based on what button is pressed
 ; * A: MUSIC_TITLE
 ; * B: MUSIC_MARIO_START
@@ -376,42 +376,42 @@ AudioTestMusic:: ; $694C
 	bit PADB_DOWN, a
 	jp nz, .down_button
 	jp .nothing
-.a_button::
+.a_button
 	ld a, MUSIC_TITLE
 	ld [audioStarting23], a
 	ret
-.b_button::
+.b_button
 	ld a, MUSIC_MARIO_START
 	ld [audioStarting23], a
 	ret
-.start_button::
+.start_button
 	ld a, MUSIC_GAME_OVER
 	ld [audioStarting23], a
 	ret
-.select_button::
+.select_button
 	ld a, MUSIC_PAUSE
 	ld [audioStarting23], a
 	ret
-.right_button::
+.right_button
 	ld a, MUSIC_STAGE_END
 	ld [audioStarting23], a
 	ret
-.left_button::
+.left_button
 	ld a, MUSIC_SPECIAL
 	ld [audioStarting23], a
 	ret
-.up_button::
+.up_button
 	ld a, MUSIC_SPECIAL_FAST
 	ld [audioStarting23], a
 	ret
-.down_button::
+.down_button
 	ld a, MUSIC_SPECIAL_INTRO
 	ld [audioStarting23], a
 	ret
-.nothing::
+.nothing
 	ret
 
-AudioGetInput:: ; $69AA
+AudioGetInput: ; $69AA
 ; write current input data to HRAM
 ; * [audioButtonsDown] bit clear: button depressed
 ; * [audioButtonsPressed] bit clear: button pressed anew
@@ -455,14 +455,14 @@ endr
 	pop af
 	ret
 
-CheckCancel:: ; $69E7
+CheckCancel: ; $69E7
 ; cancel audio to be played if appropriate
 ; out(A) = [audioCancelFlag] if not 1, else 0
 	ld a, [audioCancelFlag]
 	cp $01
 	jp z, .cancel
 	ret
-.cancel::
+.cancel
 	xor a
 	ld [audioStarting1], a
 	ld [audioNoiseFlag], a

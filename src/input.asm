@@ -39,27 +39,27 @@ endr
 	ldh a, [buttonsUp]
 	ld c, a
 	ldh a, [buttonsDown]
-.loop::
+.loop
 	rrc c
 	jr c, .pressed_before
 	rrca
 	jr nc, .pressed_anew
-.continue:: ; $040D
+.continue ; $040D
 	dec b
 	jr nz, .loop
 	ldh [buttonsPressed], a
 	ld a, c
 	ldh [buttonsUp], a
 	ret
-.pressed_before::
+.pressed_before
 	rrca
 	jr c, .released
 	set 7, a
 	jr .continue
-.released::
+.released
 	res 7, c
 	jr .continue
-.pressed_anew::
+.pressed_anew
 	set 7, c
 	jp .continue
 

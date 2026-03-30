@@ -23,7 +23,7 @@ SpecialTimeTick:: ; $198C
 	call z, PlayMusic.special_fast
 	; fallthrough
 
-DispSpecialTime:: ; $19A2
+DispSpecialTime: ; $19A2
 ; display the special timer
 ; out(A) = OAMF_PAL0|OAMF_BANK0
 ; out(B) = floor([specialTime] / 10) mod 10
@@ -53,7 +53,7 @@ DispSpecialTime:: ; $19A2
 	ld [hl+], a
 	ret
 
-TimeUpMode:: ; $19C7
+TimeUpMode: ; $19C7
 ; time's up!
 ; out(A) = gameMode_LOST_BALL
 	ld a, gameMode_LOST_BALL
@@ -77,7 +77,7 @@ SpecialStart:: ; $19CC
 	call DelayFrames
 	ret
 
-GetSpecialRules:: ; $19E2
+GetSpecialRules: ; $19E2
 ; get the rules for the current special stage
 ; out(A) = min([specialNum] - 1, 3)
 ; out(BC) = out(A) * SpecialRules_SIZEOF
@@ -88,7 +88,7 @@ GetSpecialRules:: ; $19E2
 	cp 3
 	jr c, .ok
 	ld a, 3
-.ok::
+.ok
 	ld b, a
 	ld e, SpecialRules_SIZEOF
 	call MultiplyBxE
@@ -114,7 +114,7 @@ FinishSpecialStage:: ; $19F7
 	call PlayMusic.special_end
 	ld a, 128
 	jp DelayFrames
-.no_bricks::
+.no_bricks
 	call PlayMusic.special_bonus
 rept 319 / 255
 	ld a, 255
@@ -123,7 +123,7 @@ endr
 	ld a, 319 % 255
 	call DelayFrames
 	jp .but_why
-.but_why::
+.but_why
 	call DispSpecialBonusText
 	call GetSpecialRules
 	inc hl
@@ -135,7 +135,7 @@ endr
 	ld a, 128
 	call DelayFrames
 	pop bc
-.loop::
+.loop
 	ld a, b
 	cp $00
 	jr nz, .ten_or_more
@@ -144,7 +144,7 @@ endr
 	ret z
 	cp 10
 	jr c, .less_than_ten
-.ten_or_more::
+.ten_or_more
 rept 10
 	dec bc
 endr
@@ -168,7 +168,7 @@ endr
 	call WaitVblank
 	pop bc
 	jr .loop
-.less_than_ten::
+.less_than_ten
 	dec bc
 	push bc
 	call DispSpecialBonus
@@ -194,7 +194,7 @@ endr
 	jr nz, .less_than_ten
 	ret
 
-DispSpecialBonusText:: ; $1A97
+DispSpecialBonusText: ; $1A97
 ; display the text "SPECIAL BONUS"
 ; out(A) = 1
 ; out(B) = 0
@@ -204,7 +204,7 @@ DispSpecialBonusText:: ; $1A97
 	ld hl, SpecialBonusText
 	ld de, mainStripArray
 	ld b, SpecialBonusText.end - SpecialBonusText
-.loop::
+.loop
 	ld a, [hl+]
 	ld [de], a
 	inc de
@@ -214,11 +214,11 @@ DispSpecialBonusText:: ; $1A97
 	ldh [drawNeeded], a
 	jp WaitVblank
 
-SpecialBonusText:: ; $1AAF
+SpecialBonusText: ; $1AAF
 	strip _SCRN0,26,2, 0, $C4,$C5,$C6,$C7,"Al BONUS" ; "SPECIAL BONUS"
 	strip _SCRN0,27,9, 0,                    "PTS."
 	db $00
-.end:: ; $1AC6
+.end: ; $1AC6
 
 EraseSpecialBonusText:: ; $1AC6
 ; erase what was displayed by DispSpecialBonusText
@@ -230,7 +230,7 @@ EraseSpecialBonusText:: ; $1AC6
 	ld hl, BlankSpecialBonusText
 	ld de, mainStripArray
 	ld b, BlankSpecialBonusText.end - BlankSpecialBonusText
-.loop::
+.loop
 	ld a, [hl+]
 	ld [de], a
 	inc de
@@ -240,11 +240,11 @@ EraseSpecialBonusText:: ; $1AC6
 	ldh [drawNeeded], a
 	jp WaitVblank
 
-BlankSpecialBonusText:: ; $1ADE
+BlankSpecialBonusText: ; $1ADE
 	strip _SCRN0,26,2, 0, "            "
 	strip _SCRN0,27,9, 0,        "    "
 	db $00
-.end:: ; $1AF5
+.end: ; $1AF5
 
 DispTryAgainText:: ; $1AF5
 ; display the text "TRY AGAIN!" under the "NICE PLAY!" graphic
@@ -256,7 +256,7 @@ DispTryAgainText:: ; $1AF5
 	ld hl, TryAgainText
 	ld de, mainStripArray
 	ld b, TryAgainText.end - TryAgainText
-.loop::
+.loop
 	ld a, [hl+]
 	ld [de], a
 	inc de
@@ -266,10 +266,10 @@ DispTryAgainText:: ; $1AF5
 	ldh [drawNeeded], a
 	jp WaitVblank
 
-TryAgainText:: ; $1B0D
+TryAgainText: ; $1B0D
 	strip _SCRN0,14,3, 0, "TRY AGAIN!"
 	db $00
-.end:: ; $1B1B
+.end: ; $1B1B
 
 EraseTryAgainText:: ; $1B1B
 ; erase what was displayed by DispTryAgainText
@@ -281,7 +281,7 @@ EraseTryAgainText:: ; $1B1B
 	ld hl, BlankTryAgainText
 	ld de, mainStripArray
 	ld b, BlankTryAgainText.end - BlankTryAgainText
-.loop::
+.loop
 	ld a, [hl+]
 	ld [de], a
 	inc de
@@ -291,7 +291,7 @@ EraseTryAgainText:: ; $1B1B
 	ldh [drawNeeded], a
 	jp WaitVblank
 
-BlankTryAgainText:: ; $1B33
+BlankTryAgainText: ; $1B33
 	strip _SCRN0,14,3, 0, "          "
 	db $00
-.end:: ; $1B41
+.end: ; $1B41

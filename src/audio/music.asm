@@ -89,7 +89,7 @@ UpdateAud23:: ; $70AE
 	cp $00
 	jp nz, ReadNotes23.note_not_finished2
 	ret
-.title::
+.title
 	ld a, MUSIC_TITLE ; $01
 	ld [audioNext23], a
 	ld [audioNext3], a
@@ -114,7 +114,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.mario_start::
+.mario_start
 	ld a, AUDTERM_4_LEFT|AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT|AUDTERM_4_RIGHT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT
 	ldh [rAUDTERM], a
 	xor a
@@ -138,7 +138,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.game_over::
+.game_over
 	ld a, MUSIC_GAME_OVER
 	ld [audioNext23], a
 	ld [audioNext3], a
@@ -164,7 +164,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.pause::
+.pause
 	xor a
 	ld [audio2StereoFlag], a
 	ld a, MUSIC_PAUSE
@@ -186,7 +186,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.stage_end::
+.stage_end
 	ld a, AUDTERM_4_LEFT|AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT|AUDTERM_4_RIGHT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT
 	ldh [rAUDTERM], a
 	xor a
@@ -210,7 +210,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.special::
+.special
 	ld a, MUSIC_SPECIAL
 	ld [audioNext23], a
 	ld [audioNext3], a
@@ -236,7 +236,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.special_fast::
+.special_fast
 	ld a, MUSIC_SPECIAL_FAST
 	ld [audioNext23], a
 	ld [audioNext3], a
@@ -262,7 +262,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.special_intro::
+.special_intro
 	xor a
 	ld [audio2StereoFlag], a
 	ld a, MUSIC_SPECIAL
@@ -284,7 +284,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.special_end::
+.special_end
 	xor a
 	ld [audio2StereoFlag], a
 	ld a, AUDTERM_4_LEFT|AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT|AUDTERM_4_RIGHT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT
@@ -308,7 +308,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.special_bonus::
+.special_bonus
 	xor a
 	ld [audio2StereoFlag], a
 	ld a, AUDTERM_4_LEFT|AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT|AUDTERM_4_RIGHT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT
@@ -332,7 +332,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.stage_fall::
+.stage_fall
 	xor a
 	ld [audio2StereoFlag], a
 	ld a, MUSIC_SPECIAL
@@ -354,7 +354,7 @@ UpdateAud23:: ; $70AE
 	ld [audioPointer3+1], a
 	call ReadNotes23
 	ret
-.nice_play::
+.nice_play
 	xor a
 	ld [audio2StereoFlag], a
 	ld a, MUSIC_SPECIAL
@@ -377,7 +377,7 @@ UpdateAud23:: ; $70AE
 	call ReadNotes23
 	ret
 
-ReadNotes23:: ; $738C
+ReadNotes23: ; $738C
 ; update channel 2&3's notes for this frame
 ; clobbers A
 ; if new note started: clobbers HL
@@ -393,7 +393,7 @@ ReadNotes23:: ; $738C
 	ld h, a
 	ld a, [audioPointer2+1]
 	ld l, a
-.next_byte2::
+.next_byte2
 	ld a, [hl+]
 	bit 7, a
 	jp nz, SetNoteLength2
@@ -405,7 +405,7 @@ ReadNotes23:: ; $738C
 	jp nz, .play_note2
 	call RestAud2
 	jr .rest2
-.play_note2::
+.play_note2
 	ld [audioNote2], a
 	ld a, 63|AUDLEN_DUTY_50
 	ldh [rAUD2LEN], a
@@ -424,7 +424,7 @@ ReadNotes23:: ; $738C
 	ld a, [hl]
 	ldh [rAUD2HIGH], a
 	pop hl
-.rest2::
+.rest2
 	xor a
 	ld a, h
 	ld [audioPointer2], a
@@ -435,7 +435,7 @@ ReadNotes23:: ; $738C
 	jr nz, .note_not_finished2
 	ld a, [audioModulo2]
 	ld [audioCounter2], a
-.note_not_finished2::
+.note_not_finished2
 ; update channel 3's note for this frame
 ; clobbers A
 ; if new note started: clobbers HL
@@ -451,7 +451,7 @@ ReadNotes23:: ; $738C
 	ld h, a
 	ld a, [audioPointer3+1]
 	ld l, a
-.next_byte3::
+.next_byte3
 	ld a, [hl+]
 	bit 7, a
 	jp nz, SetNoteLength3
@@ -463,7 +463,7 @@ ReadNotes23:: ; $738C
 	jp nz, .play_note3
 	call RestAud3
 	jr .rest3
-.play_note3::
+.play_note3
 	ld [audioNote3], a
 	push hl
 	ld a, AUD3ENA_OFF
@@ -487,7 +487,7 @@ ReadNotes23:: ; $738C
 	ld a, [hl]
 	ldh [rAUD3HIGH], a
 	pop hl
-.rest3::
+.rest3
 	ld a, h
 	ld [audioPointer3], a
 	ld a, l
@@ -497,17 +497,17 @@ ReadNotes23:: ; $738C
 	jr nz, .note_not_finished3
 	ld a, [audioModulo3]
 	ld [audioCounter3], a
-.note_not_finished3::
+.note_not_finished3
 	ret
 
-LoadWaveRam:: ; $745F
+LoadWaveRam: ; $745F
 ; setup wave RAM with a fixed wave
 ; out(A) = 0
 ; out(C) = LOW(_AUD3WAVERAM) + $10 - [prior audioWaveRamCounter]
 ; out(HL) = WaveRam + $10 - [prior audioWaveRamCounter]
 	ld hl, WaveRam
 	ld c, LOW(_AUD3WAVERAM)
-.loop::
+.loop
 	ld a, [hl+]
 	ldh [c], a
 	inc c
@@ -520,7 +520,7 @@ LoadWaveRam:: ; $745F
 	ld [audioWaveRamCounter], a
 	ret
 
-SetNoteLength2:: ; $7478
+SetNoteLength2: ; $7478
 ; set channel 2's note length from in(A)
 ; out(A) = new length
 ; out(D) = 0
@@ -537,7 +537,7 @@ SetNoteLength2:: ; $7478
 	pop hl
 	jp ReadNotes23.next_byte2
 
-SetNoteLength3:: ; $748D
+SetNoteLength3: ; $748D
 ; set channel 3's note length from in(A)
 ; out(A) = new length
 ; out(D) = 0
@@ -554,7 +554,7 @@ SetNoteLength3:: ; $748D
 	pop hl
 	jp ReadNotes23.next_byte3
 
-AudioNext:: ; $74A2
+AudioNext: ; $74A2
 ; play the next music (in practice, always a loop) for channels 2&3
 ; clobbers A
 ; clobbers HL
@@ -583,13 +583,13 @@ UpdateAudTerm2:: ; $74AB
 	ld a, AUDTERM_3_LEFT|AUDTERM_2_LEFT|AUDTERM_1_LEFT|AUDTERM_3_RIGHT|AUDTERM_1_RIGHT
 	ldh [rAUDTERM], a
 	ret
-.left_counterup::
+.left_counterup
 	xor a
 	ld [audio2StereoTerm], a
 	ld a, [audio2StereoModulo]
 	ld [audio2StereoCounter], a
 	ret
-.right::
+.right
 	ld a, [audio2StereoCounter]
 	dec a
 	ld [audio2StereoCounter], a
@@ -598,18 +598,18 @@ UpdateAudTerm2:: ; $74AB
 	ld a, AUDTERM_3_LEFT|AUDTERM_1_LEFT|AUDTERM_3_RIGHT|AUDTERM_2_RIGHT|AUDTERM_1_RIGHT
 	ldh [rAUDTERM], a
 	ret
-.right_counterup::
+.right_counterup
 	ld a, $01
 	ld [audio2StereoTerm], a
 	ld a, [audio2StereoModulo]
 	ld [audio2StereoCounter], a
 	ret
-.mono::
+.mono
 	xor a
 	ld [audio2StereoFlag], a
 	ret
 
-StopAud2:: ; $74F9
+StopAud2: ; $74F9
 ; cancel anything to be played on channel 2 & mute [BUG: channel 1]
 ; out(A) = 0
 	xor a
@@ -618,7 +618,7 @@ StopAud2:: ; $74F9
 	ldh [rAUD1ENV], a ; FIX: "ldh [rAUD2ENV], a"
 	ret
 
-StopAud3:: ; $7503
+StopAud3: ; $7503
 ; cancel anything to be played on channel 3 & mute it
 ; out(A) = 0
 	xor a
@@ -639,21 +639,21 @@ _StopAudio:: ; $750D
 	ldh [rAUD3LEVEL], a
 	ret
 
-RestAud2:: ; $751E
+RestAud2: ; $751E
 ; take a rest on channel 2
 ; out(A) = 0
 	xor a
 	ldh [rAUD2ENV], a
 	ret
 
-RestAud3:: ; $7522
+RestAud3: ; $7522
 ; take a rest on channel 3
 ; out(A) = 0
 	xor a
 	ldh [rAUD3ENA], a
 	ret
 
-SetAudioUnused4:: ; $7526
+SetAudioUnused4: ; $7526
 ; out(A) = 1
 	ld a, $01
 	ld [audioUnused4], a
@@ -672,7 +672,7 @@ _ClearAudioUnused4:: ; $752C
 ;     |       |        |       |       |        |         |       |
 ;     |  C2   |   D2   |   E2  |  F2   |   G2   |    A2   |   B2  |
 ;     +-------+--------+-------+-------+--------+---------+-------+
-FreqHigh:: ; $7531
+FreqHigh: ; $7531
 	db AUDHIGH_LENGTH_OFF, AUDHIGH_RESTART|AUDHIGH_LENGTH_ON
 	fq $00, $00, $01, $01, $01, $02, $02, $02, $03, $03, $03, $03 ; 2
 	fq $04, $04, $04, $04, $04, $05, $05, $05, $05, $05, $05, $05 ; 3
@@ -680,7 +680,7 @@ FreqHigh:: ; $7531
 	fq $07, $07, $07, $07, $07, $07, $07, $07, $07, $07, $07, $07 ; 5
 	fq $07, $07, $07, $07, $07, $07, $07, $07, $07, $07, $07, $07 ; 6
 	fq $07, $07, $07, $07, $07                                    ; 7
-FreqLow:: ; $7574
+FreqLow: ; $7574
 	db $00, $00
 	db $2C, $9D, $07, $6B, $C9, $23, $77, $C7, $12, $58, $9B, $DA ; 2
 	db $16, $4F, $83, $B5, $E5, $11, $3B, $63, $88, $AC, $CE, $ED ; 3
@@ -689,7 +689,7 @@ FreqLow:: ; $7574
 	db $83, $8A, $90, $97, $9D, $A2, $A7, $AC, $B1, $B6, $BA, $BE ; 6
 	db $C1, $C5, $C8, $CB, $CE                                    ; 7
 
-NoteLengths:: ; $75B7
+NoteLengths: ; $75B7
 ; 112.5 BPM
 	db 4,  8, 16, 32, 64
 	db    12, 24, 48
@@ -706,7 +706,7 @@ NoteLengths:: ; $75B7
 	db 6, 12, 24, 48, 96
 	db    18, 36, 72
 
-Title2:: ; $75E3
+Title2: ; $75E3
 	db NOTE_8TH TEMPO_150BPM, NOTE_E 4, REST
 	db NOTE_HALF TEMPO_150BPM, NOTE_E 4
 ; measure 1
@@ -754,7 +754,7 @@ Title2:: ; $75E3
 	db NOTE_8TH TEMPO_150BPM, NOTE_D 5, REST
 	db $00
 
-Title3:: ; $7652
+Title3: ; $7652
 	db NOTE_8TH TEMPO_150BPM, NOTE_E 4, REST
 	db NOTE_HALF TEMPO_150BPM, NOTE_E 4
 ; measure 1
@@ -787,7 +787,7 @@ Title3:: ; $7652
 	db NOTE_4TH TEMPO_113BPM, REST
 	db $00
 
-MarioStart2:: ; $76C3
+MarioStart2: ; $76C3
 ; measure 1
 	db NOTE_8TH TEMPO_113BPM, NOTE_E 5, NOTE_C 5, NOTE_G 4
 	db NOTE_4TH TEMPO_113BPM, NOTE_F 5, NOTE_D 5
@@ -800,7 +800,7 @@ MarioStart2:: ; $76C3
 	db NOTE_HALF WITH_DOT TEMPO_113BPM, NOTE_E 5
 	db $00
 
-MarioStart3:: ; $76D9
+MarioStart3: ; $76D9
 ; measure 1
 	db NOTE_8TH TEMPO_113BPM, NOTE_C 4, NOTE_G 4
 	db NOTE_4TH TEMPO_113BPM, NOTE_C 5
@@ -813,7 +813,7 @@ MarioStart3:: ; $76D9
 ; no measure 4
 	db $00
 
-GameOver2:: ; $76F0
+GameOver2: ; $76F0
 ; measure 1
 	db NOTE_4TH TEMPO_150BPM, REST, NOTE_C 5 SHARP
 	db NOTE_8TH TEMPO_150BPM, NOTE_B 4, NOTE_A 4, NOTE_B 4, NOTE_C 5 SHARP
@@ -829,7 +829,7 @@ GameOver2:: ; $76F0
 	db NOTE_8TH TEMPO_150BPM, NOTE_D 5, REST, REST, REST, NOTE_D 4
 	db $00
 
-GameOver3:: ; $7712
+GameOver3: ; $7712
 ; measure 1
 	db NOTE_8TH TEMPO_150BPM, NOTE_A 4, REST, NOTE_G 5, REST, NOTE_A 4, REST, NOTE_A 5, NOTE_G 5
 ; measure 2
@@ -842,12 +842,12 @@ GameOver3:: ; $7712
 	db NOTE_OTHER_TRIPLET2 TEMPO_90BPM, REST, NOTE_D 3
 	db $00
 
-Pause2:: ; $7733
+Pause2: ; $7733
 	db NOTE_8TH TEMPO_113BPM, NOTE_E 5, NOTE_G 5, NOTE_C 6, $00
-Pause3:: ; $7738
+Pause3: ; $7738
 	db NOTE_4TH WITH_DOT TEMPO_113BPM, REST, $00 ; nice work, team.
 
-StageEnd2:: ; $773B
+StageEnd2: ; $773B
 ; measure 1
 	db NOTE_8TH TEMPO_113BPM, NOTE_E 4, NOTE_C 4, NOTE_G 3, NOTE_F 4, NOTE_D 4, NOTE_G 3, NOTE_G 4, NOTE_E 4
 ; measure 2
@@ -856,7 +856,7 @@ StageEnd2:: ; $773B
 	db NOTE_HALF WITH_DOT TEMPO_113BPM, NOTE_E 5
 	db $00
 
-StageEnd3:: ; $7750
+StageEnd3: ; $7750
 ; measure 1
 	db NOTE_4TH TEMPO_113BPM, NOTE_C 4
 	db NOTE_8TH TEMPO_113BPM, NOTE_C 5
@@ -872,7 +872,7 @@ StageEnd3:: ; $7750
 	db NOTE_4TH TEMPO_113BPM, REST
 	db $00
 
-Special2:: ; $7765
+Special2: ; $7765
 	db NOTE_16TH TEMPO_90BPM
 ; measures 1-2
 rept 2
@@ -892,7 +892,7 @@ endr
 ; repeat
 	db MUSIC_NEXT
 
-Special3:: ; $779B
+Special3: ; $779B
 	db NOTE_16TH TEMPO_90BPM
 ; measures 1-2
 rept 2
@@ -910,7 +910,7 @@ endr
 ; repeat
 	db MUSIC_NEXT
 
-SpecialFast2:: ; $77D7
+SpecialFast2: ; $77D7
 	db NOTE_16TH TEMPO_113BPM
 ; measures 1-2
 rept 2
@@ -930,7 +930,7 @@ endr
 ; repeat
 	db MUSIC_NEXT
 
-SpecialFast3:: ; $780D
+SpecialFast3: ; $780D
 	db NOTE_16TH TEMPO_113BPM
 ; measures 1-2
 rept 2
@@ -948,7 +948,7 @@ endr
 ; repeat
 	db MUSIC_NEXT
 
-SpecialIntro2:: ; $7849
+SpecialIntro2: ; $7849
 	db NOTE_8TH WITH_DOT TEMPO_90BPM, NOTE_E 5
 	db NOTE_16TH TEMPO_90BPM, NOTE_E 5
 	db NOTE_8TH WITH_DOT TEMPO_90BPM, NOTE_D 5
@@ -960,7 +960,7 @@ SpecialIntro2:: ; $7849
 	db NOTE_HALF WITH_DOT TEMPO_90BPM, NOTE_G 5
 	db $00
 
-SpecialIntro3:: ; $785C
+SpecialIntro3: ; $785C
 rept 2
 	db NOTE_8TH_TRIPLET2 TEMPO_90BPM, NOTE_G 4, NOTE_C 5
 	db NOTE_8TH_TRIPLET1 TEMPO_90BPM, NOTE_E 5
@@ -971,7 +971,7 @@ endr
 	db NOTE_4TH WITH_DOT TEMPO_90BPM, REST
 	db $00
 
-SpecialEnd2:: ; $7875
+SpecialEnd2: ; $7875
 ; measure 1
 	db NOTE_HALF TEMPO_113BPM, NOTE_C 5
 	db NOTE_8TH TEMPO_113BPM, REST, NOTE_G 4, NOTE_A 4, NOTE_B 4
@@ -983,7 +983,7 @@ SpecialEnd2:: ; $7875
 	db NOTE_HALF WITH_DOT TEMPO_113BPM, NOTE_C 5
 	db $00
 
-SpecialEnd3:: ; $7887
+SpecialEnd3: ; $7887
 ; measure 1
 	db NOTE_4TH TEMPO_113BPM, NOTE_C 4
 	db NOTE_8TH TEMPO_113BPM, NOTE_C 5, NOTE_C 4, REST, NOTE_C 4
@@ -995,7 +995,7 @@ SpecialEnd3:: ; $7887
 	db NOTE_HALF WITH_DOT TEMPO_113BPM, NOTE_C 4
 	db $00
 
-SpecialBonus2:: ; $789C
+SpecialBonus2: ; $789C
 ; measure 1
 	db NOTE_HALF TEMPO_113BPM, NOTE_C 5
 	db NOTE_8TH TEMPO_113BPM, REST, NOTE_G 4, NOTE_A 4, NOTE_B 4
@@ -1017,7 +1017,7 @@ endr
 	db NOTE_HALF TEMPO_113BPM, NOTE_E 4
 	db $00
 
-SpecialBonus3:: ; $78D6
+SpecialBonus3: ; $78D6
 ; measure 1
 	db NOTE_4TH TEMPO_113BPM, NOTE_C 4
 	db NOTE_8TH TEMPO_113BPM, NOTE_C 5, NOTE_C 4, REST, NOTE_C 4
@@ -1037,16 +1037,16 @@ endr
 	db NOTE_HALF TEMPO_113BPM, NOTE_C 5
 	db $00
 
-StageFall2:: ; $790F
+StageFall2: ; $790F
 	; changes pitch every frame.
 	db NOTE_OTHER_TRIPLET1 TEMPO_90BPM, NOTE_F 3 SHARP, NOTE_D 3 SHARP, NOTE_C 3 SHARP, NOTE_A 3, NOTE_F 3, NOTE_D 3 SHARP, NOTE_C 3 SHARP, NOTE_A 3
 	db $00
-StageFall3:: ; $7919
+StageFall3: ; $7919
 	; changes pitch every other frame.
 	db NOTE_OTHER_TRIPLET2 TEMPO_90BPM, NOTE_D 3, NOTE_D 3, NOTE_C 3, NOTE_C 3
 	db $00
 
-NicePlay2:: ; $791F
+NicePlay2: ; $791F
 rept 2
 ; measures 1-2, 5-6
   rept 2
@@ -1081,7 +1081,7 @@ endr
 	db NOTE_HALF TEMPO_75BPM, REST
 	db $00
 
-NicePlay3:: ; $7988
+NicePlay3: ; $7988
 rept 2
 ; measures 1-2, 5-6
   rept 4
@@ -1112,6 +1112,6 @@ endr
 	db NOTE_8TH TEMPO_75BPM, REST
 	db $00
 
-WaveRam:: ; $7A6F
+WaveRam: ; $7A6F
 ; this seems to be a sine wave if the person drawing it gave up halfway through.
 	db $89, $AB, $BB, $BB, $BB, $BB, $98, $54, $21, $00, $00, $00, $00, $00, $00, $00

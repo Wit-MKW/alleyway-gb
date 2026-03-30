@@ -10,13 +10,13 @@ DmgMain:: ; $0511
 	ldh [gameMode], a ; gameMode_RESET_HISCORE
 	ldh [specialStage], a
 	ldh [scrollFlag], a
-.loop::
+.loop
 	call MainLoop
 	call RandomNumber
 	call WaitVblank
 	jp .loop
 
-MainLoop:: ; $052B
+MainLoop: ; $052B
 ; perform the action dictated by gameMode
 ; if game is reset: out(A) = gameMode_TITLE_MUSIC
 ; otherwise: see MainFuncList functions
@@ -31,7 +31,7 @@ MainLoop:: ; $052B
 	ld a, gameMode_TITLE_MUSIC
 	ldh [gameMode], a
 	ret
-.no_reset::
+.no_reset
 	ldh a, [gameMode]
 	sla a
 	ld c, a
@@ -50,7 +50,7 @@ MainFuncList:: ; $054C
 	dw NextStage, DispNicePlay, FinishSpecialStage, GameOver
 	dw PauseGame, WaitVblank.end, WaitVblank.end, WaitVblank.end
 
-ResetHiScore:: ; $056C
+ResetHiScore: ; $056C
 ; set high score to 0200
 ; out(A) = gameMode_TITLE_MUSIC
 	ld a, 200
@@ -61,7 +61,7 @@ ResetHiScore:: ; $056C
 	ldh [gameMode], a
 	ret
 
-TitleScreenWithMusic:: ; $0578
+TitleScreenWithMusic: ; $0578
 ; set title music to play before returning to title screen
 ; out(A) = gameMode_TITLE_SCREEN
 	ld a, 4
@@ -70,7 +70,7 @@ TitleScreenWithMusic:: ; $0578
 	ldh [gameMode], a
 	ret
 
-TitleScreen:: ; $0582
+TitleScreen: ; $0582
 ; display title screen
 ; out(A) = gameMode_DEMO if demo starts, gameMode_START_GAME otherwise
 	call TurnOffLCD
@@ -101,7 +101,7 @@ TitleScreen:: ; $0582
 	cp 5
 	jr nz, .skip_zero
 	xor a
-.skip_zero::
+.skip_zero
 	ld [titleScreenMusicCounter], a
 	cp $00
 ; play title music every 5th time demo mode times out
@@ -114,7 +114,7 @@ TitleScreen:: ; $0582
 	call nz, CancelAudio
 	ld a, 3
 	ld [demoCountdown], a
-.loop::
+.loop
 	call WaitVblank
 	ldh a, [frameCount]
 	cp $00
@@ -123,14 +123,14 @@ TitleScreen:: ; $0582
 	dec a
 	ld [demoCountdown], a
 	jr z, .start_demo
-.skip_dec::
+.skip_dec
 	ldh a, [buttonsPressed]
 	and PADF_START
 	jr z, .start_game
 	ldh a, [paddleButonsPressed]
 	and $80
 	jr nz, .loop
-.start_game::
+.start_game
 ; reset game variables before starting
 	xor a
 	ld [stageId], a
@@ -147,17 +147,17 @@ TitleScreen:: ; $0582
 	ld a, gameMode_START_GAME
 	ldh [gameMode], a
 	ret
-.start_demo::
+.start_demo
 	ld a, gameMode_DEMO
 	ldh [gameMode], a
 	ret
 
-DemoMode:: ; $0613
+DemoMode: ; $0613
 ; show a demo of the game
 ; out(A) = gameMode_TITLE_MUSIC if demo is quit manually, gameMode_TITLE_SCREEN if it times out
 	call CancelAudio
 	call DispGameScreen
-.pick_stage::
+.pick_stage
 ; choose a stage at random
 	call RandomNumber
 	and $1F
@@ -188,7 +188,7 @@ DemoMode:: ; $0613
 	call MakeRacquetSprite
 	ld a, 16
 	call DelayFrames
-.game_loop::
+.game_loop
 	call UpdateScroll
 	call UpdateBall
 	call MakeRacquetSprite
@@ -223,12 +223,12 @@ DemoMode:: ; $0613
 	ld a, gameMode_TITLE_SCREEN
 	ldh [gameMode], a
 	ret
-.quit_demo::
+.quit_demo
 	ld a, gameMode_TITLE_MUSIC
 	ldh [gameMode], a
 	ret
 
-StartGame:: ; $06A2
+StartGame: ; $06A2
 ; start a new stage
 ; out(A) = gameMode_AWAIT_BALL
 
@@ -309,7 +309,7 @@ StartGame:: ; $06A2
 	ldh [gameMode], a
 	ret
 
-IncSpecialNum:: ; $0738
+IncSpecialNum: ; $0738
 ; increment the special stage count
 ; out(A) = ++[specialNum]
 	ld a, $01
@@ -319,7 +319,7 @@ IncSpecialNum:: ; $0738
 	ld [specialNum], a
 	ret
 
-IncStageNum:: ; $0744
+IncStageNum: ; $0744
 ; increment the non-special stage count
 ; out(A) = ++[stageNum]
 	ld a, [stageNum]
@@ -327,7 +327,7 @@ IncStageNum:: ; $0744
 	ld [stageNum], a
 	ret
 
-SetupScroll:: ; $074C
+SetupScroll: ; $074C
 ; setup scroll counters based on StagePointers_RULES byte in(A)
 ; out(A) = 1
 ; out(BC) = scrollModulo + STAGE_ROWS_ONSCREEN
@@ -345,7 +345,7 @@ SetupScroll:: ; $074C
 	ld bc, scrollModulo
 	ld de, scrollCounters
 	ld a, STAGE_ROWS_ONSCREEN
-.loop::
+.loop
 	push af
 	ld a, [hl+]
 	ld [bc], a
@@ -360,7 +360,7 @@ SetupScroll:: ; $074C
 	ldh [scrollFlag], a
 	ret
 
-AwaitBall:: ; $0773
+AwaitBall: ; $0773
 ; wait for the player to press A & deploy a ball
 ; out(A) = gameMode_GAME_PLAYING
 	call UpdateScroll
@@ -371,7 +371,7 @@ AwaitBall:: ; $0773
 	ldh a, [paddleButonsPressed]
 	and $80
 	ret nz
-.continue::
+.continue
 	xor a
 	ldh [speedUpCounter], a
 	ldh [changeAngleCounter], a
@@ -387,7 +387,7 @@ AwaitBall:: ; $0773
 	ldh [gameMode], a
 	ret
 
-GamePlaying:: ; $07A4
+GamePlaying: ; $07A4
 ; run one frame of gameplay
 ; out(A) = gameMode_PAUSE if game paused, $80 otherwise
 	ldh a, [specialStage]
@@ -404,7 +404,7 @@ GamePlaying:: ; $07A4
 	ret nz
 	ld a, $FF
 	ldh [paddleButonsPressed], a
-.start_pressed::
+.start_pressed
 	ldh a, [specialStage]
 	cp $00
 	ret nz
@@ -414,7 +414,7 @@ GamePlaying:: ; $07A4
 	ldh [gameMode], a
 	ret
 
-LostBall:: ; $07D3
+LostBall: ; $07D3
 ; animate the ball falling out of play
 ; out(A) = 0 if out of lives, gameMode_AWAIT_BALL otherwise
 	call StopAudio
@@ -442,7 +442,7 @@ LostBall:: ; $07D3
 	ldh [gameMode], a
 	ret
 
-NextStage:: ; $0805
+NextStage: ; $0805
 ; finish this stage & proceed to the next
 ; out(A) = out(B)
 ; out(B) = gameMode_NICE_PLAY after special 24, gameMode_START_GAME otherwise
@@ -458,19 +458,19 @@ NextStage:: ; $0805
 	cp 0
 	jr nz, .not_finished
 	ld b, gameMode_NICE_PLAY
-.not_finished::
+.not_finished
 	ld a, b
 	ldh [gameMode], a
 	ret
 
-PlayStageEndMusic:: ; $0823
+PlayStageEndMusic: ; $0823
 ; play music after finishing a standard stage
 ; out(A) = 0
 	call PlayMusic.stage_end
 	ld a, 144
 	jp DelayFrames
 
-IncStageId:: ; $082B
+IncStageId: ; $082B
 ; increment the stage ID, wrapping from 31+ to 0
 ; out(A) = new stageId
 	ld a, [stageId]
@@ -478,11 +478,11 @@ IncStageId:: ; $082B
 	cp 32
 	jr c, .skip_zero
 	ld a, 0
-.skip_zero::
+.skip_zero
 	ld [stageId], a
 	ret
 
-DispNicePlay:: ; $0839
+DispNicePlay: ; $0839
 ; congratulate the player for passing all 24 standard stages
 ; out(A) = gameMode_START_GAME
 	call FadeOut
@@ -532,21 +532,21 @@ endr
 	ldh [gameMode], a
 	ret
 
-FadeIn:: ; $08A7
+FadeIn: ; $08A7
 ; out(A) = %11100100
 ; out(B) = 0
 ; out(HL) = FadeInPalette + 4
 	ld hl, FadeInPalette
 	jr FadeOut.start
 
-FadeOut:: ; $08AC
+FadeOut: ; $08AC
 ; out(A) = 0
 ; out(B) = 0
 ; out(HL) = FadeOutPalette + 4
 	ld hl, FadeOutPalette
-.start::
+.start
 	ld b, 4
-.loop::
+.loop
 	ld a, [hl+]
 	call SetPalette
 	push bc
@@ -559,9 +559,9 @@ FadeOut:: ; $08AC
 	jr nz, .loop
 	ret
 
-FadeInPalette:: ; $08C2
+FadeInPalette: ; $08C2
 	db %00000000, %01000000, %10010000, %11100100
-FadeOutPalette:: ; $08C6
+FadeOutPalette: ; $08C6
 	db %11100100, %10010000, %01000000, %00000000
 
 SetPalette:: ; $08CA
@@ -571,7 +571,7 @@ SetPalette:: ; $08CA
 	ldh [rOBP1], a
 	ret
 
-GameOver:: ; $08D1
+GameOver: ; $08D1
 ; display a "GAME OVER" screen
 ; out(A) = gameMode_TITLE_MUSIC
 	call MarioEnd
@@ -597,7 +597,7 @@ GameOver:: ; $08D1
 	ldh [gameMode], a
 	ret
 
-PauseGame:: ; $0907
+PauseGame: ; $0907
 ; don't do anything unless the player presses START
 ; out(A) = gameMode_GAME_PLAYING
 	ldh a, [buttonsPressed]
@@ -608,7 +608,7 @@ PauseGame:: ; $0907
 	ret nz
 	ld a, $FF
 	ldh [paddleButonsPressed], a
-.start_pressed::
+.start_pressed
 	call ClearOAM
 	call DispScore
 	call DispBounceSpeed

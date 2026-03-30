@@ -26,7 +26,7 @@ macro strip
 	endc
 	shift 4
 	db \#
-.end\@::
+.end\@
 endm
 
 def SPECIAL_BIT equ 7

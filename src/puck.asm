@@ -12,7 +12,7 @@ UpdateBall:: ; $0CA6
 	call MakeBallSprite
 	ret
 
-DoBallCollisions:: ; $0CB0
+DoBallCollisions: ; $0CB0
 ; after the ball has moved a frame, modify that motion based on what it collides with
 ; clobbers all registers
 	nop
@@ -44,7 +44,7 @@ DoBallCollisions:: ; $0CB0
 	call c, BounceOffRacquet
 	pop af
 	call nc, BounceX
-.not_touching_racquet::
+.not_touching_racquet
 	ldh a, [ballPosY]
 	cp 8 + OAM_Y_OFS
 	jp c, .hit_ceiling
@@ -53,7 +53,7 @@ DoBallCollisions:: ; $0CB0
 	ld a, gameMode_LOST_BALL
 	ldh [gameMode], a
 	ret
-.hit_ceiling::
+.hit_ceiling
 	call PlaySound.bounce_wall
 	ldh a, [specialStage]
 	cp $00
@@ -69,18 +69,18 @@ DoBallCollisions:: ; $0CB0
 	add a, $04
 	ldh [racquetX], a
 	call PlaySound.racquet_shrink
-.keep_racquet::
+.keep_racquet
 	call BounceY
-.not_fell_through::
+.not_fell_through
 	ldh a, [ballPosX]
 	cp 8 + OAM_X_OFS
 	jp c, .bounce
 	cp 116 + OAM_X_OFS
 	jp c, .no_bounce
-.bounce::
+.bounce
 	call BounceX
 	call PlaySound.bounce_wall
-.no_bounce::
+.no_bounce
 	ldh a, [ballPosY]
 	sub 120 + OAM_Y_OFS
 	ret nc
@@ -92,7 +92,7 @@ DoBallCollisions:: ; $0CB0
 	ret z
 	; fallthrough otherwise, although nothing will happen
 
-TestForBounce:: ; $0D37
+TestForBounce: ; $0D37
 ; respond to the ball colliding with anything
 ; clobbers all registers
 ; BUG: while the ball's top-left pixel has full collision, the rest of its
@@ -113,7 +113,7 @@ TestForBounce:: ; $0D37
 	call nz, TestUp
 	ret
 
-TestDown:: ; $0D50
+TestDown: ; $0D50
 ; as the ball travels up, respond to its left side colliding with anything
 ; clobbers all registers
 	ldh a, [ballPosY]
@@ -133,7 +133,7 @@ TestDown:: ; $0D50
 	ret z
 	jp PassThroughY
 
-TestUp:: ; $0D73
+TestUp: ; $0D73
 ; as the ball travels up, respond to its left side colliding with anything
 ; clobbers all registers
 	ldh a, [ballPosY]
@@ -153,7 +153,7 @@ TestUp:: ; $0D73
 	ret z
 	jp PassThroughY
 
-TestRight:: ; $0D96
+TestRight: ; $0D96
 ; as the ball travels right, respond to its top colliding with anything
 ; clobbers all registers
 	ldh a, [ballPosYLast]
@@ -173,7 +173,7 @@ TestRight:: ; $0D96
 	ret z
 	jp PassThroughX
 
-TestLeft:: ; $0DB9
+TestLeft: ; $0DB9
 ; as the ball travels left, respond to its top colliding with anything
 ; clobbers all registers
 	ldh a, [ballPosYLast]
@@ -193,7 +193,7 @@ TestLeft:: ; $0DB9
 	ret z
 	jp PassThroughX
 
-TestBallPos:: ; $0DDC
+TestBallPos: ; $0DDC
 ; check if the current test position is inside a brick (or outside the playfield)
 ; out(A) = 1 if so, 0 otherwise
 ; clobbers BC, DE, and HL
@@ -209,10 +209,10 @@ TestBallPos:: ; $0DDC
 	ldh [rowToDraw], a
 	cp STAGE_ROWS_MAX
 	jr c, .check
-.no_bounce::
+.no_bounce
 	ld a, $00
 	ret
-.check::
+.check
 	ld b, a
 	ldh a, [stageFallRows]
 	ld c, a
@@ -231,7 +231,7 @@ TestBallPos:: ; $0DDC
 	cp STAGE_COLUMNS*8
 	jr c, .left
 	sub STAGE_COLUMNS*8
-.left::
+.left
 	srl a
 	srl a
 	srl a
@@ -267,7 +267,7 @@ TestBallPos:: ; $0DDC
 	dec b
 	ld [hl], b
 	ret nz
-.special::
+.special
 	xor a
 	ld [de], a
 	ldh a, [tileToDraw]
@@ -290,22 +290,22 @@ TestBallPos:: ; $0DDC
 	jr nz, .keep_playing
 	ld a, gameMode_NEXT_STAGE
 	ldh [gameMode], a
-.keep_playing::
+.keep_playing
 	ldh a, [specialStage]
 	cp $00
 	jp nz, .no_bounce
-.set_bounce_flag::
+.set_bounce_flag
 	ldh a, [bounceFlag]
 	inc a
 	ldh [bounceFlag], a
 	ld a, $01
 	ret
-.bumper::
+.bumper
 	call CheckChangeAngle
 	call LoadBrickSound
 	jr .set_bounce_flag
 
-BounceY:: ; $0E8D
+BounceY: ; $0E8D
 ; bounce the ball off a row it would have entered & switch its Y-direction
 ; out(A) = updated [ballPosY]
 ; out(BC) = updated Y-velocity
@@ -328,7 +328,7 @@ BounceY:: ; $0E8D
 	ldh [ballPosYLast], a
 	ret
 
-BounceX:: ; $0EAD
+BounceX: ; $0EAD
 ; remove the ball from a column it would have entered & switch its X-direction
 ; out(A) = updated [ballPosX]
 ; out(BC) = updated X-velocity
@@ -351,7 +351,7 @@ BounceX:: ; $0EAD
 	ldh [ballPosXLast], a
 	ret
 
-PassThroughY:: ; $0ECD
+PassThroughY: ; $0ECD
 ; dummied out
 	ret
 ; pass the ball through its current row
@@ -368,7 +368,7 @@ PassThroughY:: ; $0ECD
 	call z, BounceUpDown
 	ret
 
-PassThroughX:: ; $0EDB
+PassThroughX: ; $0EDB
 ; pass the ball through its current column
 ; out(A) = updated [ballPosX]
 ; if ball is travelling right, see BounceRightLeft for out(B)
@@ -380,7 +380,7 @@ PassThroughX:: ; $0EDB
 	call z, BounceLeftRight
 	ret
 
-BounceDownUp:: ; $0EE8
+BounceDownUp: ; $0EE8
 ; assume that the ball travelled down to its current position, and set its
 ;   position as if its travel had changed to up at the last row boundary
 ; out(A) = updated [ballPosY]
@@ -397,7 +397,7 @@ BounceDownUp:: ; $0EE8
 	ldh [ballPosY], a
 	ret
 
-BounceUpDown:: ; $0EF7
+BounceUpDown: ; $0EF7
 ; assume that the ball travelled up to its current position, and set its
 ;   position as if its travel had changed to down at the last row boundary
 ; out(A) = updated [ballPosY]
@@ -415,7 +415,7 @@ BounceUpDown:: ; $0EF7
 	ldh [ballPosY], a
 	ret
 
-BounceRightLeft:: ; $0F08
+BounceRightLeft: ; $0F08
 ; send the ball just to the left of the column that its rightmost pixel is in
 ; out(A) = updated [ballPosX]
 ; out(B) = -4 if the ball is fully within one column, +4 otherwise
@@ -426,18 +426,18 @@ BounceRightLeft:: ; $0F08
 	and $04
 	jr nz, .pos
 	ld b, -4
-.pos::
+.pos
 	ldh a, [ballPosX]
 	and $F8
 	add a, b
 	cp 8 + OAM_X_OFS
 	jr nc, .ok
 	ld a, 8 + OAM_X_OFS
-.ok::
+.ok
 	ldh [ballPosX], a
 	ret
 
-BounceLeftRight:: ; $0F20
+BounceLeftRight: ; $0F20
 ; send the ball just to the right of the column that its leftmost pixel is in
 ; out(A) = updated [ballPosX]
 	ldh a, [ballPosX]
@@ -446,11 +446,11 @@ BounceLeftRight:: ; $0F20
 	cp 116 + OAM_X_OFS
 	jr c, .ok
 	ld a, 116 + OAM_X_OFS
-.ok::
+.ok
 	ldh [ballPosX], a
 	ret
 
-SetBrickSpeed:: ; $0F2F
+SetBrickSpeed: ; $0F2F
 ; if the brick type in [tileToDraw] requests a faster-than-current speed, set it
 ; if action performed:
 ;   out(A) = out(C)
@@ -484,7 +484,7 @@ SetBrickSpeed:: ; $0F2F
 	ldh [bounceSpeed], a
 	jr SetBounceSpeed
 
-CheckChangeAngle:: ; $0F4F
+CheckChangeAngle: ; $0F4F
 ; every 10th call, change the ball's angle randomly
 ; if action performed:
 ;   out(A) = 0
@@ -498,11 +498,11 @@ CheckChangeAngle:: ; $0F4F
 	jr c, .not_finished
 	call SetBounceSpeed
 	xor a
-.not_finished::
+.not_finished
 	ldh [changeAngleCounter], a
 	ret
 
-CheckSpeedUp:: ; $0F5D
+CheckSpeedUp: ; $0F5D
 ; every 8th call, run IncBounceSpeed & SetBounceSpeed (see those for details)
 ; if action performed:
 ;   out(A) = 0
@@ -516,11 +516,11 @@ CheckSpeedUp:: ; $0F5D
 	call IncBounceSpeed
 	call SetBounceSpeed
 	xor a
-.not_finished::
+.not_finished
 	ldh [speedUpCounter], a
 	ret
 
-IncBounceSpeed:: ; $0F6E
+IncBounceSpeed: ; $0F6E
 ; add .125px/frame to bounce speed, wrapping from 4+ px/frame to 1.25px/frame
 ; out(A) = updated [bounceSpeed]
 	ldh a, [bounceSpeed]
@@ -528,11 +528,11 @@ IncBounceSpeed:: ; $0F6E
 	cp 26
 	jr c, .ok
 	ld a, 3
-.ok::
+.ok
 	ldh [bounceSpeed], a
 	jp DispBounceSpeed
 
-UpdateBallPos:: ; $0F7C
+UpdateBallPos: ; $0F7C
 ; perform one frame of ball motion
 ; out(A) = out(H)
 ; out(BC) = ball's horizontal velocity
@@ -588,7 +588,7 @@ NegativeBC:: ; $0FB3
 	inc bc
 	ret
 
-SetBounceSpeed:: ; $0FBD
+SetBounceSpeed: ; $0FBD
 ; set the ball's speed from [bounceSpeed], and its angle at random
 ; out(A) = out(C)
 ; out(BC) = resulting horizontal velocity
@@ -627,7 +627,7 @@ SetBounceSpeed:: ; $0FBD
 	and $80
 	jr z, .pos_y
 	call NegativeBC
-.pos_y::
+.pos_y
 	ld a, b
 	ldh [ballSpeedY], a
 	ld a, c
@@ -640,7 +640,7 @@ SetBounceSpeed:: ; $0FBD
 	and $80
 	jr z, .pos_x
 	call NegativeBC
-.pos_x::
+.pos_x
 	ld a, b
 	ldh [ballSpeedX], a
 	ld a, c
@@ -651,10 +651,10 @@ SetBounceSpeed:: ; $0FBD
 ; its source for this claim is the game's official website, which makes no mention
 ; of exact angles. it does have several 45° arrows, and one 15° arrow, but i have
 ; reason to believe there was little to no intention behind these angles.
-HorizontalAngles:: ; $100B
+HorizontalAngles: ; $100B
 	;  30°, 40°, 50°, 30°, 40°, 50°, 40°, 50°
 	db $06, $08, $0A, $06, $08, $0A, $08, $0A
-VerticalAngles:: ; $1013
+VerticalAngles: ; $1013
 	;  50°, 60°, 70°, 50°, 60°, 70°, 50°, 60°
 	db $0A, $0C, $0E, $0A, $0C, $0E, $0A, $0C
 
@@ -677,10 +677,10 @@ DeployBall:: ; $101B
 	ldh a, [bricksLeft+1]
 	cp LOW(40)
 	jr nc, .forty_bricks
-.special::
+.special
 	ld a, $07
 	ldh [bounceSpeed], a
-.forty_bricks::
+.forty_bricks
 	ld a, 24
 	ld b, a
 	ldh a, [racquetWidth]
@@ -692,7 +692,7 @@ DeployBall:: ; $101B
 	jr c, .left
 	ld a, -24
 	ld b, a
-.left::
+.left
 	ldh a, [racquetX]
 	add a, b
 	add a, c
@@ -730,14 +730,14 @@ DeployBall:: ; $101B
 	cp $80
 	jr nc, .pos
 	call NegativeBC
-.pos::
+.pos
 	ld a, b
 	ldh [ballSpeedX], a
 	ld a, c
 	ldh [ballSpeedX+1], a
 	ret
 
-MakeBallSprite:: ; $108D
+MakeBallSprite: ; $108D
 ; make the sprite for the ball
 ; out(A) = OAMF_PAL0|OAMF_BANK0
 ; out(HL) = oamBuf + 4*sizeof_OAM_ATTRS
